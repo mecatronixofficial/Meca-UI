@@ -2,9 +2,10 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import Icons from "../../helper/icon_help";
 import { Project_Process, Short_Services, Services_List, Most_Used_Tech_Stack, ServiceCategories } from "../../helper/data_help.jsx";
-
+import { Helmet } from "react-helmet-async";
 const SpaceBackground = React.memo(({ stars, shootingStars }) => {
   return (
+   
     <div className="absolute inset-0 pointer-events-none">
       {stars.map((star) => (
         <div
@@ -123,6 +124,29 @@ const Services = () => {
   };
 
   return (
+     <>
+     <Helmet>
+        <title>Development Services | Mecatronix Software Development</title>
+        <meta
+          name="description"
+          content="Explore Mecatronix web development services including business websites, ecommerce solutions, scalable platforms, UI/UX, and modern technology stacks."
+        />
+        <meta
+          name="keywords"
+          content="web development services, ecommerce development, website development Coimbatore, React development, scalable web applications, Mecatronix"
+        />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://mecatronix.one/services" />
+
+        <meta property="og:title" content="Web Development Services | Mecatronix Software Development" />
+        <meta
+          property="og:description"
+          content="Discover modern web development, ecommerce, and scalable digital solutions by Mecatronix."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://mecatronix.one/services" />
+      </Helmet>
+
     <section className="pb-24 pt-32 bg-black text-white relative overflow-hidden">
 
       <SpaceBackground stars={stars} shootingStars={shootingStars} />
@@ -177,9 +201,10 @@ const Services = () => {
             </h2>
 
             <p className="text-gray-500 max-w-2xl mx-auto text-lg md:text-xl font-light leading-relaxed mb-16">
-              Mecatronix engineers <span className="text-white font-medium">high-velocity web ecosystems</span>.
-              We prioritize sub-second performance, zero-trust security, and architectural growth.
-            </p>
+  Mecatronix is a trusted <span className="text-white font-medium">web development company in Coimbatore</span> 
+  delivering ecommerce websites, mobile applications, and scalable digital solutions. 
+  We focus on performance, security, and future-ready architecture to grow your business online.
+</p>
 
             {/* Services Bento Grid */}
             <div className="grid grid-cols-2 md:grid-cols-5 gap-3 max-w-5xl mx-auto mb-10">
@@ -540,6 +565,7 @@ const Services = () => {
       </div>
 
     </section>
+    </>
   );
 };
 

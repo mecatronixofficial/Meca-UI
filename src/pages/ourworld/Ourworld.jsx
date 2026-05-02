@@ -3,6 +3,7 @@ import Icons from "../../helper/icon_help";
 import { useNavigate } from "react-router-dom";
 import { Our_Features, Our_working_lines, Our_Team, Our_Values, Our_Stats, Our_tabs } from "../../helper/data_help.jsx";
 import Img_Helper from "../../helper/img_help.js";
+import { Helmet } from "react-helmet-async";
 
 const SpaceBackground = React.memo(({ stars, shootingStars }) => {
   return (
@@ -87,6 +88,30 @@ const Ourworld = () => {
   const HandleGo = () => { navigate("/openline") }
 
   return (
+     <>
+     <Helmet>
+      <title>Our Wold  |  Mecatronix Software Development Company</title>
+
+      <meta 
+        name="description" 
+        content="Learn about Mecatronix Software Development, a futuristic IT company delivering scalable web, app, and digital solutions." 
+      />
+
+      <meta 
+        name="keywords" 
+        content="about mecatronix, software company coimbatore, web development company, IT startup India , Company Projects " 
+      />
+
+      <meta name="robots" content="index, follow" />
+
+      <link rel="canonical" href="https://mecatronix.one/Ourworld" />
+
+      {/* Open Graph */}
+      <meta property="og:title" content="About Mecatronix Software Development" />
+      <meta property="og:description" content="Discover our vision, team, and technology expertise." />
+      <meta property="og:type" content="website" />
+      <meta property="og:url" content="https://mecatronix.one/Ourworld" />
+    </Helmet>
     <section id="ourworld" className="relative w-full overflow-hidden bg-black text-white font-sans selection:bg-orange-500/30">
       <SpaceBackground stars={stars} shootingStars={shootingStars} />
       {/* Floating Particles */}
@@ -113,7 +138,7 @@ const Ourworld = () => {
             <img
               src={Img_Helper.world}
               alt="background"
-              className="w-full h-full object-contain opacity-30"
+              className="w-full h-full object-cover opacity-30"
             />
             {/* Gradient Overlay to ensure text visibility */}
             <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
@@ -144,9 +169,10 @@ const Ourworld = () => {
 
                 <div className="space-y-6">
                   <p className="text-2xl md:text-3xl text-gray-200 leading-snug font-medium">
-                    <span className="text-orange-500">Mecatronix</span> is a dynamic IT solutions startup.
-                    <span className="text-gray-500 font-light"> We act as true technology partners, blending innovation with flawless execution.</span>
-                  </p>
+  <span className="text-orange-500">Mecatronix</span> is a leading 
+  <strong> software company in Coimbatore</strong> delivering 
+  web development, ecommerce solutions, and scalable digital platforms.
+</p>
 
                   <p className="text-gray-400 text-lg leading-relaxed max-w-2xl border-l-2 border-white/5 pl-6 italic">
                     "We go beyond traditional IT services, integrating cutting-edge tech with a client-centric mindset to build future-ready solutions."
@@ -204,8 +230,8 @@ const Ourworld = () => {
             <h2 className="text-4xl font-bold text-white">Who We Are</h2>
             <div className="h-1 w-20 bg-cyan-500 rounded-full"></div>
             <p className="text-gray-300 text-lg leading-relaxed">
-              Established in <strong className="text-white">2026</strong>, Mecatronix is more than just an IT company; we are a digital catalyst.
-              In a world moving at light speed, we are the engineers of the new digital age.
+              Established in <strong className="text-white">2026</strong>, Mecatronix is not just an IT company in Coimbatore; we are the digital catalyst behind business transformation.
+As the world moves at lightning speed, we design and deliver powerful digital solutions that shape the future and drive success in the new digital era.
             </p>
             <p className="text-gray-400 leading-relaxed">
               We specialize in the full lifecycle of digital development—from the first line of code on your website to the final pixel on your marketing posters.
@@ -307,12 +333,12 @@ const Ourworld = () => {
           {activeTab === "team" && (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 animate-fade-in-up">
               <div className="md:col-span-3 text-center mb-4">
-                <p className="text-gray-300 max-w-2xl mx-auto">
+                <p className="text-gray-500 max-w-3xl mx-auto">
                   Our success is powered by a skilled team of engineers, designers, and technology leaders. We are always looking for talented individuals to join our journey.
                 </p>
               </div>
               {Our_Team.map((member, idx) => (
-                <div key={idx} className="relative overflow-hidden group bg-white/5 border border-white/10 rounded-2xl p-8 text-center hover:bg-white/10 transition-all">
+                <div key={idx} className="relative overflow-hidden group bg-[#0F172A] border border-white/10 rounded-2xl p-8 text-center hover:bg-cyan-800 transition-all">
                   <div className={`mx-auto w-20 h-20 rounded-full bg-gradient-to-br ${member.color} flex items-center justify-center text-3xl text-white mb-6 shadow-xl`}>
                     {member.icon}
                   </div>
@@ -333,7 +359,7 @@ const Ourworld = () => {
           {activeTab === "values" && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in-up">
               {Our_Values.map((value, idx) => (
-                <div key={idx} className="flex items-start gap-4 p-6 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-all duration-300">
+                <div key={idx} className="flex items-start gap-4 p-6 bg-blue-900 border border-white/10 rounded-2xl hover:bg-white/10 transition-all duration-300">
                   <div className={`flex-shrink-0 w-12 h-12 rounded-lg bg-gradient-to-br ${value.color} flex items-center justify-center text-xl text-white`}>
                     {value.icon}
                   </div>
@@ -348,25 +374,30 @@ const Ourworld = () => {
         </div>
 
         <div className="text-center mx-auto animate-zoom-in pt-24">
-          <div className="bg-gradient-to-br from-gray-900 to-black border border-white/10 p-10 rounded-3xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-purple-600/10 rounded-full blur-[80px]"></div>
+  <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-[#1e293b] via-[#0f172a] to-[#3b1d18] p-10 shadow-[0_20px_80px_rgba(15,23,42,0.35)]">
+    
+    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(249,115,22,0.18),transparent_30%),radial-gradient(circle_at_bottom_left,rgba(56,189,248,0.12),transparent_30%)]" />
+    <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 rounded-full blur-[80px]"></div>
+    <div className="absolute bottom-0 left-0 w-64 h-64 bg-sky-400/10 rounded-full blur-[90px]"></div>
 
-            <FaRocket className="text-5xl text-purple-500 mx-auto mb-6 animate-bounce" />
+    <div className="relative z-10">
+      <FaRocket className="text-5xl text-purple-700 mx-auto mb-6 animate-bounce" />
 
-            <h2 className="text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-500 mb-6">
-              "Engineering the Digital Tomorrow"
-            </h2>
+      <h2 className="text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-orange-100 to-orange-300 mb-6">
+        "Engineering the Digital Tomorrow"
+      </h2>
 
-            <p className="text-xl text-gray-400 leading-relaxed mb-8">
-              Our mission is to bridge the gap between human imagination and digital execution.
-              Whether it's a poster that stops traffic or an app that changes lives, we build it with precision.
-            </p>
+      <p className="text-xl text-slate-300 leading-relaxed mb-8">
+        Our mission is to bridge the gap between human imagination and digital execution.
+        Whether it's a poster that stops traffic or an app that changes lives, we build it with precision.
+      </p>
 
-            <div className="flex flex-wrap justify-center gap-4 text-sm font-semibold tracking-wider text-gray-500 uppercase">
-              <span>#Mecatronix2026</span> • <span>#FutureTech</span> • <span>#DigitalGrowth</span>
-            </div>
-          </div>
-        </div>
+      <div className="flex flex-wrap justify-center gap-4 text-sm font-semibold tracking-wider text-slate-400 uppercase">
+        <span>#Mecatronix2026</span> • <span>#FutureTech</span> • <span>#DigitalGrowth</span>
+      </div>
+    </div>
+  </div>
+</div>
 
       </div>
 
@@ -396,6 +427,7 @@ const Ourworld = () => {
       </div> */}
 
     </section>
+    </>
   );
 };
 

@@ -4,6 +4,7 @@ import { useToast } from "../../hooks/useToast";
 import Icons from "../../helper/icon_help";
 import { SpaceBackground } from "../../components/star/SpaceBackground";
 import mecatronixConfig from "../../config/envConfig";
+import { Helmet } from "react-helmet-async";
 
 const Openline = () => {
 
@@ -176,6 +177,30 @@ const Openline = () => {
   ];
 
   return (
+    <>
+    <Helmet>
+      <title>Contact Us | Mecatronix Software Development</title>
+
+      <meta 
+        name="description" 
+        content="Contact Mecatronix Software Development for web development, ecommerce, and app solutions. Get in touch today." 
+      />
+
+      <meta 
+        name="keywords" 
+        content="contact mecatronix, web development contact, software company coimbatore contact, ecommerce development contact , Contact for app development" 
+      />
+
+      <meta name="robots" content="index, follow" />
+
+      <link rel="canonical" href="https://mecatronix.one/Openline" />
+
+      {/* Open Graph */}
+      <meta property="og:title" content="Contact Mecatronix Software Development" />
+      <meta property="og:description" content="Get in touch with our team for your next project." />
+      <meta property="og:type" content="website" />
+      <meta property="og:url" content="https://mecatronix.one/Openline" />
+    </Helmet>
     <section id="contact" className="min-h-screen bg-black text-white pt-32 pb-20 relative overflow-hidden">
 
       <SpaceBackground stars={stars} shootingStars={shootingStars} />
@@ -234,7 +259,7 @@ const Openline = () => {
           {/* 📝 Mission Description */}
           <div className="max-w-2xl mx-auto relative">
             <p className="text-gray-400 text-lg md:text-xl font-medium leading-relaxed mb-8">
-              Whether you're looking to <span className="text-white">engineer the future</span> or optimize the present,
+              Whether you're looking to <span className="text-white">Engineer the future</span> or optimize the present,
               our specialized crew is ready to navigate the complexities of your next digital venture.
             </p>
 
@@ -378,13 +403,14 @@ const Openline = () => {
         {/* Map */}
         <div className="rounded-2xl overflow-hidden border border-white/10 animate-fade-in-up fill-mode-forwards opacity-0" style={{ animationDelay: '0.4s' }}>
           <div className="bg-gradient-to-r from-orange-500 to-red-600 p-4 text-center">
-            <h3 className="text-xl font-bold text-white flex items-center justify-center gap-2"><FaMapMarkerAlt /> Our Location</h3>
+            <h3 className="text-xl font-bold text-white flex items-center justify-center gap-2"><FaMapMarkerAlt /> <h1>Visit Our Software Company in Coimbatore</h1></h3>
           </div>
           <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3916.114189307222!2d76.9732984750099!3d11.030058689134563!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba859d8466e5bd9%3A0x8490ce731b0f659f!2sMecatronix%20Software%20Development!5e0!3m2!1sen!2sin!4v1768823607767!5m2!1sen!2sin" allowfullscreen="" className="filter grayscale hover:grayscale-0 transition-all duration-500" loading="lazy" width="100%" height="400" referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
       </div>
 
     </section>
+    </>
   );
 };
 

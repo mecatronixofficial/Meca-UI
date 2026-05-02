@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Icons from "../../helper/icon_help";
 import { useNavigate } from "react-router-dom";
-
+import { Helmet } from "react-helmet-async";
 const SpaceBackground = React.memo(({ stars, shootingStars }) => {
   return (
+  
     <div className="absolute inset-0 pointer-events-none">
       {stars.map((star) => (
         <div
@@ -37,6 +38,7 @@ const SpaceBackground = React.memo(({ stars, shootingStars }) => {
       <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-orange-500/10 rounded-full blur-[120px]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] opacity-20" />
     </div>
+    
   );
 });
 
@@ -82,6 +84,30 @@ const Portfolio = () => {
   const HandleGo = () => { navigate("/openline") }
 
   return (
+    <>
+    <Helmet>
+        <title>Portfolio | Mecatronix Software Development</title>
+
+        <meta 
+          name="description" 
+          content="Explore Mecatronix portfolio showcasing web development, ecommerce solutions, and modern digital products." 
+        />
+
+        <meta 
+          name="keywords" 
+          content="portfolio, web projects, ecommerce development, react projects, software company coimbatore" 
+        />
+
+        <meta name="robots" content="index, follow" />
+
+        <link rel="canonical" href="https://mecatronix.one/portfolio" />
+
+        {/* Open Graph */}
+        <meta property="og:title" content="Mecatronix Portfolio" />
+        <meta property="og:description" content="Our latest projects and work showcase" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://mecatronix.one/portfolio" />
+      </Helmet>
     <section id="portfolio" className="pb-24 pt-32 bg-black text-white relative overflow-hidden">
       <SpaceBackground stars={stars} shootingStars={shootingStars} />
 
@@ -244,6 +270,7 @@ const Portfolio = () => {
 
       </div>
     </section>
+    </>
   );
 };
 

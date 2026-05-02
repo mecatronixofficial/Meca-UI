@@ -488,18 +488,26 @@ const HeroWithChat = () => {
               <div className="mono" style={{ fontSize: 9, color: "rgba(249,115,22,.4)", letterSpacing: ".5em", marginBottom: 12 }}>[ PROTOCOL_01 ]</div>
               <h1 style={{ fontSize: "clamp(2rem,6vw,4rem)", fontWeight: 700, lineHeight: 1, letterSpacing: "-.03em", textTransform: "uppercase", margin: 0 }}>
                 <span className="glitch" data-text="MECA">MECA</span>
-                <span style={{ color: "#f97316", textShadow: "0 0 30px rgba(249,115,22,.4)" }}>TRONIX</span>
+                <span style={{ color: "#ea580c", textShadow: "0 0 30px rgba(249,115,22,.4)" }}>TRONIX</span>
               </h1>
+
+              <div style={{ display: "flex", alignItems: "center", gap: 16, marginTop: 8 }}>
+                
+                <span className="mono" style={{ fontSize: "clamp(.9rem,2vw,1.3rem)", color: "#888", letterSpacing: ".2em" }}>Software Development</span>
+              </div>
               <div style={{ display: "flex", alignItems: "center", gap: 16, marginTop: 8 }}>
                 <div style={{ width: 64, height: 2, background: "#f97316" }} />
-                <span className="mono" style={{ fontSize: "clamp(.9rem,2vw,1.3rem)", color: "#888", letterSpacing: ".2em" }}>Digital_Engines</span>
+                <span className="mono" style={{ fontSize: "clamp(.9rem,2vw,1.3rem)", color: "#888", letterSpacing: ".2em" }}>Digital_Engines</span><div style={{ width: 64, height: 2, background: "#f97316" }} />
               </div>
             </div>
 
             <p className="mono" style={{ fontSize: 11, color: "#555", lineHeight: 2, maxWidth: 380, letterSpacing: ".05em" }}>
-              &gt;&gt; Deploying advanced automation architectures<br />
-              &gt;&gt; High-performance digital ecosystems<br />
-              &gt;&gt; Built for the industrial frontier
+              &gt;&gt;Advanced Automation Architecture Development for Enterprise Efficiency<br />
+              &gt;&gt; High-Performance Digital Ecosystems for Scalable Software Solutions<br />
+              &gt;&gt; Future-Ready Industrial Software Built for Global Digital Transformation
+              
+
+
             </p>
 
             {/* Stats */}

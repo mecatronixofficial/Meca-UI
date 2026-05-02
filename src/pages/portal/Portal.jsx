@@ -26,7 +26,7 @@ const Portal = () => {
         <meta name="robots" content="index, follow" />
         <meta name="author" content="Mecatronix Software Development" />
 
-        <link rel="canonical" href="https://mecatronix.one/" />
+        <link rel="canonical" href="https://www.mecatronix.one" />
 
         <meta property="og:title" content="Software Development Company in Coimbatore | Mecatronix" />
         <meta
@@ -34,7 +34,7 @@ const Portal = () => {
           content="Web development, ecommerce websites, mobile apps, and scalable digital solutions by Mecatronix."
         />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://mecatronix.one/" />
+        <meta property="og:url" content="https://www.mecatronix.one" />
       </Helmet>
 
       <div className="overflow-hidden">

@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Icons from "../../helper/icon_help";
 import { useNavigate } from "react-router-dom";
-import { Our_Features, Our_working_lines, Our_Team, Our_Values, Our_Stats, Our_tabs } from "../../helper/data_help.jsx";
-import Img_Helper from "../../helper/img_help.js";
+import { Our_Features, Our_working_lines, Our_Team, Our_Values, Our_Stats, Our_tabs } from "../../helper/data_help";
+import Img_Helper from "../../helper/img_help";
 import { Helmet } from "react-helmet-async";
+import type { Star, ShootingStar, Particle } from "../../types/space";
 
-const SpaceBackground = React.memo(({ stars, shootingStars }) => {
+const SpaceBackground = React.memo(({ stars, shootingStars }: { stars: Star[]; shootingStars: ShootingStar[] }) => {
   return (
     <div className="absolute inset-0 pointer-events-none">
       {stars.map((star) => (
@@ -45,7 +46,7 @@ const SpaceBackground = React.memo(({ stars, shootingStars }) => {
 
 const Ourworld = () => {
   const [activeTab, setActiveTab] = useState("features");
-  const [particles, setParticles] = useState([]);
+  const [particles, setParticles] = useState<Particle[]>([]);
   const navigate = useNavigate();
   const { FaRocket,
     FaArrowRight,

@@ -3,11 +3,11 @@
 // ================================
 
 // Safe boolean parser
-const envBool = (key, fallback = false) =>
+const envBool = (key: string, fallback = false) =>
   import.meta.env[key]?.toLowerCase() === 'true' || fallback;
 
 // Safe numeric parser
-const envNum = (key, fallback = 0) => {
+const envNum = (key: string, fallback = 0) => {
   const value = Number(import.meta.env[key]);
   return Number.isFinite(value) ? value : fallback;
 };

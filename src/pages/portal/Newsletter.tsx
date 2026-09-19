@@ -4,8 +4,9 @@ import { subscribeNewsletterAPI } from "../../api/api";
 import { validateEmail } from "../../helper/res_help";
 import { useToast } from "../../hooks/useToast";
 import Icons from "../../helper/icon_help";
+import type { Star, ShootingStar } from "../../types/space";
 
-const SpaceBackground = React.memo(({ stars, shootingStars }) => {
+const SpaceBackground = React.memo(({ stars, shootingStars }: { stars: Star[]; shootingStars: ShootingStar[] }) => {
   return (
     <div className="absolute inset-0 pointer-events-none">
       {stars.map((star) => (
@@ -45,11 +46,11 @@ const SpaceBackground = React.memo(({ stars, shootingStars }) => {
 
 const Newsletter = () => {
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const { success, error, loading, dismissAll } = useToast();
   const isMounted = useRef(true);
-  const resetTimeoutRef = useRef(null);
-  const controllerRef = useRef(null);
+  const resetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const controllerRef = useRef<AbortController | null>(null);
   const {
     FaEnvelopeOpenText, FaCheck, FaArrowRight, FaShieldAlt, FaRocket, FaPaperPlane, FaStar
   } = Icons;
@@ -87,7 +88,7 @@ const Newsletter = () => {
     }, 5000);
   };
 
-  const handleSubmit = useCallback(async (e) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
 
     controllerRef.current?.abort();
@@ -101,8 +102,7 @@ const Newsletter = () => {
 
     setStatus("loading");
 
-    // eslint-disable-next-line no-unused-vars
-    const loadingToast = loading("Subscribing to newsletter...");
+    loading("Subscribing to newsletter...");
 
     try {
       const result = await subscribeNewsletterAPI({ email },
@@ -125,8 +125,7 @@ const Newsletter = () => {
         setStatus("error");
         error("❌ Subscription failed. Please try again later.");
       }
-      // eslint-disable-next-line no-unused-vars
-    } catch (err) {
+    } catch {
       if (!isMounted.current) return;
       dismissAll();
       setStatus("error");

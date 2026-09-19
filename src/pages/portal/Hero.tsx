@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { SpaceBackground } from "../../components/star/SpaceBackground";
+import type { Particle } from "../../types/space";
 /* ══════════════════════════════════════════════════════════
    STYLES
 ══════════════════════════════════════════════════════════ */
@@ -171,11 +172,11 @@ const CSS = `
 /* ══════════════════════════════════════════════════════════
    EYES  (performance-optimised, direct DOM)
 ══════════════════════════════════════════════════════════ */
-const Eyes = ({ excited, chatOpen }) => {
+const Eyes = ({ excited, chatOpen }: { excited: boolean; chatOpen: boolean }) => {
   const [blink, setBlink] = useState(false);
-  const eyeRefs = useRef({ left: null, right: null });
-  const pupilRefs = useRef({ left: null, right: null });
-  const rafRef = useRef(null);
+  const eyeRefs = useRef<{ left: HTMLDivElement | null; right: HTMLDivElement | null }>({ left: null, right: null });
+  const pupilRefs = useRef<{ left: HTMLDivElement | null; right: HTMLDivElement | null }>({ left: null, right: null });
+  const rafRef = useRef<number | null>(null);
 
   /* blink */
   useEffect(() => {
@@ -188,7 +189,7 @@ const Eyes = ({ excited, chatOpen }) => {
 
   /* track */
   useEffect(() => {
-    const move = (e) => {
+    const move = (e: MouseEvent) => {
       if (rafRef.current) return;
       rafRef.current = requestAnimationFrame(() => {
         rafRef.current = null;
@@ -212,9 +213,9 @@ const Eyes = ({ excited, chatOpen }) => {
   return (
     <div className="w-full h-full flex items-center justify-center">
       <div className="flex gap-14">
-        {["left", "right"].map(side => (
-          <div key={side} ref={el => eyeRefs.current[side] = el} className="relative flex items-center justify-center w-8 h-8">
-            <div ref={el => pupilRefs.current[side] = el} className={pupilClass} style={{ willChange: "transform", boxShadow: chatOpen ? "0 0 12px #f97316" : undefined }} />
+        {(["left", "right"] as const).map(side => (
+          <div key={side} ref={el => { eyeRefs.current[side] = el; }} className="relative flex items-center justify-center w-8 h-8">
+            <div ref={el => { pupilRefs.current[side] = el; }} className={pupilClass} style={{ willChange: "transform", boxShadow: chatOpen ? "0 0 12px #f97316" : undefined }} />
           </div>
         ))}
       </div>
@@ -247,7 +248,12 @@ Your personality:
 - Never say you're Claude or mention Anthropic
 - Always end with a short teaser question to keep conversation going`;
 
-async function askMECA(messages) {
+interface ChatMessage {
+  role: "user" | "assistant";
+  content: string;
+}
+
+async function askMECA(messages: ChatMessage[]) {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -259,29 +265,29 @@ async function askMECA(messages) {
     }),
   });
   const data = await res.json();
-  return data.content?.map(b => b.text || "").join("") || "...systems error.";
+  return data.content?.map((b: { text?: string }) => b.text || "").join("") || "...systems error.";
 }
 
 /* ══════════════════════════════════════════════════════════
    CHAT PANEL
 ══════════════════════════════════════════════════════════ */
-const ChatPanel = ({ open, onClose }) => {
-  const [messages, setMessages] = useState([
+const ChatPanel = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
+  const [messages, setMessages] = useState<ChatMessage[]>([
     { role: "assistant", content: "// SCANNING... visitor detected.\n\nI'm MECA — the intelligence behind MECATRONIX. My eyes have been watching you since you arrived. What can I help you build?" }
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const bottomRef = useRef(null);
+  const bottomRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
-  const send = useCallback(async (text) => {
+  const send = useCallback(async (text?: string) => {
     const userText = text || input.trim();
     if (!userText || loading) return;
     setInput("");
-    const userMsg = { role: "user", content: userText };
+    const userMsg: ChatMessage = { role: "user", content: userText };
     setMessages(prev => [...prev, userMsg]);
     setLoading(true);
     try {
@@ -368,7 +374,7 @@ const METRICS = [
    HERO
 ══════════════════════════════════════════════════════════ */
 const HeroWithChat = () => {
-  const [particles, setParticles] = useState([]);
+  const [particles, setParticles] = useState<Particle[]>([]);
   const [mounted, setMounted] = useState(false);
   const [awake, setAwake] = useState(false);       // robot awakened
   const [excited, setExcited] = useState(false);       // eye animation
@@ -468,7 +474,7 @@ const HeroWithChat = () => {
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
           {particles.map(p => (
             <div key={p.id} className="absolute rounded-full float-p"
-              style={{ left: `${p.left}%`, top: `${p.top}%`, width: p.size, height: p.size, "--dur": `${p.dur}s`, "--dly": `${p.delay}s`, background: "rgba(249,115,22,.08)" }} />
+              style={{ left: `${p.left}%`, top: `${p.top}%`, width: p.size, height: p.size, "--dur": `${p.duration}s`, "--dly": `${p.delay}s`, background: "rgba(249,115,22,.08)" } as React.CSSProperties} />
           ))}
         </div>
 

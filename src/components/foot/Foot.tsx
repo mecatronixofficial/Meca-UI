@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import Img_Helper from "../../helper/img_help";
 import Icons from "../../helper/icon_help";
 import { mecatronixConfig } from "../../config/envConfig";
-import { NAV, subtitles } from "../../helper/data_help.jsx";
+import { NAV, subtitles } from "../../helper/data_help";
 import { subscribeNewsletterAPI } from "../../api/api";
 import { validateEmail } from "../../helper/res_help";
 
@@ -24,11 +24,11 @@ const Foot = () => {
   } = Icons;
 
   const {
-    app = {},
-    contact = {},
-    social = {},
-    location: companyLocation = {},
-  } = mecatronixConfig || {};
+    app,
+    contact,
+    social,
+    location: companyLocation,
+  } = mecatronixConfig;
 
   const APP_SLOGAN = app?.slogan || "Engineering the Future of Automation";
   const PRIMARY_PHONE = contact?.primaryPhone || "+910000000000";
@@ -42,8 +42,8 @@ const Foot = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const abortRef = useRef(null);
-  const successTimeoutRef = useRef(null);
+  const abortRef = useRef<AbortController | null>(null);
+  const successTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const mountedRef = useRef(true);
 
   /* -------------------- Subtitle rotation -------------------- */
@@ -61,7 +61,7 @@ const Foot = () => {
 
   /* -------------------- Subscribe Handler -------------------- */
   const handleFooterSubscribe = useCallback(
-    async (e) => {
+    async (e: React.FormEvent) => {
       e.preventDefault();
       if (loading) return;
 
@@ -99,7 +99,7 @@ const Foot = () => {
         } else {
           setError("Subscription failed. Try again.");
         }
-      } catch (err) {
+      } catch (err: any) {
         if (err?.name !== "AbortError" && err?.code !== "ERR_CANCELED") {
           if (mountedRef.current) {
             setError("Something went wrong. Try again.");

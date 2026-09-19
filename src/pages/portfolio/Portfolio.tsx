@@ -2,7 +2,8 @@ import React, { useState, useEffect, useMemo } from "react";
 import Icons from "../../helper/icon_help";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-const SpaceBackground = React.memo(({ stars, shootingStars }) => {
+import type { Star, ShootingStar, Particle } from "../../types/space";
+const SpaceBackground = React.memo(({ stars, shootingStars }: { stars: Star[]; shootingStars: ShootingStar[] }) => {
   return (
   
     <div className="absolute inset-0 pointer-events-none">
@@ -43,7 +44,7 @@ const SpaceBackground = React.memo(({ stars, shootingStars }) => {
 });
 
 const Portfolio = () => {
-  const [particles, setParticles] = useState([]);
+  const [particles, setParticles] = useState<Particle[]>([]);
   const navigate = useNavigate();
 
   const { FaTools, FaRocket, FaMicrochip, FaShieldAlt } = Icons;

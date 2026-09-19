@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 
 const Eyes = () => {
     const [blink, setBlink] = useState(false);
-    const eyeRefs = useRef({ left: null, right: null });
-    const pupilRefs = useRef({ left: null, right: null });
-    const rafRef = useRef(null);
+    const eyeRefs = useRef<{ left: HTMLDivElement | null; right: HTMLDivElement | null }>({ left: null, right: null });
+    const pupilRefs = useRef<{ left: HTMLDivElement | null; right: HTMLDivElement | null }>({ left: null, right: null });
+    const rafRef = useRef<number | null>(null);
     const anglesRef = useRef({ left: 0, right: 0 });
 
     // Blinking effect
@@ -34,7 +34,7 @@ const Eyes = () => {
 
     // Mouse tracking — rAF throttled, no setState
     useEffect(() => {
-        const handleMouseMove = (e) => {
+        const handleMouseMove = (e: MouseEvent) => {
             if (rafRef.current) return; // skip if frame already pending
 
             rafRef.current = requestAnimationFrame(() => {
@@ -74,11 +74,11 @@ const Eyes = () => {
             <div className="flex flex-row items-center gap-16">
                 {/* Left Eye */}
                 <div
-                    ref={el => eyeRefs.current.left = el}
+                    ref={el => { eyeRefs.current.left = el; }}
                     className="relative flex items-center justify-center rounded-full w-8 h-8"
                 >
                     <div
-                        ref={el => pupilRefs.current.left = el}
+                        ref={el => { pupilRefs.current.left = el; }}
                         className={`absolute w-5 bg-orange-600 rounded transition-[height] duration-100 ${blink ? "h-2" : "h-10"}`}
                         style={{ willChange: "transform" }}
                     />
@@ -86,11 +86,11 @@ const Eyes = () => {
 
                 {/* Right Eye */}
                 <div
-                    ref={el => eyeRefs.current.right = el}
+                    ref={el => { eyeRefs.current.right = el; }}
                     className="relative flex items-center justify-center rounded-full w-8 h-8"
                 >
                     <div
-                        ref={el => pupilRefs.current.right = el}
+                        ref={el => { pupilRefs.current.right = el; }}
                         className={`absolute w-5 bg-orange-600 rounded transition-[height] duration-100 ${blink ? "h-2" : "h-10"}`}
                         style={{ willChange: "transform" }}
                     />

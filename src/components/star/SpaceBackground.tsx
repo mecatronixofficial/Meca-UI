@@ -1,6 +1,12 @@
 import React from "react";
+import type { Star, ShootingStar } from "../../types/space";
 
-export const SpaceBackground = React.memo(({ stars, shootingStars }) => {
+interface SpaceBackgroundProps {
+  stars: Star[];
+  shootingStars: ShootingStar[];
+}
+
+export const SpaceBackground = React.memo(({ stars, shootingStars }: SpaceBackgroundProps) => {
     return (
         <div className="absolute inset-0 pointer-events-none">
             {stars.map((star) => (

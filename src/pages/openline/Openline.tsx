@@ -5,6 +5,7 @@ import Icons from "../../helper/icon_help";
 import { SpaceBackground } from "../../components/star/SpaceBackground";
 import mecatronixConfig from "../../config/envConfig";
 import { Helmet } from "react-helmet-async";
+import type { Particle } from "../../types/space";
 
 const Openline = () => {
 
@@ -25,11 +26,11 @@ const Openline = () => {
     FaGlobe,
     FaIndustry } = Icons;
 
-  const { location = {},
-    contact = {},
-    business = {},
-    social = {},
-  } = mecatronixConfig || {};
+  const { location,
+    contact,
+    business,
+    social,
+  } = mecatronixConfig;
 
   const locationlink = location?.googleMapsLink || "";
   const fulladdress = location?.fullAddress || "";
@@ -49,7 +50,7 @@ const Openline = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [particles, setParticles] = useState([]);
+  const [particles, setParticles] = useState<Particle[]>([]);
   const { success, error, loading, dismissAll } = useToast();
   const [emailError, setEmailError] = useState("");
 
@@ -87,7 +88,7 @@ const Openline = () => {
     setParticles(newParticles);
   }, []);
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
     // ✅ Clear email error when user edits email
@@ -96,7 +97,7 @@ const Openline = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (isSubmitting) return;
@@ -133,7 +134,7 @@ const Openline = () => {
         // Backend handled error
         error(result?.message || "Failed to send enquiry");
       }
-    } catch (err) {
+    } catch (err: any) {
       dismissAll();
 
       if (
@@ -405,7 +406,7 @@ const Openline = () => {
           <div className="bg-gradient-to-r from-orange-500 to-red-600 p-4 text-center">
             <h3 className="text-xl font-bold text-white flex items-center justify-center gap-2"><FaMapMarkerAlt /> <h1>Visit Our Software Company in Coimbatore</h1></h3>
           </div>
-          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3916.114189307222!2d76.9732984750099!3d11.030058689134563!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba859d8466e5bd9%3A0x8490ce731b0f659f!2sMecatronix%20Software%20Development!5e0!3m2!1sen!2sin!4v1768823607767!5m2!1sen!2sin" allowfullscreen="" className="filter grayscale hover:grayscale-0 transition-all duration-500" loading="lazy" width="100%" height="400" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3916.114189307222!2d76.9732984750099!3d11.030058689134563!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba859d8466e5bd9%3A0x8490ce731b0f659f!2sMecatronix%20Software%20Development!5e0!3m2!1sen!2sin!4v1768823607767!5m2!1sen!2sin" allowFullScreen className="filter grayscale hover:grayscale-0 transition-all duration-500" loading="lazy" width="100%" height="400" referrerPolicy="no-referrer-when-downgrade"></iframe>
         </div>
       </div>
 

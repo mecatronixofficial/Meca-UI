@@ -11,14 +11,14 @@ import axios from "axios";
 /**
  * Dynamically determine API base URLs depending on environment
  */
-const BASE_URL =
-  (typeof import.meta !== "undefined" && import.meta.env?.VITE_API_BASE_URL) ||
+const BASE_URL: string =
+  import.meta.env?.VITE_API_BASE_URL ||
   import.meta.env?.REACT_APP_API_BASE_URL ||
   import.meta.env?.NEXT_PUBLIC_API_BASE_URL ||
   "http://localhost:5000/mec-api";
 
-const UPLOAD_BASE_URL =
-  (typeof import.meta !== "undefined" && import.meta.env?.VITE_WS_URL) ||
+const UPLOAD_BASE_URL: string =
+  import.meta.env?.VITE_WS_URL ||
   import.meta.env?.REACT_APP_UPLOAD_BASE_URL ||
   import.meta.env?.NEXT_PUBLIC_UPLOAD_BASE_URL ||
   "http://localhost:5000";
@@ -91,13 +91,13 @@ apiClient.interceptors.response.use(
 /**
  * Safe input validator
  */
-export const sanitize = (value) =>
+export const sanitize = (value: unknown) =>
   value === undefined || value === null || value === "" ? null : String(value).trim();
 
 /**
  * Central error handler
  */
-export const handleApiError = (error) => {
+export const handleApiError = (error: any) => {
   // Timeout or Network issue
   if (error.code === "ECONNABORTED") {
     console.error("⏰ Request timeout");
@@ -134,7 +134,9 @@ export const handleApiError = (error) => {
 /**
  * Simplify Axios responses
  */
-const handleResponse = (response) => response?.data;
+const handleResponse = (response: { data?: any } | undefined) => response?.data;
+
+type RequestConfig = { signal?: AbortSignal };
 
 // ==================================================
 // 📚 BLOG API
@@ -155,7 +157,7 @@ export const getBannersAPI = async () => {
 // ==================================================
 // 📧 ENQUIRY API
 // ==================================================
-export const addEnquiryAPI = async (payload) => {
+export const addEnquiryAPI = async (payload: Record<string, unknown>, _config?: RequestConfig) => {
   const res = await apiClient.post("/enquiry/add", payload);
   return handleResponse(res);
 };
@@ -163,7 +165,7 @@ export const addEnquiryAPI = async (payload) => {
 // ==================================================
 // ⭐ REVIEW API
 // ==================================================
-export const addReviewAPI = async (payload) => {
+export const addReviewAPI = async (payload: Record<string, unknown>, _config?: RequestConfig) => {
   const res = await apiClient.post("/review/add", payload);
   return handleResponse(res);
 };
@@ -189,7 +191,7 @@ export const getAllProjectsAPI = async () => {
   return handleResponse(res);
 };
 
-export const getProjectByIdAPI = async (id) => {
+export const getProjectByIdAPI = async (id: string) => {
   if (!id) throw new Error("Project ID required");
   const res = await apiClient.get(`/project/${id}`);
   return handleResponse(res);
@@ -203,7 +205,7 @@ export const getAllWorksAPI = async () => {
   return handleResponse(res);
 };
 
-export const getWorkByIdAPI = async (id) => {
+export const getWorkByIdAPI = async (id: string) => {
   if (!id) throw new Error("Work ID required");
   const res = await apiClient.get(`/work/get/${id}`);
   return handleResponse(res);
@@ -212,7 +214,7 @@ export const getWorkByIdAPI = async (id) => {
 // ==================================================
 // 📬 NEWSLETTER API
 // ==================================================
-export const subscribeNewsletterAPI = async (payload) => {
+export const subscribeNewsletterAPI = async (payload: Record<string, unknown>, _config?: RequestConfig) => {
   const res = await apiClient.post("/news/add", payload);
   return handleResponse(res);
 };
@@ -220,12 +222,12 @@ export const subscribeNewsletterAPI = async (payload) => {
 // ==================================================
 // 🔐 AUTH API
 // ==================================================
-export const loginAPI = async (credentials) => {
+export const loginAPI = async (credentials: Record<string, unknown>) => {
   const res = await apiClient.post("/auth/login", credentials);
   return handleResponse(res);
 };
 
-export const registerAPI = async (payload) => {
+export const registerAPI = async (payload: Record<string, unknown>) => {
   const res = await apiClient.post("/auth/register", payload);
   return handleResponse(res);
 };

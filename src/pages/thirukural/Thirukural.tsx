@@ -4,7 +4,14 @@ import kuralDetails from './thirukkural.json';
 import kuralStructure from './detail.json';
 import Icons from "../../helper/icon_help";
 
-const Typewriter = ({ text, delay = 50, className = "", onComplete }) => {
+interface TypewriterProps {
+    text: string;
+    delay?: number;
+    className?: string;
+    onComplete?: () => void;
+}
+
+const Typewriter = ({ text, delay = 50, className = "", onComplete }: TypewriterProps) => {
     const [displayText, setDisplayText] = useState("");
 
     useEffect(() => {
@@ -25,10 +32,13 @@ const Typewriter = ({ text, delay = 50, className = "", onComplete }) => {
     return <span className={className}>{displayText}</span>;
 };
 
+type Kural = (typeof kuralDetails)["kural"][number];
+type KuralMeta = { paal: string; athigaram: string; iyal: string };
+
 const Thirukural = () => {
     const { AiOutlineDoubleRight } = Icons;
     const [step, setStep] = useState(0);
-    const [data, setData] = useState(null);
+    const [data, setData] = useState<(Kural & KuralMeta) | null>(null);
     const [showLine2, setShowLine2] = useState(false);
 
     const STEPS = ["தமிழ்", "ENGLISH", "URAI1", "URAI2", "URAI3"];
@@ -37,8 +47,9 @@ const Thirukural = () => {
         const daysSinceEpoch = Math.floor(Date.now() / (1000 * 60 * 60 * 24));
         const kuralNumber = (daysSinceEpoch % 1330) + 1;
         const foundKural = kuralDetails.kural.find(k => k.Number === kuralNumber);
+        if (!foundKural) return;
 
-        let meta = { paal: "", athigaram: "", iyal: "" };
+        const meta: KuralMeta = { paal: "", athigaram: "", iyal: "" };
         kuralStructure[0].section.detail.forEach(section => {
             section.chapterGroup.detail.forEach(group => {
                 group.chapters.detail.forEach(chap => {

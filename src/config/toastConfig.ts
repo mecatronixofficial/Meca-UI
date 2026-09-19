@@ -1,4 +1,4 @@
-import toast from "react-hot-toast";
+import toast, { type ToastOptions } from "react-hot-toast";
 
 /**
  * 🔹 Base toast configuration (shared styles)
@@ -17,7 +17,7 @@ export const toastConfig = {
 /**
  * ✅ Success Toast → TOP RIGHT
  */
-export const showSuccessToast = (message, options = {}) => {
+export const showSuccessToast = (message: string, options: ToastOptions = {}) => {
   return toast.success(message, {
     ...toastConfig,
     position: "top-right",
@@ -37,7 +37,7 @@ export const showSuccessToast = (message, options = {}) => {
 /**
  * ❌ Error Toast → TOP RIGHT
  */
-export const showErrorToast = (message, options = {}) => {
+export const showErrorToast = (message: string, options: ToastOptions = {}) => {
   return toast.error(message, {
     ...toastConfig,
     position: "top-right",
@@ -57,7 +57,7 @@ export const showErrorToast = (message, options = {}) => {
 /**
  * ⏳ Loading Toast → BOTTOM RIGHT
  */
-export const showLoadingToast = (message, options = {}) => {
+export const showLoadingToast = (message: string, options: ToastOptions = {}) => {
   return toast.loading(message, {
     ...toastConfig,
     position: "bottom-right",
@@ -73,7 +73,7 @@ export const showLoadingToast = (message, options = {}) => {
 /**
  * 🎨 Custom Toast (position optional)
  */
-export const showCustomToast = (message, options = {}) => {
+export const showCustomToast = (message: string, options: ToastOptions = {}) => {
   return toast(message, {
     ...toastConfig,
     position: options.position || "bottom-right",
@@ -84,7 +84,7 @@ export const showCustomToast = (message, options = {}) => {
 /**
  * 🧹 Dismiss specific toast
  */
-export const dismissToast = (toastId) => {
+export const dismissToast = (toastId?: string) => {
   toast.dismiss(toastId);
 };
 

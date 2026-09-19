@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import Icons from "../../helper/icon_help";
-import { Project_Process, Short_Services, Services_List, Most_Used_Tech_Stack, ServiceCategories } from "../../helper/data_help.jsx";
+import { Project_Process, Short_Services, Services_List, Most_Used_Tech_Stack, ServiceCategories } from "../../helper/data_help";
 import { Helmet } from "react-helmet-async";
-const SpaceBackground = React.memo(({ stars, shootingStars }) => {
+import type { Star, ShootingStar, Particle } from "../../types/space";
+const SpaceBackground = React.memo(({ stars, shootingStars }: { stars: Star[]; shootingStars: ShootingStar[] }) => {
   return (
    
     <div className="absolute inset-0 pointer-events-none">
@@ -46,7 +47,7 @@ const Services = () => {
   const [activeCategory, setActiveCategory] = useState("all");
   const [activeProcess, setActiveProcess] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
-  const [particles, setParticles] = useState([]);
+  const [particles, setParticles] = useState<Particle[]>([]);
   const navigate = useNavigate();
   const {
     FaArrowRight,
@@ -102,7 +103,7 @@ const Services = () => {
     return () => clearInterval(interval);
   }, [isPlaying]);
 
-  const Card = ({ tech }) => (
+  const Card = ({ tech }: { tech: { name: string; icon: string; category: string; color: string } }) => (
     <div className="flex-shrink-0 w-48 mx-3">
       <div className="group relative p-6 bg-white/[0.03] border border-white/10 rounded-2xl hover:border-orange-500/50 hover:bg-white/[0.08] transition-all duration-500 overflow-hidden">
         {/* Hover Gradient Glow */}

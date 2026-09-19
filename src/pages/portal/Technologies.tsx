@@ -2,8 +2,9 @@ import React, { useMemo } from "react";
 import Icons from "../../helper/icon_help";
 import { useNavigate } from "react-router-dom";
 import { techCategories } from "../../helper/data_help";
+import type { Star } from "../../types/space";
 
-const SpaceBackground = React.memo(({ stars }) => {
+const SpaceBackground = React.memo(({ stars }: { stars: Star[] }) => {
   return (
     <div className="absolute inset-0 pointer-events-none">
       {stars.map((star) => (

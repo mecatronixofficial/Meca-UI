@@ -2,13 +2,13 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import Nav from '../nav/Nav';
 import Foot from '../foot/Foot';
-import { NAV, subtitles } from '../../helper/data_help.jsx';
+import { NAV, subtitles } from '../../helper/data_help';
 import Img_Helper from '../../helper/img_help';
 import Icons from '../../helper/icon_help';
 import { mecatronixConfig } from '../../config/envConfig';
 import ToastProvider from '../common/ToastProvider';
 import ScrollToTop from "../top/ScrollToTop";
-import StartupPopup from '../Popupbox/StartupPopup.jsx';
+import StartupPopup from '../Popupbox/StartupPopup';
 
 const UserLayout = () => {
     const [showScrollTop, setShowScrollTop] = useState(false);
@@ -62,12 +62,12 @@ const UserLayout = () => {
     }
 
     const {
-        app = {},
-        contact = {},
-        features = {},
-        debug = {},
-        industrial = {}
-    } = mecatronixConfig || {};
+        app,
+        contact,
+        features,
+        debug,
+        industrial
+    } = mecatronixConfig;
 
     const {
         FaWhatsapp,

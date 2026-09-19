@@ -1,4 +1,5 @@
 import { useCallback } from "react";
+import type { ToastOptions } from "react-hot-toast";
 import {
   showSuccessToast,
   showErrorToast,
@@ -6,7 +7,7 @@ import {
   showCustomToast,
   dismissToast,
   dismissAllToasts,
-} from "../config/toastConfig.js"; // ✅ make sure path is correct
+} from "../config/toastConfig"; // ✅ make sure path is correct
 
 /**
  * 🔔 Custom hook for toast notifications
@@ -16,35 +17,35 @@ export const useToast = () => {
   /**
    * ✅ Success Toast (Top Right)
    */
-  const success = useCallback((message, options = {}) => {
+  const success = useCallback((message: string, options: ToastOptions = {}) => {
     return showSuccessToast(message, options);
   }, []);
 
   /**
    * ❌ Error Toast (Top Right)
    */
-  const error = useCallback((message, options = {}) => {
+  const error = useCallback((message: string, options: ToastOptions = {}) => {
     return showErrorToast(message, options);
   }, []);
 
   /**
    * ⏳ Loading Toast (Bottom Right)
    */
-  const loading = useCallback((message, options = {}) => {
+  const loading = useCallback((message: string, options: ToastOptions = {}) => {
     return showLoadingToast(message, options);
   }, []);
 
   /**
    * 🎨 Custom Toast
    */
-  const custom = useCallback((message, options = {}) => {
+  const custom = useCallback((message: string, options: ToastOptions = {}) => {
     return showCustomToast(message, options);
   }, []);
 
   /**
    * 🧹 Dismiss specific toast
    */
-  const dismiss = useCallback((toastId) => {
+  const dismiss = useCallback((toastId?: string) => {
     dismissToast(toastId);
   }, []);
 

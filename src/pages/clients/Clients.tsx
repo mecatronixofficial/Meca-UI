@@ -2,8 +2,19 @@ import React, { useEffect, useMemo, useState } from "react";
 import Icons from "../../helper/icon_help";
 import { getAllClientsCompanyAPI } from "../../api/api";
 import { glowColors, spaceThemes } from "../../helper/data_help";
+import type { Star } from "../../types/space";
 
-const SpaceBackground = React.memo(({ stars }) => {
+interface Company {
+  _id: string;
+  name: string;
+  url: string;
+  img: string;
+  industry?: string;
+  year?: string | number;
+  glow?: keyof typeof glowColors;
+}
+
+const SpaceBackground = React.memo(({ stars }: { stars: Star[] }) => {
   return (
     <div className="absolute inset-0 pointer-events-none">
       {stars.map((star) => (
@@ -33,7 +44,7 @@ const SpaceBackground = React.memo(({ stars }) => {
 const Clients = () => {
   const { FaCrown, FaRocket, MdOutlineStarRate } = Icons;
   const [loading, setLoading] = useState(true);
-  const [dbCompanies, setDbCompanies] = useState([]);
+  const [dbCompanies, setDbCompanies] = useState<Company[]>([]);
 
   const stars = useMemo(() => {
     return Array.from({ length: 100 }).map((_, i) => ({
@@ -242,7 +253,7 @@ const Clients = () => {
                       <div
                         className="absolute -inset-1 opacity-0 group-hover/card:opacity-40 transition-opacity duration-700 blur-xl"
                         style={{
-                          background: `radial-gradient(circle at top left, ${glowColors[client.glow] ?? glowColors.black
+                          background: `radial-gradient(circle at top left, ${(client.glow && glowColors[client.glow]) ?? glowColors.black
                             } 0%, transparent 65%)`
                         }}
                       />

@@ -7,7 +7,7 @@ import Openline from "../pages/openline/Openline";
 import Services from "../pages/services/Services";
 import NotFound from "../pages/err/NotFound"; 
 
-let user_routes = [
+const user_routes = [
   {
     path: '/',
     element: <Userlayout />,

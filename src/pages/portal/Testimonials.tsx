@@ -3,8 +3,21 @@ import { Rate } from "antd";
 import { addReviewAPI, getAllReviewsAPI } from "../../api/api";
 import { useToast } from "../../hooks/useToast";
 import Icons from "../../helper/icon_help";
+import type { Star } from "../../types/space";
 
-const SpaceBackground = React.memo(({ stars }) => {
+interface Testimonial {
+  id: string | number;
+  name: string;
+  position: string;
+  content: string;
+  rating: number;
+  color: string;
+  glow: string;
+  initials: string;
+  project: string;
+}
+
+const SpaceBackground = React.memo(({ stars }: { stars: Star[] }) => {
   return (
     <div className="absolute inset-0 pointer-events-none">
       {stars.map((star) => (
@@ -34,19 +47,19 @@ const Testimonials = () => {
 
   const { MdOutlineStarRate, FaStar, FaChevronLeft, FaChevronRight, FaAward, FaRocket, FaCheckCircle } = Icons;
 
-  const [testimonials, setTestimonials] = useState([]);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [loadingTime, setLoadingTime] = useState(false);
-  const [status, setStatus] = useState("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const { success, error, loading, dismissAll } = useToast();
   const [rating, setRating] = useState(5);
 
   // Use useMemo for the current testimonial so it stays in sync with state updates
   const currentTestimonial = useMemo(() => testimonials[activeTestimonial] || null, [testimonials, activeTestimonial]);
 
-  const controllerRef = useRef(null);
-  const timeoutRef = useRef(null);
-  const formRef = useRef(null);
+  const controllerRef = useRef<AbortController | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const formRef = useRef<HTMLFormElement | null>(null);
   const isMounted = useRef(true);
 
   const stars = useMemo(() => {
@@ -67,7 +80,7 @@ const Testimonials = () => {
       setLoadingTime(true);
       const result = await getAllReviewsAPI();
       if (isMounted.current && result?.success && Array.isArray(result.data)) {
-        const mappedData = result.data.map((rev, index) => {
+        const mappedData: Testimonial[] = result.data.map((rev: any, index: number) => {
           const parsedRating = parseFloat(rev.rating);
           return {
             id: rev._id ?? index,
@@ -77,7 +90,7 @@ const Testimonials = () => {
             rating: Number.isFinite(parsedRating) ? Math.min(5, Math.max(0, parsedRating)) : 0,
             color: index % 2 === 0 ? "from-blue-500 to-cyan-500" : "from-purple-500 to-pink-500",
             glow: index % 2 === 0 ? "rgba(59, 130, 246, 0.3)" : "rgba(168, 85, 247, 0.3)",
-            initials: rev.user_name ? rev.user_name.split(" ").filter(Boolean).map((n) => n[0]).join("").toUpperCase() : "?",
+            initials: rev.user_name ? rev.user_name.split(" ").filter(Boolean).map((n: string) => n[0]).join("").toUpperCase() : "?",
             project: rev.is_verified ? "Verified Client" : "Galaxy Explorer",
           };
         });
@@ -96,10 +109,10 @@ const Testimonials = () => {
     return () => { isMounted.current = false; };
   }, [handleFetch]);
 
-  const handleRating = (rate) => setRating(rate);
+  const handleRating = (rate: number) => setRating(rate);
 
   // MISTAKE FIX: Added handleFetch to dependency array to avoid stale closures
-  const handleSubmit = useCallback(async (e) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const payload = {
@@ -150,7 +163,7 @@ const Testimonials = () => {
         setStatus("error");
         error(result.message || "Failed to establish connection.");
       }
-    } catch (err) {
+    } catch (err: any) {
       if (err.name !== 'AbortError') {
         dismissAll();
         setStatus("error");
@@ -171,7 +184,7 @@ const Testimonials = () => {
     setActiveTestimonial((prev) => (prev - 1 + testimonials.length) % testimonials.length);
   };
 
-  const ratingLabel = (value) =>
+  const ratingLabel = (value: number) =>
     value >= 4.5 ? "Best" : value >= 4 ? "Great" : value >= 3 ? "Good" : value >= 2 ? "Ok" : "Bad";
 
   return (
@@ -373,7 +386,7 @@ transition-all duration-300 hover:border-blue-500/50"
                       <textarea
                         required
                         name="comment"
-                        rows="3"
+                        rows={3}
                         placeholder="Describe your cosmic experience..."
                         className="w-full bg-white/5 border border-white/10 rounded-xl p-3 focus:border-blue-500 outline-none transition-all placeholder:text-gray-700 hover:border-white/20 resize-none"
                       />

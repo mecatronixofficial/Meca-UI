@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { NAV, subtitles } from "../../helper/data_help.jsx";
+import { NAV, subtitles } from "../../helper/data_help";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import Img_Helper from "../../helper/img_help";
 import mecatronixConfig from "../../config/envConfig";
@@ -16,11 +16,11 @@ const Nav = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { contact = {} } = mecatronixConfig || {};
+  const { contact } = mecatronixConfig;
   const PRIMARY_PHONE = contact.primaryPhone || "+91000000000";
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [hoveredNav, setHoveredNav] = useState(null);
+  const [hoveredNav, setHoveredNav] = useState<string | null>(null);
 
   // 1. ADVANCED SUBTITLE ROTATION (Memoized)
   useEffect(() => {

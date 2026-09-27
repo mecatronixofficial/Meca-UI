@@ -3,6 +3,7 @@
 // ==================================================
 
 import axios from "axios";
+import mecatronixConfig from "../config/envConfig";
 
 // ==================================================
 // ⚙️ CONFIGURATION
@@ -12,15 +13,11 @@ import axios from "axios";
  * Dynamically determine API base URLs depending on environment
  */
 const BASE_URL: string =
-  import.meta.env?.VITE_API_BASE_URL ||
-  import.meta.env?.REACT_APP_API_BASE_URL ||
-  import.meta.env?.NEXT_PUBLIC_API_BASE_URL ||
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
   "http://localhost:5000/mec-api";
 
 const UPLOAD_BASE_URL: string =
-  import.meta.env?.VITE_WS_URL ||
-  import.meta.env?.REACT_APP_UPLOAD_BASE_URL ||
-  import.meta.env?.NEXT_PUBLIC_UPLOAD_BASE_URL ||
+  process.env.NEXT_PUBLIC_WS_URL ||
   "http://localhost:5000";
 
 /**
@@ -73,9 +70,10 @@ apiClient.interceptors.response.use(
         return apiClient(originalRequest);
       } catch (refreshError) {
         console.warn("🔒 Token refresh failed — logging out", refreshError);
+        // Clear the stale session. (There is no /login page on this site,
+        // so don't redirect visitors to a 404.)
         localStorage.removeItem("authToken");
         localStorage.removeItem("refreshToken");
-        window.location.href = "/login";
       }
     }
 
@@ -98,14 +96,16 @@ export const sanitize = (value: unknown) =>
  * Central error handler
  */
 export const handleApiError = (error: any) => {
+  const debugLog = mecatronixConfig.debug.enabled ? console.error : () => {};
+
   // Timeout or Network issue
   if (error.code === "ECONNABORTED") {
-    console.error("⏰ Request timeout");
+    debugLog("⏰ Request timeout");
     throw new Error("Request timeout. Please try again.");
   }
 
   if (!error.response) {
-    console.error("🌐 Network error — Server unreachable");
+    debugLog("🌐 Network error — Server unreachable");
     throw new Error("Network error. Please check your connection.");
   }
 
@@ -113,7 +113,7 @@ export const handleApiError = (error: any) => {
   const message =
     data?.message || data?.error || error.message || "An unexpected error occurred";
 
-  console.error(`⚠️ API Error [${status}]:`, message);
+  debugLog(`⚠️ API Error [${status}]:`, message);
 
   switch (status) {
     case 400:

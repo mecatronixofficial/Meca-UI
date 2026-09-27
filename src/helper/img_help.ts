@@ -1,8 +1,8 @@
-import short from "../assets/logos/Image.png";
-import main from "../assets/logos/Image.png";
-import title from "../assets/logos/Image.png";
-import valluvar from "../assets/thiruvalluvar/6b7236762f2f47beaa07c6cf2e3597be-removebg-preview.png";
-import world from "../assets/imgs/map-world.png";
+const short = "/assets/logos/Image.png";
+const main = "/assets/logos/Image.png";
+const title = "/assets/logos/Image.png";
+const valluvar = "/assets/thiruvalluvar/6b7236762f2f47beaa07c6cf2e3597be-removebg-preview.png";
+const world = "/assets/imgs/map-world.png";
 
 const Img_Helper = Object.freeze({
     shortlogo: short,

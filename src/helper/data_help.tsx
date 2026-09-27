@@ -91,7 +91,7 @@ export const Top_Servicess = [
         title: "Cloud Solutions",
         description: "Scalable cloud infrastructure and deployment solutions that grow with your business needs.",
         features: ["AWS/Azure/GCP", "DevOps", "CI/CD Pipelines", "Serverless Architecture", "Microservices", "Kubernetes"],
-        color: "from-orange-500 to-red-600",
+        color: "from-orange-500 to-orange-600",
         bgImage: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&auto=format&fit=crop",
         stats: "24/7 Support"
     },
@@ -193,7 +193,7 @@ export const Our_Features = [
         icon: <FaRocket />,
         title: "Rapid & Reliable Delivery",
         desc: "We ensure timely delivery of high-performance digital products using agile methods.",
-        color: "from-orange-500 to-red-500",
+        color: "from-orange-500 to-orange-700",
         stats: "98% On-Time"
     },
     {
@@ -249,7 +249,7 @@ export const Our_Features = [
         icon: <FaDatabase />,
         title: "Big Data Analytics",
         desc: "Transforming raw data into actionable insights with powerful analytics tools.",
-        color: "from-red-500 to-pink-600",
+        color: "from-orange-500 to-pink-600",
         stats: "Data Driven"
     }
 ];
@@ -260,7 +260,7 @@ export const Our_working_lines = [
         title: "Discovery & Strategy",
         desc: "Understanding your business and defining clear digital goals.",
         details: ["Analysis", "Planning", "Tech Stack"],
-        color: "from-orange-500 to-red-500"
+        color: "from-orange-500 to-orange-700"
     },
     {
         icon: <FaPalette />,
@@ -313,12 +313,12 @@ export const Our_Values = [
     { icon: <FaUsers />, title: "Collaboration", desc: "Working together with clients as partners.", color: "from-blue-500 to-cyan-600" },
     { icon: <FaChartLine />, title: "Excellence", desc: "Striving for perfection in every project.", color: "from-green-500 to-emerald-600" },
     { icon: <FaGlobeAmericas />, title: "Innovation", desc: "Exploring new technologies to stay ahead.", color: "from-purple-500 to-pink-600" },
-    { icon: <FaShieldAlt />, title: "Integrity", desc: "Transparency and honesty in all dealings.", color: "from-orange-500 to-red-500" },
-    { icon: <FaFingerprint />, title: "Uniqueness", desc: "Custom solutions, no cookie-cutter templates.", color: "from-orange-500 to-red-500" },
+    { icon: <FaShieldAlt />, title: "Integrity", desc: "Transparency and honesty in all dealings.", color: "from-orange-500 to-orange-700" },
+    { icon: <FaFingerprint />, title: "Uniqueness", desc: "Custom solutions, no cookie-cutter templates.", color: "from-orange-500 to-orange-700" },
 ];
 
 export const Our_Stats = [
-    { number: "50+", label: "Projects", icon: FaAward, color: "from-orange-500 to-red-500" },
+    { number: "50+", label: "Projects", icon: FaAward, color: "from-orange-500 to-orange-700" },
     { number: "98%", label: "Satisfaction", icon: FaHeart, color: "from-pink-500 to-rose-600" },
     { number: "24/7", label: "Support", icon: FaRegClock, color: "from-blue-500 to-cyan-600" },
     { number: "5+", label: "Years", icon: FaStar, color: "from-yellow-500 to-orange-500" },
@@ -341,7 +341,7 @@ export const Services_List = [
     { title: 'Single Page Website', desc: 'Perfect for startups, portfolios, or quick landing pages that need a fast launch with maximum impact.', icon: <FaGlobe className="text-3xl" />, category: "development", features: ["Fast Loading", "SEO Ready", "Mobile First", "Analytics"], color: "from-blue-500 to-cyan-600" },
     { title: 'Multi Page Website', desc: 'Professional multi-section websites ideal for businesses, organizations, and agencies with comprehensive content.', icon: <FaLaptopCode className="text-3xl" />, category: "development", features: ["5+ Pages", "Contact Forms", "Blog Ready", "Admin Panel"], color: "from-purple-500 to-pink-600" },
     { title: 'Dynamic Website', desc: 'Websites with admin panels and content management systems for easy updates and dynamic content.', icon: <FaCogs className="text-3xl" />, category: "development", features: ["CMS Integration", "User Management", "Dynamic Content", "Database"], color: "from-green-500 to-emerald-600" },
-    { title: 'E-commerce Development', desc: 'Complete online stores with secure checkout, product management, and multiple payment integrations.', icon: <FaShoppingCart className="text-3xl" />, category: "development", features: ["Payment Gateway", "Inventory Management", "Order Tracking", "Security"], color: "from-orange-500 to-red-600" },
+    { title: 'E-commerce Development', desc: 'Complete online stores with secure checkout, product management, and multiple payment integrations.', icon: <FaShoppingCart className="text-3xl" />, category: "development", features: ["Payment Gateway", "Inventory Management", "Order Tracking", "Security"], color: "from-orange-500 to-orange-600" },
     { title: 'Custom Web Applications', desc: 'Tailor-made web apps built with React, Node.js, and MongoDB for your unique business logic and workflows.', icon: <FaTools className="text-3xl" />, category: "development", features: ["Custom Logic", "API Integration", "Real-time Features", "Scalable"], color: "from-indigo-500 to-purple-600" },
     { title: 'Portfolio Websites', desc: 'Personal or creative portfolios that beautifully present your skills, projects, and professional journey.', icon: <FaUserTie className="text-3xl" />, category: "design", features: ["Creative Layouts", "Project Showcase", "Contact Integration", "Blog"], color: "from-pink-500 to-rose-600" },
     { title: 'Business & Corporate Sites', desc: 'High-performance sites that build trust and showcase company services, team, and achievements effectively.', icon: <FaServer className="text-3xl" />, category: "development", features: ["Professional Design", "Service Pages", "Team Section", "Testimonials"], color: "from-gray-500 to-blue-600" },
@@ -351,7 +351,7 @@ export const Services_List = [
     { title: 'Responsive Design', desc: 'Seamless user experience across mobile, tablet, and desktop devices with perfect responsiveness.', icon: <FaMobileAlt className="text-3xl" />, category: "design", features: ["Mobile First", "Tablet Optimized", "Touch Friendly", "Fast Loading"], color: "from-blue-500 to-indigo-600" },
     { title: 'UI/UX Enhancement', desc: 'Modern, user-friendly designs focused on engagement, conversions, and exceptional user experience.', icon: <FaPaintBrush className="text-3xl" />, category: "design", features: ["User Research", "Wireframing", "Prototyping", "Usability Testing"], color: "from-purple-500 to-pink-600" },
     { title: 'Website Migration', desc: 'Safely move your existing website to new servers or tech stacks without downtime or data loss.', icon: <FaExchangeAlt className="text-3xl" />, category: "optimization", features: ["Zero Downtime", "Data Migration", "SEO Preservation", "Testing"], color: "from-green-500 to-teal-600" },
-    { title: 'Security Implementation', desc: 'Enterprise-grade security measures including SSL, firewalls, and vulnerability assessments.', icon: <FaShieldAlt className="text-3xl" />, category: "optimization", features: ["SSL Certificate", "Security Audit", "Firewall Setup", "Monitoring"], color: "from-red-500 to-pink-600" },
+    { title: 'Security Implementation', desc: 'Enterprise-grade security measures including SSL, firewalls, and vulnerability assessments.', icon: <FaShieldAlt className="text-3xl" />, category: "optimization", features: ["SSL Certificate", "Security Audit", "Firewall Setup", "Monitoring"], color: "from-orange-500 to-pink-600" },
     { title: 'Performance Analytics', desc: 'Comprehensive analytics setup with dashboards, reports, and actionable insights for growth.', icon: <FaChartLine className="text-3xl" />, category: "optimization", features: ["Google Analytics", "Custom Dashboards", "Conversion Tracking", "Reports"], color: "from-orange-500 to-yellow-600" },
     { title: 'API Integration', desc: 'Seamless integration with third-party services, payment gateways, and external platforms.', icon: <FaCode className="text-3xl" />, category: "development", features: ["REST APIs", "Webhooks", "Authentication", "Documentation"], color: "from-indigo-500 to-purple-600" }
 ];

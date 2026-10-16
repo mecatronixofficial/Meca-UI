@@ -1,0 +1,199 @@
+/*
+ * "Code to production" robot cell. Pure CSS keyframes on SVG groups, no JS.
+ * Every looping animation shares one 9s cycle so the arm, conveyor and
+ * pipeline stay in step:
+ *
+ *   0–35%   code types into the editor
+ *   12–26%  arm reaches the conveyor and grips the module
+ *   26–64%  arm lifts it over the top and lowers it onto the production stack
+ *   64–70%  gripper releases, placement pulse
+ *   66–88%  pipeline runs: build → tests → scan → deploy → live
+ *   84–92%  conveyor brings the next module in
+ *
+ * Arm joints are nested groups whose local origin is the joint, so a plain
+ * rotate() pivots correctly. Angles come from two-link inverse kinematics
+ * (upper arm 180, forearm 170); the wrist counter-rotates to keep the gripper level.
+ *
+ * Base styles are the resting frame shown when animations are off.
+ */
+
+.scene {
+  --cycle: 9s;
+  --ease: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.scene[data-paused] *,
+.scene[data-paused] {
+  animation-play-state: paused !important;
+}
+
+/* ---------- Arm ---------- */
+
+.upper { animation: upper var(--cycle) var(--ease) infinite; }
+.fore { animation: fore var(--cycle) var(--ease) infinite; }
+.wrist { animation: wrist var(--cycle) var(--ease) infinite; }
+
+@keyframes upper {
+  0%, 100%, 90% { transform: rotate(0deg); }
+  12%, 34% { transform: rotate(-23.13deg); }
+  20%, 26% { transform: rotate(-28.02deg); }
+  46% { transform: rotate(0deg); }
+  56%, 78% { transform: rotate(26.39deg); }
+  64%, 70% { transform: rotate(29.83deg); }
+}
+
+@keyframes fore {
+  0%, 100%, 90% { transform: rotate(0deg); }
+  12%, 34% { transform: rotate(-72.11deg); }
+  20%, 26% { transform: rotate(-85.9deg); }
+  46% { transform: rotate(0deg); }
+  56%, 78% { transform: rotate(64.03deg); }
+  64%, 70% { transform: rotate(79.45deg); }
+}
+
+@keyframes wrist {
+  0%, 100%, 90% { transform: rotate(0deg); }
+  12%, 34% { transform: rotate(95.24deg); }
+  20%, 26% { transform: rotate(113.92deg); }
+  46% { transform: rotate(0deg); }
+  56%, 78% { transform: rotate(-90.42deg); }
+  64%, 70% { transform: rotate(-109.28deg); }
+}
+
+.fingerL { transform: rotate(14deg); animation: finger-l var(--cycle) var(--ease) infinite; }
+.fingerR { transform: rotate(-14deg); animation: finger-r var(--cycle) var(--ease) infinite; }
+
+@keyframes finger-l {
+  0%, 21%, 70%, 100% { transform: rotate(14deg); }
+  25%, 66% { transform: rotate(0deg); }
+}
+
+@keyframes finger-r {
+  0%, 21%, 70%, 100% { transform: rotate(-14deg); }
+  25%, 66% { transform: rotate(0deg); }
+}
+
+/* Module travelling in the gripper */
+.carried { opacity: 0; animation: carried var(--cycle) step-end infinite; }
+
+@keyframes carried {
+  0% { opacity: 0; }
+  25% { opacity: 1; }
+  67% { opacity: 0; }
+}
+
+/* Module waiting on the conveyor: picked at 25%, next one rolls in at 84% */
+.source { animation: source var(--cycle) var(--ease) infinite; }
+
+@keyframes source {
+  0%, 24.9% { opacity: 1; transform: none; }
+  25%, 84% { opacity: 0; transform: translateX(-70px); }
+  92%, 100% { opacity: 1; transform: none; }
+}
+
+.belt { animation: belt var(--cycle) var(--ease) infinite; }
+
+@keyframes belt {
+  0%, 84% { stroke-dashoffset: 0; }
+  92%, 100% { stroke-dashoffset: -70; }
+}
+
+/* Module set down on the production stack */
+.placed { animation: placed var(--cycle) var(--ease) infinite; }
+
+@keyframes placed {
+  0%, 66.9% { opacity: 0; }
+  67%, 95% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.pulse {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pulse var(--cycle) ease-out infinite;
+}
+
+@keyframes pulse {
+  0%, 66% { opacity: 0; transform: scale(0.4); }
+  67% { opacity: 0.55; transform: scale(0.5); }
+  78%, 100% { opacity: 0; transform: scale(2.4); }
+}
+
+/* ---------- Editor ---------- */
+
+/* White covers slide away left to right, revealing each code line */
+.cover {
+  transform: scaleX(0);
+  transform-box: fill-box;
+  transform-origin: 100% 50%;
+  animation: type var(--cycle) linear infinite both;
+  animation-delay: calc(var(--line) * 0.3s);
+}
+
+@keyframes type {
+  0% { transform: scaleX(1); }
+  5%, 93% { transform: scaleX(0); }
+  97%, 100% { transform: scaleX(1); }
+}
+
+.cursor { animation: blink 1s steps(1) infinite; }
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* ---------- Pipeline ---------- */
+
+.done { animation: var(--cycle) var(--ease) infinite; }
+.done1 { animation-name: done1; }
+.done2 { animation-name: done2; }
+.done3 { animation-name: done3; }
+.done4 { animation-name: done4; }
+
+@keyframes done1 { 0%, 69% { opacity: 0; } 71%, 96% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes done2 { 0%, 74% { opacity: 0; } 76%, 96% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes done3 { 0%, 79% { opacity: 0; } 81%, 96% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes done4 { 0%, 85% { opacity: 0; } 87%, 96% { opacity: 1; } 100% { opacity: 0; } }
+
+.progress {
+  transform-box: fill-box;
+  transform-origin: 0 50%;
+  animation: progress var(--cycle) var(--ease) infinite;
+}
+
+@keyframes progress {
+  0%, 66% { transform: scaleX(0); }
+  88%, 96% { transform: scaleX(1); }
+  100% { transform: scaleX(0); }
+}
+
+.building { opacity: 0; animation: building var(--cycle) step-end infinite; }
+.live { animation: live var(--cycle) step-end infinite; }
+
+@keyframes building { 0% { opacity: 1; } 87% { opacity: 0; } }
+@keyframes live { 0% { opacity: 0; } 87% { opacity: 1; } }
+
+.led { animation: led 1.6s ease-in-out infinite; }
+
+@keyframes led {
+  50% { opacity: 0.25; }
+}
+
+/* ---------- Circuit traces ---------- */
+
+.trace {
+  stroke-dasharray: 18 420;
+  animation: trace 3.6s linear infinite;
+}
+
+@keyframes trace {
+  from { stroke-dashoffset: 438; }
+  to { stroke-dashoffset: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene * {
+    animation: none !important;
+  }
+}

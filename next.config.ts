@@ -19,9 +19,14 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
   },
 
-  experimental: {
-    // Only bundle the icons/components actually imported
-    optimizePackageImports: ["react-icons", "antd"],
+  // Routes from the previous site. Permanent (308) so search engines move
+  // existing rankings and backlinks onto the new URLs.
+  async redirects() {
+    return [
+      { source: "/ourworld", destination: "/about", permanent: true },
+      { source: "/portfolio", destination: "/work", permanent: true },
+      { source: "/openline", destination: "/contact", permanent: true },
+    ];
   },
 
   async headers() {

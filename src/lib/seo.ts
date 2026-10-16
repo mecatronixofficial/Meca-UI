@@ -7,9 +7,12 @@ export const COMPANY_NAME = "Mecatronix Software Development";
 export const LOGO_PATH = "/assets/logos/Image.png";
 
 export const DEFAULT_DESCRIPTION =
-  "Mecatronix is a software development company in Coimbatore offering web development, ecommerce websites, mobile apps, and scalable digital solutions.";
+  "Mecatronix Software Development is a software engineering studio in Coimbatore building business websites, custom software, mobile apps, e-commerce platforms, ERP systems and automation.";
 
-/** Public, indexable routes. Drives the sitemap, so add new pages here. */
+/**
+ * Static, indexable routes. Drives the sitemap together with the dynamic
+ * service, case study and article routes (see src/app/sitemap.ts).
+ */
 export const ROUTES: {
   path: string;
   label: string;
@@ -18,9 +21,13 @@ export const ROUTES: {
 }[] = [
   { path: "/", label: "Home", priority: 1, changeFrequency: "weekly" },
   { path: "/services", label: "Services", priority: 0.9, changeFrequency: "monthly" },
-  { path: "/portfolio", label: "Portfolio", priority: 0.8, changeFrequency: "monthly" },
-  { path: "/ourworld", label: "Our World", priority: 0.7, changeFrequency: "monthly" },
-  { path: "/openline", label: "Contact", priority: 0.8, changeFrequency: "yearly" },
+  { path: "/work", label: "Work", priority: 0.8, changeFrequency: "monthly" },
+  { path: "/industries", label: "Industries", priority: 0.7, changeFrequency: "monthly" },
+  { path: "/about", label: "About", priority: 0.7, changeFrequency: "monthly" },
+  { path: "/process", label: "Process", priority: 0.6, changeFrequency: "yearly" },
+  { path: "/insights", label: "Insights", priority: 0.7, changeFrequency: "weekly" },
+  { path: "/contact", label: "Contact", priority: 0.8, changeFrequency: "yearly" },
+  { path: "/privacy", label: "Privacy Policy", priority: 0.2, changeFrequency: "yearly" },
 ];
 
 /** 1200x630 share image rendered by src/app/og/route.tsx */
@@ -167,14 +174,79 @@ export function organizationJsonLd() {
   };
 }
 
-/** Breadcrumb trail: Home > {label} */
-export function breadcrumbJsonLd(path: string, label: string) {
+export interface Crumb {
+  path: string;
+  label: string;
+}
+
+/** Breadcrumb trail: Home > ...crumbs */
+export function breadcrumbJsonLd(crumbs: Crumb[]) {
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
-      { "@type": "ListItem", position: 2, name: label, item: `${SITE_URL}${path}` },
+    itemListElement: [{ path: "/", label: "Home" }, ...crumbs].map((c, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: c.label,
+      item: `${SITE_URL}${c.path === "/" ? "" : c.path}`,
+    })),
+  };
+}
+
+/** A service offered by the business (service detail pages) */
+export function serviceJsonLd({ name, description, path }: { name: string; description: string; path: string }) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name,
+    serviceType: name,
+    description,
+    url: `${SITE_URL}${path}`,
+    provider: { "@id": `${SITE_URL}/#localbusiness` },
+    areaServed: [
+      { "@type": "City", name: "Coimbatore" },
+      { "@type": "State", name: "Tamil Nadu" },
+      { "@type": "Country", name: "India" },
     ],
+  };
+}
+
+export function faqJsonLd(faqs: { q: string; a: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  };
+}
+
+export function articleJsonLd(a: { title: string; description: string; path: string; published: string; author: string }) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: a.title,
+    description: a.description,
+    url: `${SITE_URL}${a.path}`,
+    mainEntityOfPage: `${SITE_URL}${a.path}`,
+    datePublished: a.published,
+    dateModified: a.published,
+    inLanguage: "en-IN",
+    image: `${SITE_URL}${ogImage(a.title).url}`,
+    author: { "@type": "Organization", name: a.author, url: SITE_URL },
+    publisher: { "@id": `${SITE_URL}/#organization` },
+  };
+}
+
+export function caseStudyJsonLd(p: { client: string; description: string; path: string; industry: string }) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    name: `${p.client} — ${p.industry}`,
+    description: p.description,
+    url: `${SITE_URL}${p.path}`,
+    creator: { "@id": `${SITE_URL}/#organization` },
   };
 }

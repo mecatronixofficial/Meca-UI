@@ -1,6 +1,11 @@
 import type { Metadata, Viewport } from "next";
+import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
-import UserLayout from "../components/layout/Userlayout";
+import Header from "../components/layout/Header";
+import Footer from "../components/layout/Footer";
+import RevealObserver from "../components/animations/RevealObserver";
+import PointerEffects from "../components/animations/PointerEffects";
+import MecaAssistant from "../components/assistant/MecaAssistant";
 import JsonLd from "../components/seo/JsonLd";
 import {
   SITE_URL,
@@ -13,9 +18,29 @@ import {
   organizationJsonLd,
 } from "../lib/seo";
 
+const display = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-space-grotesk",
+  display: "swap",
+});
+
+const sans = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const mono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-jetbrains-mono",
+  display: "swap",
+});
+
 export const viewport: Viewport = {
-  themeColor: "#000000",
-  colorScheme: "dark",
+  themeColor: "#ffffff",
+  colorScheme: "light",
   width: "device-width",
   initialScale: 1,
 };
@@ -23,19 +48,12 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: COMPANY_NAME,
+    default: `${COMPANY_NAME} | Software Development Company in Coimbatore`,
     template: "%s | Mecatronix",
   },
   description: DEFAULT_DESCRIPTION,
   applicationName: SITE_NAME,
   category: "technology",
-  keywords: [
-    "software development company in Coimbatore",
-    "web development company in Coimbatore",
-    "ecommerce website development",
-    "mobile app development",
-    "Mecatronix",
-  ],
   authors: [{ name: COMPANY_NAME, url: SITE_URL }],
   creator: COMPANY_NAME,
   publisher: COMPANY_NAME,
@@ -73,10 +91,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en-IN">
+    // `js` class is added before paint so scroll-reveal styles only apply when JS runs
+    <html lang="en-IN" className={`${display.variable} ${sans.variable} ${mono.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
+      </head>
       <body>
+        <div id="top" />
         <JsonLd data={organizationJsonLd()} />
-        <UserLayout>{children}</UserLayout>
+        <Header />
+        <main id="main" tabIndex={-1} className="outline-none">
+          {children}
+        </main>
+        <Footer />
+        <RevealObserver />
+        <PointerEffects />
+        <MecaAssistant />
       </body>
     </html>
   );

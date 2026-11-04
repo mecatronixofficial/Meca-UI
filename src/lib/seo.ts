@@ -1,10 +1,11 @@
 import type { Metadata, MetadataRoute } from "next";
 import mecatronixConfig from "../config/envConfig";
+import { brandLogo } from "./brand";
 
 export const SITE_URL = "https://www.mecatronix.one";
 export const SITE_NAME = "Mecatronix";
 export const COMPANY_NAME = "Mecatronix Software Development";
-export const LOGO_PATH = "/assets/logos/Image.png";
+export const LOGO_PATH = brandLogo.src;
 
 export const DEFAULT_DESCRIPTION =
   "Mecatronix Software Development is a software engineering studio in Coimbatore building business websites, custom software, mobile apps, e-commerce platforms, ERP systems and automation.";

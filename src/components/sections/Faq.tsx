@@ -1,6 +1,7 @@
 import { Plus } from "lucide-react";
 import { Container, Section } from "../ui/Container";
 import { SectionHeading } from "../ui/Heading";
+import { Reveal } from "../animations/Reveal";
 
 /** Accessible FAQ list built on native <details>/<summary> (works without JS). */
 export function Faq({
@@ -19,7 +20,7 @@ export function Faq({
           <div className="lg:col-span-4">
             <SectionHeading id="faq-title" eyebrow="FAQ" title={title} intro={intro} className="lg:sticky lg:top-32" />
           </div>
-          <div className="border-t border-line lg:col-span-8" data-reveal>
+          <Reveal className="border-t border-line lg:col-span-8">
             {faqs.map((f) => (
               <details key={f.q} className="group border-b border-line">
                 <summary className="group/q flex cursor-pointer list-none items-start justify-between gap-6 py-6 text-left [&::-webkit-details-marker]:hidden">
@@ -31,7 +32,7 @@ export function Faq({
                 <p className="max-w-2xl pb-7 pr-12 text-[15.5px] leading-relaxed text-muted-ink">{f.a}</p>
               </details>
             ))}
-          </div>
+          </Reveal>
         </div>
       </Container>
     </Section>

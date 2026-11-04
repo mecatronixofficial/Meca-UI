@@ -25,6 +25,7 @@
   --color-accent-ink: #a30400;   /* small accent text on white (8.1:1) */
   --color-accent-soft: #fff0ef;  /* red-tinted fill behind accent icons */
   --color-wine: #6e0a0f;         /* deep end of the red gradient */
+  --color-accent-glow: #ff5247;  /* accent text on ink (6.1:1) */
 
   /* Type */
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
@@ -201,10 +202,36 @@
   color: transparent;
 }
 
+/* text-gradient with light slowly travelling through it. The gradient repeats
+ * every 50% of its width, so shifting by a full tile loops seamlessly. */
+@utility text-shimmer {
+  background-image: linear-gradient(100deg, #e10600 0%, #a30400 18%, #ff4a3d 32%, #e10600 50%, #a30400 68%, #ff4a3d 82%, #e10600 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 9s linear infinite;
+}
+
+/* Brighter variant for dark backgrounds */
+@utility text-shimmer-light {
+  background-image: linear-gradient(100deg, #ff5247 0%, #ffb3a8 18%, #ff2a1f 32%, #ff5247 50%, #ffb3a8 68%, #ff2a1f 82%, #ff5247 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 9s linear infinite;
+}
+
+@keyframes shimmer {
+  to { background-position: -200% 0; }
+}
+
 /* ---------- Scroll reveal ----------
  * Content is visible by default. Only when JS is running (html.js, set by an
  * inline script in the root layout) are [data-reveal] elements hidden until
- * the RevealObserver marks them. Without JS nothing is ever hidden. */
+ * their Reveal component updates React state after hydration. Without JS
+ * nothing is ever hidden. */
 
 html.js [data-reveal] {
   opacity: 0;

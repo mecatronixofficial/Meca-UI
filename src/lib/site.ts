@@ -1,4 +1,5 @@
 import mecatronixConfig from "../config/envConfig";
+import { brandLogo } from "./brand";
 
 /**
  * Company facts used across the UI. Everything here comes from
@@ -37,7 +38,9 @@ export const site = {
   },
   hours: `${business.days}, ${business.hoursStart}–${business.hoursEnd} IST`,
   businessHours: { days: business.days, start: business.hoursStart, end: business.hoursEnd },
-  logo: "/assets/logos/Mec.webp",
+  logo: brandLogo.src,
+  logoWidth: brandLogo.width,
+  logoHeight: brandLogo.height,
 } as const;
 
 export type SocialKey = keyof typeof social;

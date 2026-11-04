@@ -5,6 +5,8 @@ import { industryIcons } from "../ui/icons";
 import { Container, Section } from "../ui/Container";
 import { SectionHeading } from "../ui/Heading";
 import { cn } from "../../lib/cn";
+import { Reveal } from "../animations/Reveal";
+import { Backdrop } from "../visuals/Backdrop";
 
 // Bento spans for the six tiles (12-column grid on large screens)
 const layout = [
@@ -18,8 +20,9 @@ const layout = [
 
 export function IndustriesSection() {
   return (
-    <Section labelledBy="industries-title">
-      <Container>
+    <Section labelledBy="industries-title" className="overflow-hidden">
+      <Backdrop aurora motes />
+      <Container className="relative">
         <SectionHeading
           id="industries-title"
           align="split"
@@ -33,9 +36,8 @@ export function IndustriesSection() {
             const Icon = industryIcons[ind.icon];
             const featured = i === 0;
             return (
-              <li
+              <Reveal as="li"
                 key={ind.title}
-                data-reveal
                 style={{ "--reveal-delay": `${(i % 3) * 70}ms` } as React.CSSProperties}
                 className={cn(layout[i], featured && "sm:col-span-2 lg:col-span-7")}
               >
@@ -75,7 +77,7 @@ export function IndustriesSection() {
                     <p className={cn("mt-3 max-w-md text-[15px] leading-relaxed", featured ? "text-white/90" : "text-muted-ink")}>{ind.text}</p>
                   </div>
                 </Link>
-              </li>
+              </Reveal>
             );
           })}
         </ul>

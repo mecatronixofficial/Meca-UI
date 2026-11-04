@@ -13,6 +13,7 @@ import { Container, Section } from "../../../components/ui/Container";
 import { Eyebrow } from "../../../components/ui/Heading";
 import { ProjectCover } from "../../../components/portfolio/ProjectCover";
 import { ProjectCard } from "../../../components/portfolio/ProjectCard";
+import { Reveal } from "../../../components/animations/Reveal";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -36,10 +37,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 function Block({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="grid gap-6 border-t border-line py-12 lg:grid-cols-12 lg:gap-10 lg:py-16" data-reveal>
+    <Reveal className="grid gap-6 border-t border-line py-12 lg:grid-cols-12 lg:gap-10 lg:py-16">
       <h2 className="text-label text-muted-ink lg:col-span-3 lg:pt-2">{label}</h2>
       <div className="lg:col-span-8 lg:col-start-5">{children}</div>
-    </div>
+    </Reveal>
   );
 }
 
@@ -152,12 +153,12 @@ export default async function CaseStudyPage({ params }: Props) {
           )}
 
           {gallery.length > 0 && (
-            <div className="grid gap-6 border-t border-line py-12 md:grid-cols-2" data-reveal>
+            <Reveal className="grid gap-6 border-t border-line py-12 md:grid-cols-2">
               <h2 className="sr-only">Screens</h2>
               {gallery.map((img) => (
                 <Image key={img.src} src={img.src} alt={img.alt} width={img.width} height={img.height} sizes="(min-width: 768px) 50vw, 100vw" className="h-auto w-full rounded-card shadow-soft" />
               ))}
-            </div>
+            </Reveal>
           )}
         </Container>
       </Section>
@@ -168,9 +169,9 @@ export default async function CaseStudyPage({ params }: Props) {
           <h2 id="more-work-title" className="text-h2 mt-5 text-surface">Related projects.</h2>
           <div className="mt-14 grid gap-14 md:grid-cols-2 md:gap-10">
             {related.map((p, i) => (
-              <div key={p.slug} data-reveal className={i === 1 ? "md:mt-20" : undefined}>
+              <Reveal key={p.slug} className={i === 1 ? "md:mt-20" : undefined}>
                 <ProjectCard project={p} />
-              </div>
+              </Reveal>
             ))}
           </div>
         </Container>

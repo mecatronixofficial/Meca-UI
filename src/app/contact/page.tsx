@@ -1,5 +1,5 @@
-﻿import type { Metadata } from "next";
-import { ArrowDownRight, ArrowUpRight, Clock, Mail, MapPin, MessageCircle, Phone, Plus } from "lucide-react";
+import type { Metadata } from "next";
+import { ArrowDownRight, ArrowUpRight, Clock, Mail, MapPin, MessageCircle, Phone, AudioLines, Workflow, Rocket, Check, Navigation, Globe2 } from "lucide-react";
 import { pageMetadata } from "../../lib/seo";
 import { site, socialLinks, whatsappLink } from "../../lib/site";
 import { Container } from "../../components/ui/Container";
@@ -8,6 +8,7 @@ import { SocialIcon } from "../../components/ui/SocialIcon";
 import { ContactForm } from "../../components/contact/ContactForm";
 import { CopyEmail } from "../../components/contact/CopyEmail";
 import styles from "./contact.module.css";
+import { Reveal } from "../../components/animations/Reveal";
 
 export const metadata: Metadata = pageMetadata({
   title: "Contact Mecatronix — Start Your Software Project",
@@ -18,9 +19,9 @@ export const metadata: Metadata = pageMetadata({
 });
 
 const steps = [
-  { title: "We start by listening.", text: "We read your enquiry and get in touch by email or phone to understand what you need." },
-  { title: "We explore the possibilities.", text: "Together, we talk through your goals, your users, and what a successful project looks like." },
-  { title: "You get a clear way forward.", text: "We put together a proposal with a focused scope, an approach, and the next steps." },
+  { label: "DISCOVER", outcome: "A shared understanding", icon: AudioLines, title: "We start by listening.", text: "We read your enquiry and get in touch by email or phone to understand what you need." },
+  { label: "CONNECT THE DOTS", outcome: "Ideas with direction", icon: Workflow, title: "We explore the possibilities.", text: "Together, we talk through your goals, your users, and what a successful project looks like." },
+  { label: "MOVE FORWARD", outcome: "Your project roadmap", icon: Rocket, title: "You get a clear way forward.", text: "We put together a proposal with a focused scope, an approach, and the next steps." },
 ];
 
 export default function ContactPage() {
@@ -51,24 +52,80 @@ export default function ContactPage() {
 
           <section className={styles.enquiry} aria-labelledby="contact-title">
             <div className={styles.formHeader}>
-              <p className={styles.eyebrow}><span /> YOUR NEXT CHAPTER</p>
+              <div className={styles.enquiryHeadingRow}>
+                <p className={styles.eyebrow}><span /> YOUR NEXT CHAPTER</p>
+                <span className={styles.launchIcon}><Rocket aria-hidden size={22} strokeWidth={1.5} /></span>
+              </div>
               <h1 id="contact-title">Let’s make<br /><span>something</span><br />that matters<span className={styles.period}>.</span></h1>
               <p>A new website, a smarter system, or an idea waiting to happen. Tell us a little about it.</p>
             </div>
-            <div className={styles.formTopline}><span><Mail aria-hidden size={15} /> THE PROJECT NOTE</span><span>01 — YOUR DETAILS</span></div>
+            <div className={styles.formTopline}><span><Mail aria-hidden size={16} /> THE PROJECT NOTE</span><span>01 — YOUR DETAILS</span></div>
             <div className={styles.formPanel}><ContactForm email={site.email} whatsapp={site.whatsapp} /></div>
-            <div className={styles.formFootnote}><span aria-hidden>↳</span> Straight to our team. The start of a real conversation.</div>
+            <div className={styles.formFootnote}><Check aria-hidden size={15} /><span>Straight to our team. The start of a real conversation.</span></div>
           </section>
         </div>
 
         <section className={styles.afterword} aria-labelledby="next-title">
-          <div className={styles.afterwordIntro} data-reveal><p className={styles.eyebrow}>AFTER YOU HIT SEND</p><h2 id="next-title">A little clarity.<br />A lot of possibility.</h2><p>You don’t need a perfect brief.<br />We’ll figure out the right questions together.</p></div>
-          <div className={styles.accordion}>{steps.map((step, i) => <details key={step.title} className={styles.step} open={i === 0}><summary><span className={styles.stepIndex}>0{i + 1}</span><h3>{step.title}</h3><Plus aria-hidden size={20} /></summary><p>{step.text}</p></details>)}</div>
+          <Reveal className={styles.afterwordIntro}>
+            <div>
+              <p className={styles.eyebrow}>AFTER YOU HIT SEND</p>
+              <h2 id="next-title">Your vision.<br /><span>A clear path forward.</span></h2>
+            </div>
+            <p>You bring the ambition. We connect the dots between your idea and the technology that brings it to life.</p>
+          </Reveal>
+          <ol className={styles.visionGrid}>
+            {steps.map((step, i) => (
+              <li key={step.title} className={styles.visionCard}>
+                <div className={styles.visionCardTop}>
+                  <span className={styles.visionIcon}><step.icon aria-hidden size={26} strokeWidth={1.5} /></span>
+                  <span className={styles.visionIndex}>0{i + 1}<span aria-hidden> / 03</span></span>
+                </div>
+                <div className={styles.visionCircuit} aria-hidden><span /><span /><span /></div>
+                <p className={styles.visionLabel}>{step.label}</p>
+                <h3>{step.title}</h3>
+                <p className={styles.visionDescription}>{step.text}</p>
+                <div className={styles.visionOutcome}><Check aria-hidden size={14} /><span>{step.outcome}</span><ArrowUpRight aria-hidden size={18} /></div>
+              </li>
+            ))}
+          </ol>
+          <div className={styles.visionFootnote}><span aria-hidden /><p>Human conversations. Thoughtful technology. Meaningful next steps.</p></div>
         </section>
 
         <section className={styles.location} aria-labelledby="location-title">
-          <div className={styles.locationInfo}><p className={styles.eyebrow}>OUR CORNER OF THE WORLD</p><h2 id="location-title">Local roots.<br /><span>Limitless reach.</span></h2><div className={styles.address}><MapPin aria-hidden size={20} /><p>{site.address.full}</p></div><div className={styles.address}><Clock aria-hidden size={18} /><p>{site.hours}</p></div><a href={site.address.mapsUrl} target="_blank" rel="noopener noreferrer" className={styles.directions}>Find your way here <ArrowUpRight aria-hidden size={18} /></a></div>
-          <div className={styles.mapFrame}><iframe title={`Mecatronix studio — ${site.address.city}`} src={`https://www.google.com/maps?q=${encodeURIComponent(site.address.full)}&output=embed`} loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen /><span className={styles.mapTag}><span /> {site.address.city}, India</span></div>
+          <div className={styles.locationAmbient} aria-hidden />
+          <svg className={styles.locationLines} viewBox="0 0 1200 800" fill="none" preserveAspectRatio="xMidYMid slice" aria-hidden><path d="M-80 620C180 100 550 110 850 280S1200 250 1320 0M-100 660C180 140 550 150 850 320S1200 290 1320 40" /><circle cx="850" cy="280" r="8" /><circle cx="850" cy="280" r="22" /></svg>
+          <header className={styles.locationHeader}>
+            <div>
+              <Reveal as="p" className={styles.locationEyebrow}><Globe2 aria-hidden size={16} /> FIND US</Reveal>
+              <Reveal as="h2" id="location-title">Built locally.<br /><span>Connected globally.</span></Reveal>
+            </div>
+            <Reveal as="p" className={styles.locationLead}>Meet us in {site.address.city}.<br />Build with us from anywhere.</Reveal>
+          </header>
+          <div className={styles.locationGrid}>
+            <div className={styles.mapColumn}>
+              <Reveal className={styles.mapFrame}>
+                <div className={styles.mapToolbar}><span><span /> OUR STUDIO ON THE MAP</span><a href={site.address.mapsUrl} target="_blank" rel="noopener noreferrer" aria-label="Open Mecatronix studio in Google Maps"><ArrowUpRight aria-hidden size={19} /></a></div>
+                <iframe title={`Mecatronix studio — ${site.address.city}`} src={`https://www.google.com/maps?q=${encodeURIComponent(site.address.full)}&output=embed`} loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen />
+              <a className={styles.studioMapCard} href={site.address.mapsUrl} target="_blank" rel="noopener noreferrer">
+                <span className={styles.studioMapPin}><MapPin aria-hidden size={20} /></span>
+                <span className={styles.studioMapCopy}><span>MECATRONIX STUDIO</span><strong>{site.address.city}, India</strong></span>
+                <ArrowUpRight aria-hidden size={22} />
+              </a>
+              </Reveal>
+            </div>
+            <div className={styles.locationInfo}>
+              <Reveal className={styles.officeIntro}>
+                <div className={styles.officeOverline}><span>THE STUDIO VISIT</span><ArrowUpRight aria-hidden size={19} /></div>
+                <h3>Good ideas start<br />with <span>hello.</span></h3>
+                <p>Pull up a chair. Let’s talk about what you want to build.</p>
+              </Reveal>
+              <div className={styles.officeCards}>
+                <Reveal className={styles.officeCard} style={{ "--reveal-delay": "70ms" } as React.CSSProperties}><span className={styles.officeIcon}><MapPin aria-hidden size={21} /></span><div><h4>Our address</h4><p>{site.address.full}</p></div></Reveal>
+                <Reveal className={styles.officeCard} style={{ "--reveal-delay": "140ms" } as React.CSSProperties}><span className={styles.officeIcon}><Clock aria-hidden size={21} /></span><div><h4>Studio hours</h4><p>{site.hours}</p></div></Reveal>
+              </div>
+              <a href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(site.address.full)}`} target="_blank" rel="noopener noreferrer" className={styles.directions}><Navigation aria-hidden size={19} /> Get Directions <ArrowUpRight aria-hidden size={20} /></a>
+            </div>
+          </div>
         </section>
       </Container>
     </div>

@@ -1,20 +1,20 @@
+import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowUpRight, MapPin } from "lucide-react";
-import { principles } from "../../data/company";
+import { ArrowDown, ArrowRight, ArrowUpRight, Check, Compass, Globe2, MapPin, Target } from "lucide-react";
+import { principles, techStack } from "../../data/company";
 import { services } from "../../data/services";
 import { projects } from "../../data/projects";
 import { processSteps } from "../../data/process";
 import { pageMetadata } from "../../lib/seo";
 import { site } from "../../lib/site";
-import { PageHero } from "../../components/sections/PageHero";
-import { ContactCTA } from "../../components/sections/ContactCTA";
-import { Container, Section } from "../../components/ui/Container";
-import { Eyebrow, SectionHeading } from "../../components/ui/Heading";
-import { ArrowLink } from "../../components/ui/Button";
+import { Container } from "../../components/ui/Container";
+import { Button, ArrowLink } from "../../components/ui/Button";
 import { principleIcons, serviceIcons } from "../../components/ui/icons";
 import { ProjectCard } from "../../components/portfolio/ProjectCard";
-import { TechSection } from "../../components/home/TechSection";
+import { AboutVisual } from "./AboutVisual";
+import styles from "./about.module.css";
+import { Reveal } from "../../components/animations/Reveal";
 
 export const metadata: Metadata = pageMetadata({
   title: "About Mecatronix — Software Engineering Studio in Coimbatore",
@@ -24,166 +24,152 @@ export const metadata: Metadata = pageMetadata({
   keywords: ["about Mecatronix", "software company Coimbatore", "software engineering studio Tamil Nadu"],
 });
 
+const stagger = (index: number) => ({ "--reveal-delay": `${(index % 3) * 80}ms` }) as CSSProperties;
+
 export default function AboutPage() {
   return (
-    <>
-      <PageHero
-        crumbs={[{ path: "/about", label: "About" }]}
-        eyebrow="About Mecatronix"
-        title={<>We build technology that <span className="text-gradient">moves businesses forward.</span></>}
-        aside={
-          <div className="rounded-panel border border-line bg-white/80 p-7 shadow-lift backdrop-blur">
-            <p className="text-label text-muted">Based in</p>
-            <p className="mt-3 flex items-start gap-2.5 text-[15.5px] leading-relaxed text-surface">
-              <MapPin aria-hidden className="mt-1 size-4 shrink-0 text-accent" />
-              {site.address.city}, {site.address.state}, {site.address.country}
-            </p>
-            <p className="text-label mt-7 text-muted">Working with</p>
-            <p className="mt-3 text-[15.5px] leading-relaxed text-surface">Businesses across India and internationally, in person and remotely.</p>
-          </div>
-        }
-      />
-
-      {/* Introduction */}
-      <Section labelledBy="about-intro-title">
+    <div className={styles.page}>
+      <section className={styles.hero} aria-labelledby="about-title">
         <Container>
-          <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
-            <div className="lg:col-span-4" data-reveal>
-              <Eyebrow>Who we are</Eyebrow>
-              <h2 id="about-intro-title" className="sr-only">Who we are</h2>
+          <nav aria-label="Breadcrumb" className={styles.breadcrumb}>
+            <Link href="/">Home</Link><span aria-hidden>/</span><span aria-current="page">About us</span>
+          </nav>
+          <div className={styles.heroGrid}>
+            <div className={styles.heroCopy}>
+              <p className={styles.eyebrow}><span /> THE PEOPLE BEHIND THE SOFTWARE</p>
+              <h1 id="about-title">Big on ideas.<br />Serious about<br /><span>building them.</span></h1>
+              <p className={styles.heroIntro}>We’re Mecatronix. A software engineering studio turning business challenges into thoughtful digital experiences.</p>
+              <div className={styles.heroActions}>
+                <Button href="/contact" size="lg" arrow>Let’s build together</Button>
+                <a href="#our-story" className={styles.storyLink}>Get to know us <ArrowDown aria-hidden size={16} /></a>
+              </div>
+              <div className={styles.heroLocation}><MapPin aria-hidden size={15} /><span>Rooted in {site.address.city}. Building beyond borders.</span></div>
             </div>
-            <div className="space-y-7 lg:col-span-8" data-reveal>
-              <p className="font-display text-[1.6rem] font-medium leading-[1.3] tracking-[-0.02em] text-surface sm:text-[2.1rem]">
-                Mecatronix Software Development is a software engineering studio in Coimbatore. We design and build
-                websites, applications and business systems for companies that want technology to do real work for them.
-              </p>
-              <p className="text-lead text-muted-ink">
-                Our work spans the full journey — understanding how a business operates, designing software around it,
-                engineering it properly and supporting it after launch. We focus on sectors such as manufacturing,
-                textiles, education and retail, where the right software can remove hours of repetitive work and give
-                leaders a clear view of what&apos;s happening.
-              </p>
-            </div>
+            <AboutVisual />
+          </div>
+          <div className={styles.heroFooter}>
+            <p>Good software starts with<br /><strong>understanding your business.</strong></p>
+            <div><span className={styles.footerIndex}>01 /</span><span>Business-first thinking</span></div>
+            <div><span className={styles.footerIndex}>02 /</span><span>Thoughtful design</span></div>
+            <div><span className={styles.footerIndex}>03 /</span><span>Reliable engineering</span></div>
           </div>
         </Container>
-      </Section>
-
-      {/* Mission & vision */}
-      <section aria-label="Mission and vision" className="grid border-t border-line bg-white md:grid-cols-2">
-        <div className="border-b border-line p-10 sm:p-14 md:border-b-0 md:border-r lg:p-20" data-reveal>
-          <p className="text-label text-accent-ink">Our mission</p>
-          <p className="mt-8 font-display text-[1.6rem] font-medium leading-[1.25] tracking-[-0.025em] text-surface sm:text-[2rem]">
-            To engineer reliable, well-designed software that solves real business problems — and to be a partner
-            businesses can trust from first idea to long after launch.
-          </p>
-        </div>
-        <div className="relative isolate overflow-hidden bg-gradient-to-br from-accent via-accent-strong to-wine p-10 text-white sm:p-14 lg:p-20" data-reveal style={{ "--reveal-delay": "100ms" } as React.CSSProperties}>
-          <div aria-hidden className="absolute inset-0 -z-10 bg-grid-inverse [mask-image:radial-gradient(ellipse_at_100%_0%,black,transparent_70%)]" />
-          <p className="text-label text-white/85">Our vision</p>
-          <p className="mt-8 font-display text-[1.6rem] font-medium leading-[1.25] tracking-[-0.025em] sm:text-[2rem]">
-            A future where every growing business — not only the largest — has access to software built properly
-            around the way it works.
-          </p>
-        </div>
       </section>
 
-      {/* Approach */}
-      <Section labelledBy="approach-title">
+      <section id="our-story" aria-labelledby="story-title" className={styles.section}>
         <Container>
-          <SectionHeading
-            id="approach-title"
-            align="split"
-            eyebrow="Our approach"
-            title="How we think about building software."
-            intro="Six principles shape every project, whatever its size."
-          />
-          <ul className="mt-16 grid gap-x-12 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
-            {principles.map((p, i) => {
-              const Icon = principleIcons[p.glyph];
+          <div className={styles.storyGrid}>
+            <Reveal>
+              <p className={styles.eyebrow}><span /> A LITTLE ABOUT US</p>
+              <h2 id="story-title" className={styles.heading}>Your ambition.<br /><span>Our engineering.</span></h2>
+            </Reveal>
+            <Reveal className={styles.storyCopy}>
+              <p>Technology should make your work simpler, your team stronger, and your next step clearer.</p>
+              <p>That’s why Mecatronix Software Development exists. Based in {site.address.city}, we design and build websites, applications, and business systems around the way your company actually works.</p>
+              <p>From manufacturing and textiles to education and retail, we help businesses replace repetitive work with software that makes a practical difference. We stay involved from the first conversation through launch and ongoing support.</p>
+              <div className={styles.storyTags}><span><Check aria-hidden size={14} /> Built around your workflow</span><span><Check aria-hidden size={14} /> A partner beyond launch</span></div>
+            </Reveal>
+          </div>
+          <div className={styles.purposeGrid}>
+            <Reveal as="article" className={`${styles.purposeCard} ${styles.mission} hover-card spotlight`}>
+              <div className={styles.cardTop}><span className={styles.iconBox}><Target aria-hidden size={24} /></span><span className={styles.cardLabel}>01 / OUR MISSION</span></div>
+              <h3>Make technology<br />work for people.</h3>
+              <p>To engineer reliable, well-designed software that solves real business problems, and be a partner you can trust from first idea to long after launch.</p>
+              <span className={styles.purposeFoot}>Practical solutions. Lasting partnerships.</span>
+            </Reveal>
+            <Reveal as="article" className={`${styles.purposeCard} ${styles.vision}`} style={stagger(1)}>
+              <div className={styles.cardTop}><span className={styles.iconBox}><Compass aria-hidden size={24} /></span><span className={styles.cardLabel}>02 / OUR VISION</span></div>
+              <h3>Better software.<br />More possibilities.</h3>
+              <p>A future where every growing business has access to software built properly around the way it works, with the foundations to keep moving forward.</p>
+              <span className={styles.purposeFoot}>Built for today. Ready for what’s next.</span>
+              <div aria-hidden className={styles.visionRings} />
+            </Reveal>
+          </div>
+        </Container>
+      </section>
+
+      <section aria-labelledby="values-title" className={`${styles.section} ${styles.tinted}`}>
+        <Container>
+          <Reveal className={styles.sectionHeader}>
+            <div><p className={styles.eyebrow}><span /> WHAT WE STAND FOR</p><h2 id="values-title" className={styles.heading}>Good principles.<br /><span>Better outcomes.</span></h2></div>
+            <p>How we think shapes what we build. These six principles guide every decision, every conversation, and every line of code.</p>
+          </Reveal>
+          <ul className={styles.cardGrid}>
+            {principles.map((principle, index) => {
+              const Icon = principleIcons[principle.glyph];
               return (
-                <li key={p.title} data-reveal style={{ "--reveal-delay": `${(i % 3) * 70}ms` } as React.CSSProperties}>
-                  <Icon aria-hidden className="size-6 text-accent-ink" strokeWidth={1.6} />
-                  <h3 className="mt-6 text-[1.25rem] font-semibold tracking-tight text-surface">{p.title}</h3>
-                  <p className="mt-3 text-[15.5px] leading-relaxed text-muted-ink">{p.text}</p>
-                </li>
+                <Reveal as="li" key={principle.title} className={`${styles.valueCard} hover-card spotlight`} style={stagger(index)}>
+                  <div className={styles.cardTop}><span className={styles.iconBox}><Icon aria-hidden size={23} strokeWidth={1.7} /></span><span className={styles.cardNumber}>{String(index + 1).padStart(2, "0")}</span></div>
+                  <h3>{principle.title}</h3><p>{principle.text}</p>
+                </Reveal>
               );
             })}
           </ul>
         </Container>
-      </Section>
+      </section>
 
-      {/* Process difference */}
-      <Section labelledBy="difference-title">
+      <section aria-labelledby="process-title" className={styles.section}>
         <Container>
-          <div className="grid gap-12 lg:grid-cols-12 lg:items-center lg:gap-16">
-            <div className="lg:col-span-5" data-reveal>
-              <Eyebrow>Our process</Eyebrow>
-              <h2 id="difference-title" className="text-h2 mt-6 text-surface">Understanding first. Code second.</h2>
-              <p className="text-lead mt-6 text-muted-ink">
-                What makes our process different is where it starts: with the people who will use the software and the
-                problem it must solve. Requirements are discovered, not assumed — and every stage ends with something
-                you can see and react to.
-              </p>
-              <ArrowLink href="/process" className="mt-8">Explore the full process</ArrowLink>
-            </div>
-            <ol className="grid gap-3 sm:grid-cols-2 lg:col-span-7" data-reveal style={{ "--reveal-delay": "100ms" } as React.CSSProperties}>
-              {processSteps.map((s) => (
-                <li key={s.n} className="rounded-card border border-line bg-white p-6 hover-card spotlight relative">
-                  <span className="font-mono text-xs text-accent-ink">{s.n}</span>
-                  <h3 className="mt-3 text-[1.08rem] font-semibold text-surface">{s.title}</h3>
-                  <p className="mt-1.5 text-[14.5px] leading-relaxed text-muted-ink">{s.text}</p>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </Container>
-      </Section>
-
-      {/* Capabilities */}
-      <Section labelledBy="capabilities-title">
-        <Container>
-          <SectionHeading id="capabilities-title" eyebrow="Technical capabilities" title="What we build." />
-          <ul className="mt-14 border-t border-line">
-            {services.map((s, i) => {
-              const Icon = serviceIcons[s.slug];
-              return (
-                <li key={s.slug} className="border-b border-line" data-reveal>
-                  <Link href={`/services/${s.slug}`} className="group grid items-center gap-4 py-7 md:grid-cols-12">
-                    <span className="flex items-center gap-4 md:col-span-5">
-                      <span className="font-mono text-xs text-muted-ink">{String(i + 1).padStart(2, "0")}</span>
-                      <Icon aria-hidden className="size-5 text-accent-ink" strokeWidth={1.6} />
-                      <span className="text-[1.3rem] font-semibold tracking-tight text-surface group-hover:text-accent-ink">{s.title}</span>
-                    </span>
-                    <span className="text-[15px] leading-relaxed text-muted-ink md:col-span-6">{s.summary}</span>
-                    <ArrowUpRight aria-hidden className="hidden size-5 justify-self-end text-muted-ink transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 md:block" />
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </Container>
-      </Section>
-
-      <TechSection />
-
-      {/* Selected projects */}
-      <Section labelledBy="about-work-title">
-        <Container>
-          <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-            <SectionHeading id="about-work-title" eyebrow="Selected projects" title="Work we've delivered." />
-            <ArrowLink href="/work">All work</ArrowLink>
-          </div>
-          <div className="mt-14 grid gap-14 md:grid-cols-3 md:gap-8">
-            {projects.slice(0, 3).map((p, i) => (
-              <div key={p.slug} data-reveal style={{ "--reveal-delay": `${i * 80}ms` } as React.CSSProperties}>
-                <ProjectCard project={p} />
-              </div>
+          <Reveal className={styles.sectionHeader}>
+            <div><p className={styles.eyebrow}><span /> FROM FIRST HELLO TO LAUNCH</p><h2 id="process-title" className={styles.heading}>A clear process.<br /><span>A shared direction.</span></h2></div>
+            <div className={styles.headerAside}><p>We listen first, build in the open, and make sure you have something real to review at every stage.</p><ArrowLink href="/process">Explore our process</ArrowLink></div>
+          </Reveal>
+          <ol className={styles.cardGrid}>
+            {processSteps.map((step, index) => (
+              <Reveal as="li" key={step.n} className={`${styles.processCard} hover-card`} style={stagger(index)}>
+                <div className={styles.cardTop}><span className={styles.stepNumber}>{step.n}</span><ArrowRight aria-hidden className={styles.stepArrow} size={21} /></div>
+                <h3>{step.title}</h3><p>{step.text}</p>
+                <span className={styles.deliverable}><Check aria-hidden size={14} />{step.deliverables[0]}</span>
+              </Reveal>
             ))}
-          </div>
+          </ol>
         </Container>
-      </Section>
+      </section>
 
-      <ContactCTA />
-    </>
+      <section aria-labelledby="services-title" className={`${styles.section} ${styles.tinted}`}>
+        <Container>
+          <Reveal className={styles.sectionHeader}>
+            <div><p className={styles.eyebrow}><span /> OUR CAPABILITIES</p><h2 id="services-title" className={styles.heading}>Your next chapter.<br /><span>Built with us.</span></h2></div>
+            <p>From your first website to the systems behind your business, we bring design and engineering together.</p>
+          </Reveal>
+          <ul className={styles.cardGrid}>
+            {services.map((service, index) => {
+              const Icon = serviceIcons[service.slug];
+              return (
+                <Reveal as="li" key={service.slug} style={stagger(index)}>
+                  <Link href={`/services/${service.slug}`} className={`${styles.serviceCard} hover-card spotlight`}>
+                    <div className={styles.cardTop}><span className={styles.iconBox}><Icon aria-hidden size={23} strokeWidth={1.7} /></span><ArrowUpRight aria-hidden className={styles.serviceArrow} size={21} /></div>
+                    <h3>{service.title}</h3><p>{service.summary}</p><span className={styles.serviceLink}>Explore service <ArrowRight aria-hidden size={15} /></span>
+                  </Link>
+                </Reveal>
+              );
+            })}
+          </ul>
+          <Reveal className={styles.techPanel}>
+            <div><p className={styles.eyebrow}>OUR TOOLKIT</p><h3>Modern tools.<br />Solid foundations.</h3><p>A focused stack chosen for performance and maintainability.</p></div>
+            <dl className={styles.techGroups}>{techStack.map((group) => <div key={group.category}><dt>{group.category}</dt><dd>{group.items.map((item) => <span key={item}>{item}</span>)}</dd></div>)}</dl>
+          </Reveal>
+        </Container>
+      </section>
+
+      <section aria-labelledby="work-title" className={styles.section}>
+        <Container>
+          <Reveal className={styles.sectionHeader}>
+            <div><p className={styles.eyebrow}><span /> IDEAS INTO REALITY</p><h2 id="work-title" className={styles.heading}>A look at<br /><span>what we’ve built.</span></h2></div>
+            <ArrowLink href="/work">Explore all work</ArrowLink>
+          </Reveal>
+          <div className={styles.cardGrid}>{projects.slice(0, 3).map((project, index) => <Reveal key={project.slug} style={stagger(index)}><ProjectCard project={project} className={styles.projectCard} /></Reveal>)}</div>
+        </Container>
+      </section>
+
+      <section aria-labelledby="about-contact-title" className={styles.ctaSection}>
+        <Container>
+          <Reveal className={styles.cta}>
+            <div className={styles.ctaCopy}><p className={styles.eyebrow}><span /> THE NEXT GREAT IDEA COULD BE YOURS</p><h2 id="about-contact-title">Let’s build something<br />that moves you forward.</h2><p>Tell us what you have in mind. We’ll help you find the right way to build it.</p><Button href="/contact" variant="light" size="lg" arrow>Start a conversation</Button></div>
+            <div className={styles.ctaStamp}><Globe2 aria-hidden size={52} strokeWidth={1} /><p>From {site.address.city},<br /><strong>to wherever you are.</strong></p><span>DESIGN. ENGINEER. DELIVER.</span></div>
+          </Reveal>
+        </Container>
+      </section>
+    </div>
   );
 }

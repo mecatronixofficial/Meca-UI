@@ -5,6 +5,7 @@ import { PageHero } from "../../components/sections/PageHero";
 import { ContactCTA } from "../../components/sections/ContactCTA";
 import { Container, Section } from "../../components/ui/Container";
 import { ArticleCard } from "../../components/insights/ArticleCard";
+import { Reveal } from "../../components/animations/Reveal";
 
 export const metadata: Metadata = pageMetadata({
   title: "Insights — Software, ERP & Web Development Articles",
@@ -32,15 +33,15 @@ export default function InsightsPage() {
           <h2 id="articles-title" className="sr-only">Articles</h2>
           <div className="grid gap-5 lg:grid-cols-12">
             {first && (
-              <div className="lg:col-span-7" data-reveal>
+              <Reveal className="lg:col-span-7">
                 <ArticleCard article={first} large headingLevel="h2" />
-              </div>
+              </Reveal>
             )}
             <div className="grid gap-5 lg:col-span-5">
               {rest.map((a, i) => (
-                <div key={a.slug} data-reveal style={{ "--reveal-delay": `${(i + 1) * 80}ms` } as React.CSSProperties}>
+                <Reveal key={a.slug} style={{ "--reveal-delay": `${(i + 1) * 80}ms` } as React.CSSProperties}>
                   <ArticleCard article={a} headingLevel="h2" />
-                </div>
+                </Reveal>
               ))}
             </div>
           </div>

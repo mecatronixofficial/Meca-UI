@@ -17,6 +17,7 @@ import { Button } from "../../../components/ui/Button";
 import { serviceIcons } from "../../../components/ui/icons";
 import { ServiceVisual } from "../../../components/visuals/ServiceVisual";
 import { ProjectCard } from "../../../components/portfolio/ProjectCard";
+import { Reveal } from "../../../components/animations/Reveal";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -79,20 +80,20 @@ export default async function ServicePage({ params }: Props) {
       <Section labelledBy="overview-title">
         <Container>
           <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
-            <div className="lg:col-span-4" data-reveal>
+            <Reveal className="lg:col-span-4">
               <span className="flex size-14 items-center justify-center rounded-2xl bg-accent-soft text-accent">
                 <Icon aria-hidden className="size-6" strokeWidth={1.6} />
               </span>
               <Eyebrow className="mt-8">Overview</Eyebrow>
               <h2 id="overview-title" className="text-h3 mt-4 text-surface">{service.benefit}</h2>
-            </div>
-            <div className="space-y-6 lg:col-span-7 lg:col-start-6" data-reveal style={{ "--reveal-delay": "100ms" } as React.CSSProperties}>
+            </Reveal>
+            <Reveal className="space-y-6 lg:col-span-7 lg:col-start-6" style={{ "--reveal-delay": "100ms" } as React.CSSProperties}>
               {service.overview.map((p, i) => (
                 <p key={i} className={cn("leading-relaxed", i === 0 ? "text-[1.3rem] text-surface sm:text-[1.45rem]" : "text-lead text-muted-ink")}>
                   {p}
                 </p>
               ))}
-            </div>
+            </Reveal>
           </div>
         </Container>
       </Section>
@@ -103,16 +104,15 @@ export default async function ServicePage({ params }: Props) {
           <SectionHeading id="challenges-title" eyebrow="Challenges we solve" title="Sound familiar?" />
           <ol className="mt-14 grid gap-4 sm:grid-cols-2">
             {service.challenges.map((c, i) => (
-              <li
+              <Reveal as="li"
                 key={c.title}
-                data-reveal
                 style={{ "--reveal-delay": `${(i % 2) * 80}ms` } as React.CSSProperties}
                 className="rounded-panel border border-line bg-white p-7 hover-card spotlight relative lg:p-9"
               >
                 <span className="font-mono text-xs text-accent-ink">{String(i + 1).padStart(2, "0")}</span>
                 <h3 className="mt-6 text-[1.3rem] font-semibold leading-tight tracking-tight text-surface">{c.title}</h3>
                 <p className="mt-3 text-[15px] leading-relaxed text-muted-ink">{c.text}</p>
-              </li>
+              </Reveal>
             ))}
           </ol>
         </Container>
@@ -129,10 +129,10 @@ export default async function ServicePage({ params }: Props) {
           />
           <ul className="mt-14 grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
             {service.capabilities.map((c, i) => (
-              <li key={c.title} data-reveal style={{ "--reveal-delay": `${(i % 3) * 70}ms` } as React.CSSProperties} className="border-t-2 border-accent pt-6">
+              <Reveal as="li" key={c.title} style={{ "--reveal-delay": `${(i % 3) * 70}ms` } as React.CSSProperties} className="border-t-2 border-accent pt-6">
                 <h3 className="text-[1.2rem] font-semibold tracking-tight text-surface">{c.title}</h3>
                 <p className="mt-3 text-[15px] leading-relaxed text-muted-ink">{c.text}</p>
-              </li>
+              </Reveal>
             ))}
           </ul>
         </Container>
@@ -142,7 +142,7 @@ export default async function ServicePage({ params }: Props) {
       <Section labelledBy="deliverables-title" id="deliverables" className="scroll-mt-20">
         <Container>
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
-            <div className="lg:col-span-7" data-reveal>
+            <Reveal className="lg:col-span-7">
               <Eyebrow>Typical deliverables</Eyebrow>
               <h2 id="deliverables-title" className="text-h2 mt-6 text-ink">What you get.</h2>
               <ul className="mt-10 grid gap-x-8 sm:grid-cols-2">
@@ -153,8 +153,8 @@ export default async function ServicePage({ params }: Props) {
                 ))}
               </ul>
               <p className="mt-6 text-sm text-muted">Exact deliverables are confirmed in the project scope.</p>
-            </div>
-            <div className="lg:col-span-5" data-reveal style={{ "--reveal-delay": "120ms" } as React.CSSProperties}>
+            </Reveal>
+            <Reveal className="lg:col-span-5" style={{ "--reveal-delay": "120ms" } as React.CSSProperties}>
               <div className="rounded-panel border border-accent/15 bg-sand p-8">
                 <p className="text-label text-accent-ink">Technology considerations</p>
                 <ul className="mt-6 space-y-7">
@@ -166,7 +166,7 @@ export default async function ServicePage({ params }: Props) {
                   ))}
                 </ul>
               </div>
-            </div>
+            </Reveal>
           </div>
         </Container>
       </Section>
@@ -183,11 +183,11 @@ export default async function ServicePage({ params }: Props) {
           />
           <ol className="mt-14 grid gap-px overflow-hidden rounded-panel border border-line bg-line md:grid-cols-2 lg:grid-cols-4">
             {service.process.map((step, i) => (
-              <li key={step.title} data-reveal style={{ "--reveal-delay": `${i * 70}ms` } as React.CSSProperties} className="bg-white p-7 lg:p-8">
+              <Reveal as="li" key={step.title} style={{ "--reveal-delay": `${i * 70}ms` } as React.CSSProperties} className="bg-white p-7 lg:p-8">
                 <span className="flex size-9 items-center justify-center rounded-full bg-accent-soft font-mono text-xs text-accent-ink">{i + 1}</span>
                 <h3 className="mt-8 text-[1.15rem] font-semibold tracking-tight text-surface">{step.title}</h3>
                 <p className="mt-2.5 text-[15px] leading-relaxed text-muted-ink">{step.text}</p>
-              </li>
+              </Reveal>
             ))}
           </ol>
         </Container>
@@ -200,9 +200,9 @@ export default async function ServicePage({ params }: Props) {
             <SectionHeading id="related-work-title" eyebrow="Related work" title="Projects in this area." />
             <div className="mt-14 grid gap-14 md:grid-cols-2 md:gap-10">
               {related.map((p, i) => (
-                <div key={p.slug} data-reveal className={cn(i === 1 && "md:mt-20")}>
+                <Reveal key={p.slug} className={cn(i === 1 && "md:mt-20")}>
                   <ProjectCard project={p} />
-                </div>
+                </Reveal>
               ))}
             </div>
           </Container>

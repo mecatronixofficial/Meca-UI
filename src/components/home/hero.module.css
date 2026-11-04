@@ -1,0 +1,97 @@
+/* Robot-cell window: a light comet runs around its border. The conic layer is
+ * rotated with transform (compositor only) and clipped by the frame, which
+ * shows it through a 1.5px gap around the window. */
+.frame {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 1.5px;
+  border-radius: var(--radius-card);
+  background: rgb(11 13 18 / 0.08);
+  box-shadow: var(--shadow-window), 0 50px 120px -40px rgb(225 6 0 / 0.35);
+}
+
+.frame::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  top: 50%;
+  width: 135%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  background: conic-gradient(from 0deg, transparent 0 62%, rgb(225 6 0 / 0.15) 72%, #e10600 86%, #ffb3a8 91%, transparent 94%);
+  animation: spin 7s linear infinite;
+}
+
+.frame > * {
+  border-radius: calc(var(--radius-card) - 1.5px);
+}
+
+.frame[data-paused]::before {
+  animation-play-state: paused;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Floating status chips beside the window */
+.chip {
+  position: absolute;
+  z-index: 2;
+  display: none;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.95rem 0.6rem 0.7rem;
+  border: 1px solid rgb(255 255 255 / 0.7);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.78);
+  box-shadow: var(--shadow-lift);
+  backdrop-filter: blur(14px) saturate(1.4);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--color-surface);
+  animation: bob 6s ease-in-out infinite;
+}
+
+.chip:nth-of-type(2) {
+  animation-delay: -3s;
+}
+
+@media (min-width: 1024px) {
+  .chip { display: inline-flex; }
+}
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Scroll hint under the hero copy */
+.scroll {
+  position: relative;
+  width: 22px;
+  height: 34px;
+  border: 1.5px solid var(--color-line-strong);
+  border-radius: 999px;
+}
+
+.scroll::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 6px;
+  width: 3px;
+  height: 7px;
+  margin-left: -1.5px;
+  border-radius: 2px;
+  background: var(--color-accent);
+  animation: wheel 2s ease-in-out infinite;
+}
+
+@keyframes wheel {
+  0% { transform: translateY(0); opacity: 1; }
+  70% { transform: translateY(10px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 0; }
+}

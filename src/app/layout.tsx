@@ -1,10 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
-import RevealObserver from "../components/animations/RevealObserver";
+import PageWatermark from "../components/layout/PageWatermark";
+import PublicOnly from "../components/layout/PublicOnly";
 import PointerEffects from "../components/animations/PointerEffects";
+import PageLoader from "../components/animations/PageLoader";
 import MecaAssistant from "../components/assistant/MecaAssistant";
 import JsonLd from "../components/seo/JsonLd";
 import {
@@ -18,22 +20,24 @@ import {
   organizationJsonLd,
 } from "../lib/seo";
 
-const display = Space_Grotesk({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+// Self-hosted (latin variable woff2) so dev and builds never depend on reaching Google Fonts
+const display = localFont({
+  src: "./fonts/space-grotesk-latin-wght-normal.woff2",
+  weight: "300 700",
   variable: "--font-space-grotesk",
   display: "swap",
 });
 
-const sans = Inter({
-  subsets: ["latin"],
+const sans = localFont({
+  src: "./fonts/inter-latin-wght-normal.woff2",
+  weight: "100 900",
   variable: "--font-inter",
   display: "swap",
 });
 
-const mono = JetBrains_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500"],
+const mono = localFont({
+  src: "./fonts/jetbrains-mono-latin-wght-normal.woff2",
+  weight: "100 800",
   variable: "--font-jetbrains-mono",
   display: "swap",
 });
@@ -92,21 +96,33 @@ export default function RootLayout({
 }>) {
   return (
     // `js` class is added before paint so scroll-reveal styles only apply when JS runs
-    <html lang="en-IN" className={`${display.variable} ${sans.variable} ${mono.variable}`} suppressHydrationWarning>
+    <html
+      lang="en-IN"
+      className={`${display.variable} ${sans.variable} ${mono.variable}`}
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
+    >
       <head>
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
       </head>
       <body>
+        <PublicOnly>
+          <PageLoader />
+        </PublicOnly>
         <div id="top" />
         <JsonLd data={organizationJsonLd()} />
-        <Header />
+        <PublicOnly>
+          <Header />
+        </PublicOnly>
         <main id="main" tabIndex={-1} className="outline-none">
           {children}
         </main>
-        <Footer />
-        <RevealObserver />
-        <PointerEffects />
-        <MecaAssistant />
+        <PublicOnly>
+          <PageWatermark />
+          <Footer />
+          <PointerEffects />
+          <MecaAssistant />
+        </PublicOnly>
       </body>
     </html>
   );

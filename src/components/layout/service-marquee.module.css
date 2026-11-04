@@ -1,0 +1,44 @@
+﻿.robotStrip { border-block: 1px solid #e4e4e7; background: #fafafa; padding: 15px 0 20px; color: #18181b; background-image: linear-gradient(#18181b03 1px, transparent 1px), linear-gradient(90deg, #18181b03 1px, transparent 1px); background-size: 20px 20px; }
+.stripHeader { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; max-width: 1320px; margin: 0 auto 14px; padding-inline: 40px; color: #52525b; font-family: var(--font-mono); font-size: 9px; letter-spacing: .09em; line-height: 1.5; }
+.stripHeader > span { display: flex; align-items: center; gap: 8px; }
+.stripHeader svg { color: #b51228; }
+.trackWindow { display: flex; overflow: hidden; padding-block: 5px; mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent); }
+.robotTrack { display: flex; flex-shrink: 0; list-style: none; padding: 0; margin: 0; }
+.robotItem { display: flex; align-items: center; }
+.robotModule { position: relative; display: flex; align-items: center; gap: 14px; min-height: 76px; padding: 14px 18px; border: 1px solid #d9d9de; border-radius: 4px 14px 4px 14px; background: #fff; box-shadow: 0 3px 8px #18181b04; transition: border-color .3s, background .3s, box-shadow .3s; }
+.robotModule::before, .robotModule::after { position: absolute; content: ''; width: 5px; height: 5px; border: 1px solid #bcbcc4; border-radius: 50%; background: #fafafa; }
+.robotModule::before { left: 5px; top: 5px; }
+.robotModule::after { right: 5px; bottom: 5px; }
+.robotFace { position: relative; display: flex; align-items: center; justify-content: center; gap: 7px; width: 42px; height: 33px; flex-shrink: 0; border: 1px solid #e9b0ba; border-radius: 8px; background: #fff1f2; box-shadow: inset 0 -3px 0 #b5122807; }
+.robotFace::before { position: absolute; content: ''; width: 1px; height: 6px; background: #b51228; top: -7px; left: 50%; }
+.robotFace::after { position: absolute; content: ''; width: 5px; height: 5px; border-radius: 50%; background: #b51228; top: -11px; left: calc(50% - 2px); }
+.robotFace > span { width: 5px; height: 8px; border-radius: 3px; background: #b51228; transition: height .25s, transform .25s; }
+.moduleCopy { display: grid; gap: 7px; }
+.moduleCopy > span { color: #9f1020; font-family: var(--font-mono); font-size: 8px; letter-spacing: .12em; }
+.moduleCopy strong { white-space: nowrap; color: #27272a; font-family: var(--font-display); font-size: clamp(16px, 1.5vw, 21px); font-weight: 600; line-height: 1.1; letter-spacing: -.025em; }
+.moduleArrow { margin-left: 10px; color: #b51228; transition: transform .3s; }
+.circuitLink { position: relative; display: flex; align-items: center; justify-content: center; width: 34px; height: 20px; flex-shrink: 0; }
+.circuitLink::before { position: absolute; content: ''; width: 100%; border-top: 1px solid #d7b5bc; }
+.circuitLink > span { position: relative; width: 5px; height: 5px; border: 1px solid #b51228; background: #fafafa; transform: rotate(45deg); }
+.robotModule:focus-visible { outline: 2px solid #b51228; outline-offset: 2px; background: #fff6f7; }
+@media (prefers-reduced-motion: no-preference) { .robotTrack { animation: robotConveyor 80s linear infinite; } }
+.trackWindow:hover .robotTrack, .trackWindow:focus-within .robotTrack { animation-play-state: paused; }
+@keyframes robotConveyor { to { transform: translateX(-100%); } }
+@media (hover: hover) and (pointer: fine) {
+  .robotModule:hover { border-color: #b51228; background: #fffafb; box-shadow: 0 5px 14px -8px #b5122840; }
+  .robotModule:hover .robotFace > span { height: 4px; transform: translateY(-1px); }
+  .robotModule:hover .moduleArrow { transform: translate(2px, -2px); }
+}
+@media (max-width: 767px) {
+  .stripHeader { padding-inline: 20px; font-size: 8px; }
+  .stripHeader > span:last-child { display: none; }
+  .robotModule { min-height: 68px; padding: 12px 15px; gap: 11px; }
+  .robotFace { width: 36px; height: 29px; }
+  .circuitLink { width: 24px; }
+  .moduleArrow { margin-left: 4px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .trackWindow { overflow-x: auto; }
+  .duplicateTrack { display: none; }
+  .robotModule:hover .moduleArrow, .robotModule:hover .robotFace > span { transform: none; }
+}

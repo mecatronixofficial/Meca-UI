@@ -7,6 +7,7 @@ import { ContactCTA } from "../../components/sections/ContactCTA";
 import { Faq } from "../../components/sections/Faq";
 import { Container, Section } from "../../components/ui/Container";
 import { SectionHeading } from "../../components/ui/Heading";
+import { Reveal } from "../../components/animations/Reveal";
 
 export const metadata: Metadata = pageMetadata({
   title: "Our Software Development Process",
@@ -62,7 +63,7 @@ export default function ProcessPage() {
                 <span className="relative z-10 hidden size-14 items-center justify-center rounded-full border border-accent/30 bg-white font-mono text-sm text-accent-ink shadow-soft md:flex">
                   {s.n}
                 </span>
-                <div className="grid gap-10 lg:grid-cols-12" data-reveal>
+                <Reveal className="grid gap-10 lg:grid-cols-12">
                   <div className="lg:col-span-6">
                     <p className="font-mono text-xs text-accent-ink md:hidden">{s.n}</p>
                     <h3 className="text-h2 text-surface">{s.title}</h3>
@@ -85,7 +86,7 @@ export default function ProcessPage() {
                       <p className="mt-4 text-[15.5px] leading-relaxed">{s.fromYou}</p>
                     </div>
                   </div>
-                </div>
+                </Reveal>
               </li>
             ))}
           </ol>
@@ -103,11 +104,11 @@ export default function ProcessPage() {
           />
           <ul className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {expectations.map(({ icon: Icon, title, text }, i) => (
-              <li key={title} data-reveal style={{ "--reveal-delay": `${i * 70}ms` } as React.CSSProperties} className="rounded-panel border border-line bg-white p-7 hover-card spotlight relative">
+              <Reveal as="li" key={title} style={{ "--reveal-delay": `${i * 70}ms` } as React.CSSProperties} className="rounded-panel border border-line bg-white p-7 hover-card spotlight relative">
                 <Icon aria-hidden className="size-6 text-accent" strokeWidth={1.6} />
                 <h3 className="mt-10 text-[1.15rem] font-semibold text-ink">{title}</h3>
                 <p className="mt-3 text-[15px] leading-relaxed text-muted-ink">{text}</p>
-              </li>
+              </Reveal>
             ))}
           </ul>
         </Container>

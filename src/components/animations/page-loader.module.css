@@ -1,0 +1,97 @@
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: radial-gradient(ellipse at 50% 43%, var(--color-sand), transparent 58%), #fff;
+  opacity: 1;
+  transition: opacity 450ms ease, visibility 450ms;
+}
+
+/* Keep the server-rendered page usable when JavaScript is disabled. */
+.initial { display: none; }
+:global(.js) .initial { display: grid; }
+.leaving { opacity: 0; visibility: hidden; pointer-events: none; }
+
+.brand { display: flex; flex-direction: column; align-items: center; text-align: center; }
+
+.mark {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 144px;
+  height: 144px;
+  margin-bottom: 32px;
+  animation: appear 700ms var(--ease-out-expo) both;
+}
+
+.ring {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgb(225 6 0 / 0.12);
+  border-radius: 50%;
+}
+
+.ring::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border: 2px solid transparent;
+  border-top-color: var(--color-accent);
+  border-radius: inherit;
+  animation: orbit 1.8s linear infinite;
+}
+
+.logo { width: 57px; height: auto; }
+
+.wordmark {
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: clamp(26px, 6vw, 44px);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.12em;
+  text-indent: 0.12em;
+  animation: appear 750ms 120ms var(--ease-out-expo) both;
+}
+
+.tagline {
+  margin-top: 12px;
+  color: var(--color-muted-ink);
+  font-family: var(--font-mono);
+  font-size: clamp(8px, 2vw, 10px);
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  animation: appear 750ms 220ms var(--ease-out-expo) both;
+}
+
+.track {
+  width: 160px;
+  height: 2px;
+  margin-top: 36px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--color-line-strong);
+}
+
+.track span {
+  display: block;
+  width: 55%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-accent);
+  animation: loading 1.4s ease-in-out infinite;
+}
+
+.caption { margin-top: 14px; color: var(--color-muted-ink); font-size: 11px; letter-spacing: 0.04em; }
+
+@keyframes orbit { to { transform: rotate(360deg); } }
+@keyframes loading { from { transform: translateX(-110%); } to { transform: translateX(285%); } }
+@keyframes appear { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .loader { transition: none; }
+  .mark, .ring::after, .wordmark, .tagline, .track span { animation: none; }
+}

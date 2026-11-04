@@ -7,9 +7,9 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        // API routes aren't pages. (Keep /og crawlable: social bots that obey
-        // robots.txt need it to show the share image.)
-        disallow: ["/api/"],
+        // API routes and the admin panel aren't public pages. (Keep /og crawlable:
+        // social bots that obey robots.txt need it to show the share image.)
+        disallow: ["/api/", "/admin"],
       },
     ],
     sitemap: `${SITE_URL}/sitemap.xml`,

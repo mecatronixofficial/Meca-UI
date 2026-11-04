@@ -7,13 +7,16 @@ import { ArrowLink } from "../ui/Button";
 import { PauseOffscreen } from "../animations/PauseOffscreen";
 import { VisionScene } from "../visuals/VisionScene";
 import frame from "../visuals/VisionScene.module.css";
+import { Reveal } from "../animations/Reveal";
+import { Backdrop } from "../visuals/Backdrop";
 
 export function Intro() {
   return (
-    <Section labelledBy="intro-title">
-      <Container>
+    <Section labelledBy="intro-title" className="overflow-hidden">
+      <Backdrop image="contours" imageClassName="[mask-image:radial-gradient(ellipse_60%_70%_at_85%_30%,black,transparent_75%)]" />
+      <Container className="relative">
         <div className="grid gap-12 lg:grid-cols-12 lg:items-end lg:gap-10">
-          <div className="lg:col-span-7" data-reveal>
+          <Reveal className="lg:col-span-7">
             <Eyebrow>Who we are</Eyebrow>
             <h2 id="intro-title" className="text-h1 mt-6 text-surface">
               Your vision.
@@ -23,9 +26,9 @@ export function Intro() {
             <PauseOffscreen className="mt-10 max-w-[640px] lg:mt-12">
               <VisionScene className="block h-auto w-full" />
             </PauseOffscreen>
-          </div>
+          </Reveal>
 
-          <div className="lg:col-span-5" data-reveal style={{ "--reveal-delay": "100ms" } as React.CSSProperties}>
+          <Reveal className="lg:col-span-5" style={{ "--reveal-delay": "100ms" } as React.CSSProperties}>
             <PauseOffscreen>
               <div className={cn(frame.frame, "p-8 lg:p-10")}>
                 {/* Blueprint corner marks */}
@@ -50,14 +53,13 @@ export function Intro() {
                 </div>
               </div>
             </PauseOffscreen>
-          </div>
+          </Reveal>
         </div>
 
         <ul className="mt-16 grid gap-px overflow-hidden rounded-panel border border-line bg-line sm:grid-cols-2 lg:mt-24 lg:grid-cols-4">
           {capabilities.map((c, i) => (
-            <li
+            <Reveal as="li"
               key={c.title}
-              data-reveal
               style={{ "--reveal-delay": `${i * 70}ms` } as React.CSSProperties}
               className="spotlight group relative bg-white p-7 lg:p-8"
             >
@@ -65,7 +67,7 @@ export function Intro() {
               <h3 className="mt-10 text-[1.3rem] font-semibold leading-tight tracking-tight text-surface transition-colors duration-300 group-hover:text-accent-ink lg:mt-16">{c.title}</h3>
               <p className="mt-3 text-[15px] leading-relaxed text-muted-ink">{c.text}</p>
               <span aria-hidden className="mt-6 block h-px w-8 bg-accent transition-[width] duration-500 group-hover:w-16" />
-            </li>
+            </Reveal>
           ))}
         </ul>
       </Container>

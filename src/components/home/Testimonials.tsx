@@ -3,6 +3,7 @@ import { engagementModels } from "../../data/company";
 import { getVerifiedReviews } from "../../lib/backend";
 import { Container, Section } from "../ui/Container";
 import { SectionHeading } from "../ui/Heading";
+import { Reveal } from "../animations/Reveal";
 
 /**
  * Shows verified client reviews from the backend when there are any.
@@ -21,7 +22,7 @@ function ReviewGrid({ reviews }: { reviews: Awaited<ReturnType<typeof getVerifie
         <SectionHeading id="reviews-title" eyebrow="Client words" title="What our clients say." />
         <ul className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {reviews.map((r, i) => (
-            <li key={r.id} data-reveal style={{ "--reveal-delay": `${i * 80}ms` } as React.CSSProperties}>
+            <Reveal as="li" key={r.id} style={{ "--reveal-delay": `${i * 80}ms` } as React.CSSProperties}>
               <figure className="hover-card spotlight relative flex h-full flex-col rounded-panel border border-line bg-paper p-8">
                 <span aria-hidden className="font-display text-5xl leading-none text-accent">&ldquo;</span>
                 <blockquote className="mt-4 flex-1 text-[16.5px] leading-relaxed text-surface">{r.quote}</blockquote>
@@ -30,7 +31,7 @@ function ReviewGrid({ reviews }: { reviews: Awaited<ReturnType<typeof getVerifie
                   {r.company && <p className="text-sm text-muted-ink">{r.company}</p>}
                 </figcaption>
               </figure>
-            </li>
+            </Reveal>
           ))}
         </ul>
       </Container>
@@ -51,9 +52,8 @@ function Engagement() {
         />
         <ol className="mt-14 grid gap-5 lg:mt-20 lg:grid-cols-3">
           {engagementModels.map((m, i) => (
-            <li
+            <Reveal as="li"
               key={m.title}
-              data-reveal
               style={{ "--reveal-delay": `${i * 80}ms` } as React.CSSProperties}
               className="hover-card spotlight group relative flex flex-col rounded-panel border border-line bg-white p-8 lg:p-9"
             >
@@ -67,7 +67,7 @@ function Engagement() {
                   </li>
                 ))}
               </ul>
-            </li>
+            </Reveal>
           ))}
         </ol>
       </Container>

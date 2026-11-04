@@ -11,6 +11,7 @@ import { SectionHeading } from "../../components/ui/Heading";
 import { serviceIcons } from "../../components/ui/icons";
 import { ServiceVisual } from "../../components/visuals/ServiceVisual";
 import { TechSection } from "../../components/home/TechSection";
+import { Reveal } from "../../components/animations/Reveal";
 
 export const metadata: Metadata = pageMetadata({
   title: "Software Development Services in Coimbatore",
@@ -57,7 +58,7 @@ export default function ServicesPage() {
               const flip = i % 2 === 1;
               return (
                 <article key={s.slug} id={s.slug} className="grid scroll-mt-28 items-center gap-10 lg:grid-cols-12 lg:gap-16">
-                  <div className={cn("min-w-0 lg:col-span-5", flip && "lg:order-2")} data-reveal>
+                  <Reveal className={cn("min-w-0 lg:col-span-5", flip && "lg:order-2")}>
                     <div className="flex items-center gap-4">
                       <span className="flex size-12 items-center justify-center rounded-2xl bg-accent-soft text-accent">
                         <Icon aria-hidden className="size-5" strokeWidth={1.6} />
@@ -81,10 +82,9 @@ export default function ServicesPage() {
                       Explore {s.navLabel}
                       <ArrowRight aria-hidden className="size-4 transition-transform group-hover:translate-x-0.5" />
                     </Link>
-                  </div>
-                  <div
+                  </Reveal>
+                  <Reveal
                     className={cn("relative min-w-0 lg:col-span-7", flip && "lg:order-1")}
-                    data-reveal
                     style={{ "--reveal-delay": "120ms" } as React.CSSProperties}
                   >
                     <div className={cn("relative overflow-hidden rounded-panel p-6 sm:p-10", i % 2 ? "bg-sand" : "bg-paper")}>
@@ -93,7 +93,7 @@ export default function ServicesPage() {
                         <ServiceVisual kind={s.visual} />
                       </div>
                     </div>
-                  </div>
+                  </Reveal>
                 </article>
               );
             })}
@@ -110,14 +110,14 @@ export default function ServicesPage() {
             title="Most projects combine more than one service."
             intro="A manufacturer might need a website for buyers, an ERP for the factory and a mobile app for dispatch. We'll help you decide what to build first — and what can wait."
           />
-          <div className="mt-12 flex flex-wrap gap-3" data-reveal>
+          <Reveal className="mt-12 flex flex-wrap gap-3">
             <Link href="/contact" className="inline-flex h-12 items-center gap-2 rounded-full bg-accent-strong px-6 text-[15px] font-medium text-white shadow-glow transition-[background-color,box-shadow] hover:bg-accent-ink hover:shadow-glow-lg">
               Talk through your requirements <ArrowRight aria-hidden className="size-4" />
             </Link>
             <Link href="/process" className="inline-flex h-12 items-center rounded-full border border-line-strong px-6 text-[15px] font-medium text-ink transition-colors hover:border-ink hover:bg-ink hover:text-white">
               See how we work
             </Link>
-          </div>
+          </Reveal>
         </Container>
       </Section>
 

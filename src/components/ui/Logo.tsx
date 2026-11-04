@@ -10,8 +10,8 @@ export function Logo({ className, tone = "light", priority }: { className?: stri
       <Image
         src={site.logo}
         alt=""
-        width={296}
-        height={387}
+        width={site.logoWidth}
+        height={site.logoHeight}
         priority={priority}
         className="h-8 w-auto transition-transform duration-500 group-hover:scale-105 sm:h-9"
       />

@@ -1,72 +1,131 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useId, useState } from "react";
+import {
+  AnimatePresence,
+  LayoutGroup,
+  motion,
+  useReducedMotion,
+} from "framer-motion";
+import { ArrowDownRight } from "lucide-react";
 import { projectFilters, type Project } from "../../data/projects";
-import { cn } from "../../lib/cn";
-import { ProjectCard } from "./ProjectCard";
-
-// Alternating editorial rhythm: wide, narrow-offset, narrow, wide...
-const pattern = [
-  { col: "md:col-span-7", aspect: "aspect-[16/11]", offset: "" },
-  { col: "md:col-span-5", aspect: "aspect-[4/5]", offset: "md:mt-28" },
-  { col: "md:col-span-5", aspect: "aspect-[4/5]", offset: "" },
-  { col: "md:col-span-7", aspect: "aspect-[16/11]", offset: "md:mt-28" },
-];
+import { WorkProjectCard } from "./work/WorkProjectCard";
+import styles from "./work/work.module.css";
 
 /** Filterable project grid for /work. */
 export function WorkGrid({ projects }: { projects: Project[] }) {
   const [filter, setFilter] = useState<string>("all");
-
-  const visible = useMemo(
-    () => (filter === "all" ? projects : projects.filter((p) => p.industryKey === filter)),
-    [filter, projects],
+  const reducedMotion = useReducedMotion();
+  const groupId = useId();
+  const counts: Record<string, number> = { all: projects.length };
+  for (const project of projects)
+    counts[project.industryKey] = (counts[project.industryKey] ?? 0) + 1;
+  const knownKeys = new Set<string>(projectFilters.map((item) => item.key));
+  const filters: { key: string; label: string }[] = [
+    ...projectFilters.filter((item) => item.key === "all" || counts[item.key]),
+    ...Array.from(new Set(projects.map((project) => project.industryKey)))
+      .filter((key) => !knownKeys.has(key))
+      .map((key) => ({
+        key,
+        label: projects.find((project) => project.industryKey === key)!
+          .industry,
+      })),
+  ];
+  const visible =
+    filter === "all"
+      ? projects
+      : projects.filter((project) => project.industryKey === filter);
+  const featured = visible.find(
+    (project) => project.slug === "thangavel-textile",
   );
-
-  const counts = useMemo(() => {
-    const c: Record<string, number> = { all: projects.length };
-    for (const p of projects) c[p.industryKey] = (c[p.industryKey] ?? 0) + 1;
-    return c;
-  }, [projects]);
+  const ordered = featured
+    ? [featured, ...visible.filter((project) => project !== featured)]
+    : visible;
 
   return (
     <>
-      <div role="group" aria-label="Filter projects by industry" className="flex flex-wrap gap-2">
-        {projectFilters
-          .filter((f) => counts[f.key])
-          .map((f) => {
-            const active = filter === f.key;
-            return (
+      <LayoutGroup id={groupId}>
+        <div className={styles.filterToolbar}>
+          <div
+            role="group"
+            aria-label="Filter projects by industry"
+            className={styles.filters}
+          >
+            {filters.map((item) => (
               <button
-                key={f.key}
+                key={item.key}
                 type="button"
-                aria-pressed={active}
-                onClick={() => setFilter(f.key)}
-                className={cn(
-                  "inline-flex h-10 items-center gap-2 rounded-full border px-4 text-[14.5px] transition-colors",
-                  active ? "border-accent bg-accent text-white shadow-glow" : "border-line-strong text-surface hover:border-accent hover:text-accent-ink",
-                )}
+                aria-pressed={filter === item.key}
+                aria-controls="work-project-gallery"
+                onClick={() => setFilter(item.key)}
               >
-                {f.label}
-                <span className={cn("font-mono text-[11px]", active ? "text-white/80" : "text-muted-ink")}>{counts[f.key]}</span>
+                {filter === item.key && (
+                  <motion.span
+                    className={styles.activeFilter}
+                    layoutId="active-category"
+                    transition={{ duration: reducedMotion ? 0 : 0.25 }}
+                  />
+                )}
+                <span>{item.key === "all" ? "All Work" : item.label}</span>
+                <span className={styles.filterCount}>
+                  {String(counts[item.key] ?? 0).padStart(2, "0")}
+                </span>
               </button>
-            );
-          })}
-      </div>
-
-      <p className="sr-only" aria-live="polite">
-        Showing {visible.length} {visible.length === 1 ? "project" : "projects"}
-      </p>
-
-      <ul className="mt-14 grid gap-16 md:grid-cols-12 md:gap-x-10 md:gap-y-20 lg:gap-x-16">
-        {visible.map((p, i) => {
-          const slot = pattern[i % pattern.length];
-          return (
-            <li key={p.slug} className={cn(slot.col, slot.offset, "motion-safe:animate-rise")} style={{ animationDelay: `${(i % 4) * 60}ms` }}>
-              <ProjectCard project={p} aspect={slot.aspect} headingLevel="h2" priority={i < 2} />
-            </li>
-          );
-        })}
-      </ul>
+            ))}
+          </div>
+          <p className={styles.filterResult} role="status" aria-live="polite">
+            <ArrowDownRight size={17} aria-hidden="true" />
+            <span>
+              SHOWING <strong>{String(visible.length).padStart(2, "0")}</strong>{" "}
+              / {String(projects.length).padStart(2, "0")} PROJECTS
+            </span>
+          </p>
+        </div>
+        <ul
+          id="work-project-gallery"
+          className={styles.projectGallery}
+          aria-label="Selected projects"
+        >
+          <AnimatePresence initial={false} mode="popLayout">
+            {ordered.map((project, index) => {
+              const isFeatured = project === featured;
+              const slot = index - (featured ? 1 : 0);
+              const wide = slot % 4 === 1 || slot % 4 === 2;
+              return (
+                <motion.li
+                  key={project.slug}
+                  layout={reducedMotion ? false : "position"}
+                  initial={{ opacity: 0, y: reducedMotion ? 0 : 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: reducedMotion ? 0 : -8 }}
+                  transition={{ duration: reducedMotion ? 0 : 0.24 }}
+                  className={
+                    isFeatured
+                      ? styles.featuredSlot
+                      : ordered.length === 1
+                        ? styles.singleSlot
+                        : wide
+                          ? styles.galleryWide
+                          : styles.galleryMedium
+                  }
+                  data-project-slug={project.slug}
+                >
+                  <WorkProjectCard
+                    project={project}
+                    featured={isFeatured}
+                    index={projects.indexOf(project)}
+                  />
+                </motion.li>
+              );
+            })}
+          </AnimatePresence>
+        </ul>
+      </LayoutGroup>
+      {projects.length === 0 && (
+        <p className={styles.emptyGallery}>
+          Project details will appear here when work is added to the portfolio.
+        </p>
+      )}
     </>
   );
 }

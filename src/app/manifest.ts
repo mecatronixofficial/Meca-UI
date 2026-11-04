@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { COMPANY_NAME, DEFAULT_DESCRIPTION, LOGO_PATH, SITE_NAME } from "../lib/seo";
+import { brandLogo } from "../lib/brand";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
@@ -14,8 +15,8 @@ export default function manifest(): MetadataRoute.Manifest {
     icons: [
       {
         src: LOGO_PATH,
-        sizes: "292x352",
-        type: "image/png",
+        sizes: `${brandLogo.width}x${brandLogo.height}`,
+        type: brandLogo.type,
         purpose: "any",
       },
     ],

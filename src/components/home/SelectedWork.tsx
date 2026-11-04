@@ -3,6 +3,7 @@ import { Container, Section } from "../ui/Container";
 import { SectionHeading } from "../ui/Heading";
 import { Button } from "../ui/Button";
 import { ProjectCard } from "../portfolio/ProjectCard";
+import { Reveal } from "../animations/Reveal";
 
 export function SelectedWork() {
   const [feature, a, b, c, d] = projects;
@@ -20,33 +21,33 @@ export function SelectedWork() {
 
         <div className="mt-16 space-y-20 lg:mt-24 lg:space-y-28">
           {feature && (
-            <div data-reveal>
+            <Reveal>
               <ProjectCard project={feature} variant="feature" aspect="aspect-[16/10]" />
-            </div>
+            </Reveal>
           )}
 
           <div className="grid gap-16 md:grid-cols-2 md:gap-10 lg:gap-16">
-            {a && <div data-reveal><ProjectCard project={a} /></div>}
+            {a && <Reveal><ProjectCard project={a} /></Reveal>}
             {b && (
-              <div data-reveal className="md:mt-32" style={{ "--reveal-delay": "100ms" } as React.CSSProperties}>
+              <Reveal className="md:mt-32" style={{ "--reveal-delay": "100ms" } as React.CSSProperties}>
                 <ProjectCard project={b} aspect="aspect-[4/5]" />
-              </div>
+              </Reveal>
             )}
           </div>
 
           <div className="grid gap-16 md:grid-cols-12 md:gap-10 lg:gap-16">
-            {c && <div data-reveal className="md:col-span-5 md:mt-24"><ProjectCard project={c} aspect="aspect-[4/5]" /></div>}
+            {c && <Reveal className="md:col-span-5 md:mt-24"><ProjectCard project={c} aspect="aspect-[4/5]" /></Reveal>}
             {d && (
-              <div data-reveal className="md:col-span-7" style={{ "--reveal-delay": "100ms" } as React.CSSProperties}>
+              <Reveal className="md:col-span-7" style={{ "--reveal-delay": "100ms" } as React.CSSProperties}>
                 <ProjectCard project={d} aspect="aspect-[16/11]" />
-              </div>
+              </Reveal>
             )}
           </div>
         </div>
 
-        <div className="mt-20 flex justify-center" data-reveal>
+        <Reveal className="mt-20 flex justify-center">
           <Button href="/work" variant="outline-light" size="lg" arrow>View all work</Button>
-        </div>
+        </Reveal>
       </Container>
     </Section>
   );

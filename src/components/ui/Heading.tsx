@@ -1,4 +1,5 @@
 import { cn } from "../../lib/cn";
+import { Reveal } from "../animations/Reveal";
 
 /** Small mono label above headings, e.g. "02 — Selected work". */
 export function Eyebrow({
@@ -16,7 +17,7 @@ export function Eyebrow({
     <p
       className={cn(
         "text-label inline-flex items-center gap-2.5",
-        tone === "light" ? "text-muted-ink" : "text-muted",
+        tone === "light" ? "text-muted-ink" : "text-white/60",
         className,
       )}
     >
@@ -49,34 +50,33 @@ export function SectionHeading({
   if (align === "split") {
     return (
       <div className={cn("grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-10", className)}>
-        <div className="lg:col-span-7" data-reveal>
+        <Reveal className="lg:col-span-7">
           {eyebrow && <Eyebrow tone={tone} className="mb-5">{eyebrow}</Eyebrow>}
           <Tag id={id} className={cn(Tag === "h1" ? "text-h1" : "text-h2", tone === "dark" ? "text-white" : "text-surface")}>
             {title}
           </Tag>
-        </div>
+        </Reveal>
         {intro && (
-          <p
-            data-reveal
+          <Reveal as="p"
             style={{ "--reveal-delay": "80ms" } as React.CSSProperties}
-            className={cn("text-lead max-w-xl lg:col-span-5 lg:justify-self-end", tone === "dark" ? "text-muted" : "text-muted-ink")}
+            className={cn("text-lead max-w-xl lg:col-span-5 lg:justify-self-end", tone === "dark" ? "text-white/65" : "text-muted-ink")}
           >
             {intro}
-          </p>
+          </Reveal>
         )}
       </div>
     );
   }
 
   return (
-    <div className={cn("max-w-3xl", className)} data-reveal>
+    <Reveal className={cn("max-w-3xl", className)}>
       {eyebrow && <Eyebrow tone={tone} className="mb-5">{eyebrow}</Eyebrow>}
       <Tag id={id} className={cn(Tag === "h1" ? "text-h1" : "text-h2", tone === "dark" ? "text-white" : "text-surface")}>
         {title}
       </Tag>
       {intro && (
-        <p className={cn("text-lead mt-6 max-w-2xl", tone === "dark" ? "text-muted" : "text-muted-ink")}>{intro}</p>
+        <p className={cn("text-lead mt-6 max-w-2xl", tone === "dark" ? "text-white/65" : "text-muted-ink")}>{intro}</p>
       )}
-    </div>
+    </Reveal>
   );
 }

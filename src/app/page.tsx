@@ -48,7 +48,7 @@ export default function Page() {
       <TechSection />
       <Testimonials />
       <InsightsSection />
-      <ContactCTA />
+      <ContactCTA tone="dark" />
     </>
   );
 }

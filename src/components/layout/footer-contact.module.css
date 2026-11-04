@@ -1,0 +1,106 @@
+﻿.contactContainer { padding-top: 28px; }
+.contactBand { position: relative; isolation: isolate; display: grid; grid-template-columns: 104px minmax(0, 1fr) minmax(230px, .6fr); align-items: center; gap: 28px; padding: 26px 28px; border: 1px solid #e4dadd; border-radius: 6px 22px 6px 22px; background: linear-gradient(115deg, #fff, #fff8f9); box-shadow: 0 8px 24px -20px #9f102030; }
+.contactBand::before, .contactBand::after { position: absolute; content: ''; width: 6px; height: 6px; border: 1px solid #d8b9c1; border-radius: 50%; background: #fff; pointer-events: none; }
+.contactBand::before { left: 8px; top: 8px; }
+.contactBand::after { right: 8px; bottom: 8px; }
+.robotPortrait { position: relative; width: 104px; height: 106px; display: grid; place-items: center; border: 1px solid #f2d8df; border-radius: 18px; background-color: #fff; background-image: linear-gradient(#b5122807 1px, transparent 1px), linear-gradient(90deg, #b5122807 1px, transparent 1px); background-size: 12px 12px; }
+.antenna { position: absolute; top: 15px; left: 50%; height: 10px; width: 2px; background: #b51228; }
+.antenna::before { content: ''; position: absolute; width: 6px; height: 6px; left: -2px; top: -4px; border-radius: 50%; background: #b51228; box-shadow: 0 0 0 3px #fff1f2; }
+.robotHead { position: relative; display: flex; align-items: start; justify-content: center; gap: 12px; width: 65px; height: 46px; padding-top: 11px; border: 2px solid #c68290; border-radius: 12px; background: linear-gradient(#fff, #fff1f2); box-shadow: inset 0 -4px 0 #b5122808, -5px 0 0 -2px #e8c2cb, 5px 0 0 -2px #e8c2cb; }
+.robotHead > span { width: 7px; height: 11px; border-radius: 4px; background: #b51228; transition: transform .3s, height .3s; }
+.robotHead > i { position: absolute; bottom: 8px; width: 17px; height: 5px; border-bottom: 2px solid #b51228; border-radius: 0 0 9px 9px; }
+.robotShoulders { position: absolute; bottom: 11px; left: 26px; right: 26px; height: 11px; border: 1px solid #d8a3b0; border-radius: 12px 12px 4px 4px; background: #fff1f2; }
+.contactIntro { min-width: 0; }
+.eyebrow { display: flex; align-items: center; gap: 7px; font-family: var(--font-mono); font-size: 8px; line-height: 1.7; letter-spacing: .09em; color: #9f1020; }
+.contactIntro h2 { margin-top: 10px; font-family: var(--font-display); font-size: clamp(24px, 2.6vw, 34px); line-height: 1.1; letter-spacing: -.05em; font-weight: 700; color: #18181b; }
+.contactIntro h2 > span { color: #b51228; }
+.emailLink { display: inline-flex; max-width: 100%; min-height: 44px; align-items: center; gap: 12px; margin-top: 9px; font-family: var(--font-display); color: #27272a; font-size: clamp(17px, 1.9vw, 24px); font-weight: 500; line-height: 1.3; letter-spacing: -.025em; transition: color .3s; }
+.emailLink > span { min-width: 0; overflow-wrap: anywhere; }
+.emailLink > svg { flex-shrink: 0; color: #b51228; transition: transform .3s; }
+.contactNote { margin-top: 1px; font-size: 11px; line-height: 1.7; color: #71717a; }
+.channels { display: grid; gap: 9px; min-width: 0; }
+.channel { display: flex; align-items: center; gap: 11px; min-height: 62px; min-width: 0; padding: 10px 13px; border: 1px solid #e8dee1; border-radius: 11px; background: #fff; transition: translate .3s, border-color .3s, box-shadow .3s, background .3s; }
+.channelIcon { display: grid; place-items: center; width: 33px; height: 33px; flex-shrink: 0; border: 1px solid #f5dbe2; border-radius: 9px; background: #fff6f7; color: #b51228; transition: transform .3s, background .3s, color .3s; }
+.channelCopy { min-width: 0; flex: 1; }
+.channelCopy > span { display: block; font-family: var(--font-mono); color: #71717a; font-size: 9px; line-height: 1.5; }
+.channelCopy > strong { display: block; margin-top: 3px; color: #27272a; font-size: 12px; font-weight: 500; line-height: 1.5; overflow-wrap: anywhere; }
+.channelArrow { flex-shrink: 0; color: #b51228; transition: transform .3s; }
+.contactBand a:focus-visible { outline: 2px solid #b51228; outline-offset: 3px; }
+.channel:focus-visible { background: #fff1f2; }
+@media (hover: hover) and (pointer: fine) {
+  .contactBand:hover .robotHead > span { height: 5px; transform: translateY(2px); }
+  .emailLink:hover { color: #b51228; }
+  .emailLink:hover > svg, .channel:hover .channelArrow { transform: translate(3px, -3px); }
+  .channel:hover { translate: 0 -2px; border-color: #d59ba9; background: #fffafb; box-shadow: 0 7px 18px -13px #9f102060; }
+  .channel:hover .channelIcon { background: #b51228; color: #fff; transform: rotate(-5deg); }
+}
+@media (max-width: 1100px) {
+  .contactBand { grid-template-columns: 80px minmax(0, 1fr) 230px; gap: 20px; padding: 22px; }
+  .robotPortrait { width: 80px; height: 98px; }
+  .robotHead { width: 56px; }
+  .robotShoulders { left: 18px; right: 18px; }
+  .contactIntro h2 { font-size: 27px; }
+  .emailLink { font-size: 20px; }
+}
+@media (max-width: 767px) {
+  .contactContainer { padding-top: 20px; }
+  .contactBand { grid-template-columns: 64px minmax(0, 1fr); align-items: start; gap: 18px 15px; padding: 22px 18px 18px; }
+  .robotPortrait { width: 64px; height: 78px; border-radius: 13px; margin-top: 3px; }
+  .robotHead { width: 44px; height: 35px; border-radius: 9px; gap: 8px; padding-top: 8px; }
+  .robotHead > span { width: 5px; height: 7px; }
+  .robotHead > i { bottom: 5px; width: 13px; height: 4px; }
+  .robotShoulders { bottom: 5px; left: 15px; right: 15px; height: 8px; }
+  .antenna { top: 9px; }
+  .eyebrow { font-size: 7px; letter-spacing: .03em; }
+  .eyebrow svg { display: none; }
+  .contactIntro h2 { margin-top: 7px; font-size: clamp(24px, 5.6vw, 32px); }
+  .emailLink { font-size: 17px; gap: 7px; margin-top: 5px; }
+  .emailLink > svg { width: 17px; }
+  .contactNote { font-size: 10px; }
+  .channels { grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .channel { padding: 10px; gap: 9px; }
+  .channelArrow { display: none; }
+}
+@media (max-width: 430px) { .channels { grid-template-columns: minmax(0, 1fr); } .channelArrow { display: block; } }
+@media (max-width: 374px) { .contactBand { grid-template-columns: minmax(0, 1fr); } .robotPortrait { display: none; } .contactIntro h2 { font-size: 27px; } .emailLink { font-size: 19px; } }
+@media (prefers-reduced-motion: reduce) { .contactBand *, .contactBand *::before, .contactBand *::after { transition: none; } .channel:hover { translate: none; } .emailLink:hover > svg, .channel:hover .channelArrow, .channel:hover .channelIcon, .contactBand:hover .robotHead > span { transform: none; } }
+
+/* Conversation panel motion: entrance, robot greeting, and contact feedback. */
+.contactBand { transition: translate .3s ease-out, border-color .3s, box-shadow .3s; }
+.contactBand::before, .contactBand::after { transition: background .3s, border-color .3s, box-shadow .3s; }
+.robotPortrait { overflow: hidden; transition: border-color .3s, box-shadow .3s; }
+.robotPortrait::after { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 1px; opacity: 0; background: linear-gradient(90deg, transparent, #b5122850, transparent); pointer-events: none; }
+.robotHead { transition: transform .35s ease-out; }
+.contactIntro h2 > span { position: relative; display: inline-block; }
+.contactIntro h2 > span::after { content: ''; position: absolute; left: 0; right: 0; bottom: -4px; height: 2px; border-radius: 2px; background: #b5122840; transform: scaleX(0); transform-origin: left; transition: transform .35s ease-out; }
+.emailLink > span { position: relative; }
+.emailLink > span::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 1px; background: #b51228; transform: scaleX(0); transform-origin: left; transition: transform .3s ease-out; }
+.channel { position: relative; isolation: isolate; overflow: hidden; }
+.channel::before { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(100deg, #fff1f2, #fffafb); transform: translateX(-102%); transition: transform .35s ease-out; pointer-events: none; }
+.channel:focus-visible::before { transform: translateX(0); }
+.emailLink:focus-visible > span::after, .contactBand:focus-within .contactIntro h2 > span::after { transform: scaleX(1); }
+.contactBand:focus-within { border-color: #cf8799; box-shadow: 0 12px 30px -20px #9f102066; }
+@media (prefers-reduced-motion: no-preference) {
+  .contactBand[data-revealed] .robotPortrait { animation: robotArrive .65s .08s both; }
+  .contactBand[data-revealed] .contactIntro { animation: robotArrive .6s .14s both; }
+  .contactBand[data-revealed] .channel { animation: robotArrive .55s .22s both; }
+  .contactBand[data-revealed] .channel:nth-child(2) { animation-delay: .3s; }
+  .contactBand[data-revealed] .robotHead > span { animation: robotBlink 6s 1s 3; }
+  .contactBand[data-revealed] .robotPortrait::after { animation: robotScan 1.2s .6s both; }
+}
+@keyframes robotArrive { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes robotBlink { 0%, 42%, 46%, 100% { scale: 1 1; } 44% { scale: 1 .15; } }
+@keyframes robotScan { 0% { opacity: 0; translate: 0 0; } 15%, 80% { opacity: 1; } 100% { opacity: 0; translate: 0 105px; } }
+@media (hover: hover) and (pointer: fine) {
+  .contactBand:hover { translate: 0 -3px; border-color: #d59ba9; box-shadow: 0 16px 32px -22px #9f102066; }
+  .contactBand:hover::before, .contactBand:hover::after { border-color: #b51228; background: #b51228; box-shadow: 0 0 0 3px #b5122809; }
+  .contactBand:hover .robotPortrait { border-color: #d59ba9; box-shadow: 0 6px 20px -14px #b5122840; }
+  .contactBand:hover .robotHead { transform: rotate(-4deg) translateY(-2px); }
+  .contactBand:hover .contactIntro h2 > span::after, .emailLink:hover > span::after { transform: scaleX(1); }
+  .channel:hover::before { transform: translateX(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .contactBand, .contactBand::before, .contactBand::after, .contactBand *, .contactBand *::before, .contactBand *::after { animation: none !important; transition: none !important; }
+  .contactBand:hover { translate: none; }
+  .contactBand:hover .robotHead { transform: none; }
+}

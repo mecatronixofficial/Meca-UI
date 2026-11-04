@@ -1,0 +1,275 @@
+/*
+ * Layered, animated section backgrounds for the home page.
+ * Every loop is transform/opacity only, so it runs on the compositor; the
+ * whole stack pauses while offscreen (PauseOffscreen sets [data-paused]).
+ * With reduced motion the global rule in globals.css jumps each loop to its
+ * final frame, which is always a calm, valid state.
+ */
+
+.root {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  --beam: rgb(225 6 0 / 0.55);
+  --line: rgb(11 13 18 / 0.05);
+  --dot: rgb(225 6 0 / 0.55);
+}
+
+.dark {
+  --beam: rgb(255 82 71 / 0.85);
+  --line: rgb(255 255 255 / 0.06);
+  --dot: rgb(255 140 130 / 0.8);
+}
+
+.root[data-paused],
+.root[data-paused] *,
+.root[data-paused] *::before,
+.root[data-paused] *::after {
+  animation-play-state: paused !important;
+}
+
+/* ---------- Background image with a slow camera drift ---------- */
+
+.image {
+  position: absolute;
+  inset: -5%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  animation: drift 46s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.circuit { background-image: url("/assets/backgrounds/circuit-light.svg"); }
+.dark .circuit { background-image: url("/assets/backgrounds/circuit-dark.svg"); }
+.contours { background-image: url("/assets/backgrounds/contours-light.svg"); }
+.dark .contours { background-image: url("/assets/backgrounds/contours-dark.svg"); }
+
+@keyframes drift {
+  from { transform: translate3d(-1.5%, -1%, 0) scale(1); }
+  to { transform: translate3d(1.5%, 1.2%, 0) scale(1.06); }
+}
+
+/* ---------- Aurora: three soft light sources orbiting slowly ---------- */
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  will-change: transform;
+}
+
+.blobA {
+  top: -22vmax;
+  right: -14vmax;
+  width: 62vmax;
+  height: 62vmax;
+  background: radial-gradient(closest-side, rgb(225 6 0 / 0.2), rgb(225 6 0 / 0.06) 55%, transparent);
+  animation: orbitA 24s ease-in-out infinite alternate;
+}
+
+.blobB {
+  top: 28%;
+  left: -18vmax;
+  width: 48vmax;
+  height: 48vmax;
+  background: radial-gradient(closest-side, rgb(255 110 80 / 0.18), rgb(255 110 80 / 0.05) 55%, transparent);
+  animation: orbitB 30s ease-in-out infinite alternate;
+}
+
+.blobC {
+  bottom: -20vmax;
+  left: 35%;
+  width: 44vmax;
+  height: 44vmax;
+  background: radial-gradient(closest-side, rgb(110 10 15 / 0.14), rgb(110 10 15 / 0.04) 55%, transparent);
+  animation: orbitC 36s ease-in-out infinite alternate;
+}
+
+.dark .blobA { background: radial-gradient(closest-side, rgb(225 6 0 / 0.42), rgb(225 6 0 / 0.12) 55%, transparent); }
+.dark .blobB { background: radial-gradient(closest-side, rgb(255 92 70 / 0.24), rgb(255 92 70 / 0.06) 55%, transparent); }
+.dark .blobC { background: radial-gradient(closest-side, rgb(160 20 30 / 0.4), rgb(160 20 30 / 0.1) 55%, transparent); }
+
+@keyframes orbitA {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-8vmax, 6vmax, 0) scale(1.12); }
+  100% { transform: translate3d(-3vmax, 12vmax, 0) scale(0.94); }
+}
+
+@keyframes orbitB {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(10vmax, -4vmax, 0) scale(0.9); }
+  100% { transform: translate3d(6vmax, 8vmax, 0) scale(1.1); }
+}
+
+@keyframes orbitC {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  100% { transform: translate3d(-14vmax, -8vmax, 0) scale(1.15); }
+}
+
+/* ---------- Engineering grid with light travelling along its lines ---------- */
+
+.grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, var(--line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+.beam {
+  position: absolute;
+  overflow: hidden;
+}
+
+.beamY {
+  top: 0;
+  bottom: 0;
+  left: calc(var(--at) * 64px);
+  width: 1px;
+}
+
+.beamX {
+  left: 0;
+  right: 0;
+  top: calc(var(--at) * 64px);
+  height: 1px;
+}
+
+.beam::after {
+  content: "";
+  position: absolute;
+  opacity: 0;
+  animation: var(--dur) linear var(--delay) infinite;
+}
+
+.beamY::after {
+  left: 0;
+  top: -28%;
+  width: 1px;
+  height: 28%;
+  background: linear-gradient(to bottom, transparent, var(--beam), transparent);
+  animation-name: fall;
+}
+
+.beamX::after {
+  top: 0;
+  left: -22%;
+  width: 22%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--beam), transparent);
+  animation-name: slide;
+}
+
+@keyframes fall {
+  0% { transform: translateY(0); opacity: 0; }
+  10%, 80% { opacity: 1; }
+  100% { transform: translateY(460%); opacity: 0; }
+}
+
+@keyframes slide {
+  0% { transform: translateX(0); opacity: 0; }
+  10%, 80% { opacity: 1; }
+  100% { transform: translateX(560%); opacity: 0; }
+}
+
+/* ---------- Floating motes ---------- */
+
+.mote {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--s);
+  height: var(--s);
+  border-radius: 50%;
+  background: var(--dot);
+  box-shadow: 0 0 12px var(--dot);
+  opacity: 0;
+  animation: mote var(--dur) ease-in-out var(--delay) infinite;
+}
+
+@keyframes mote {
+  0% { transform: translate3d(0, 0, 0); opacity: 0; }
+  20%, 70% { opacity: 0.9; }
+  100% { transform: translate3d(var(--dx), -220px, 0); opacity: 0; }
+}
+
+/* ---------- Radar rings: a slow dashed orbit and expanding pulses ---------- */
+
+.rings {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(1200px, 170vw);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+}
+
+.ring {
+  position: absolute;
+  inset: var(--inset);
+  border: 1px solid rgb(255 255 255 / 0.09);
+  border-radius: 50%;
+}
+
+.ringDashed {
+  border-style: dashed;
+  border-color: rgb(255 255 255 / 0.14);
+  animation: spin 80s linear infinite;
+}
+
+.ringSpin {
+  border-color: transparent;
+  border-top-color: rgb(255 140 130 / 0.55);
+  animation: spin 14s linear infinite;
+}
+
+.pulse {
+  position: absolute;
+  inset: 22%;
+  border: 1px solid rgb(255 140 130 / 0.5);
+  border-radius: 50%;
+  opacity: 0;
+  animation: pulse 7s ease-out var(--delay) infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.4); opacity: 0; }
+  15% { opacity: 0.8; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+/* ---------- Light sweep across the whole section ---------- */
+
+.sweep {
+  position: absolute;
+  inset: -40% -60%;
+  background: linear-gradient(105deg, transparent 44%, rgb(255 255 255 / 0.07) 50%, transparent 56%);
+  transform: translateX(-60%);
+  animation: sweep 11s ease-in-out 2s infinite;
+  will-change: transform;
+}
+
+@keyframes sweep {
+  0% { transform: translateX(-60%); }
+  45%, 100% { transform: translateX(60%); }
+}
+
+/* ---------- Film grain: static, it only adds texture ---------- */
+
+.grain {
+  position: absolute;
+  inset: 0;
+  background-image: url("/assets/backgrounds/grain.svg");
+  opacity: 0.022;
+}
+
+.dark .grain {
+  filter: invert(1);
+  opacity: 0.06;
+}

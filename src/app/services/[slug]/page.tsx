@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowUpRight, Check } from "lucide-react";
 import { getService, services } from "../../../data/services";
 import { industries } from "../../../data/industries";
-import { projects } from "../../../data/projects";
+import { getProjects } from "../../../lib/content";
 import { faqJsonLd, pageMetadata, serviceJsonLd } from "../../../lib/seo";
 import { cn } from "../../../lib/cn";
 import JsonLd from "../../../components/seo/JsonLd";
@@ -48,7 +48,7 @@ export default async function ServicePage({ params }: Props) {
 
   const path = `/services/${service.slug}`;
   const Icon = serviceIcons[service.slug];
-  const related = projects.filter((p) => p.services.includes(service.slug)).slice(0, 2);
+  const related = (await getProjects()).filter((p) => p.services.includes(service.slug)).slice(0, 2);
   const relatedIndustries = industries.filter((ind) => service.industries.includes(ind.slug));
   const otherServices = services.filter((s) => s.slug !== service.slug);
   const sideVisual = SIDE_VISUALS.has(service.visual);

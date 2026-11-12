@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowUpRight } from "lucide-react";
 import { industries } from "../../../data/industries";
 import { getService } from "../../../data/services";
-import { projects } from "../../../data/projects";
+import { getProjects } from "../../../lib/content";
 import { pageMetadata } from "../../../lib/seo";
 import { PageHero } from "../../../components/sections/PageHero";
 import { ContactCTA } from "../../../components/sections/ContactCTA";
@@ -37,7 +37,7 @@ export default async function IndustryPage({ params }: Props) {
   const industry = industries.find((item) => item.slug === slug);
   if (!industry) notFound();
   const Icon = industryIcons[industry.icon];
-  const relatedWork = projects.filter((project) => project.industryKey === slug);
+  const relatedWork = (await getProjects()).filter((project) => project.industryKey === slug);
 
   return (
     <>

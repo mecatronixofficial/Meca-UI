@@ -11,8 +11,8 @@ export const metadata: Metadata = {
 
 const links = [
   { href: "/services", label: "Services", text: "What we build" },
-  { href: "/work", label: "Work", text: "Selected projects" },
-  { href: "/insights", label: "Insights", text: "Articles and guides" },
+  { href: "/work", label: "Our Work", text: "Selected projects" },
+  { href: "/blogs", label: "Blogs", text: "Articles and guides" },
   { href: "/contact", label: "Contact", text: "Start a conversation" },
 ];
 

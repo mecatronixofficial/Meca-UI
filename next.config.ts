@@ -8,6 +8,9 @@ const securityHeaders = [
   { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains" },
 ];
 
+/** Where the separate admin app (Mecatronix-AdminUi) lives, e.g. https://admin.mecatronix.one. Optional. */
+const adminPanelUrl = process.env.ADMIN_PANEL_URL?.trim().replace(/\/+$/, "") || null;
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
 
@@ -26,6 +29,18 @@ const nextConfig: NextConfig = {
       { source: "/ourworld", destination: "/about", permanent: true },
       { source: "/portfolio", destination: "/work", permanent: true },
       { source: "/openline", destination: "/contact", permanent: true },
+      // Articles moved from /insights to /blogs
+      { source: "/insights", destination: "/blogs", permanent: true },
+      { source: "/insights/:slug", destination: "/blogs/:slug", permanent: true },
+      { source: "/blog", destination: "/blogs", permanent: true },
+      { source: "/blog/:slug", destination: "/blogs/:slug", permanent: true },
+      // The admin panel is the separate Mecatronix-AdminUi app; old /admin links go there
+      ...(adminPanelUrl
+        ? [
+            { source: "/admin", destination: adminPanelUrl, permanent: false },
+            { source: "/admin/:path*", destination: adminPanelUrl, permanent: false },
+          ]
+        : []),
     ];
   },
 

@@ -4,15 +4,16 @@ import Link from "next/link";
 import { ArrowDown, ArrowRight, ArrowUpRight, Check, Compass, Globe2, MapPin, Target } from "lucide-react";
 import { principles, techStack } from "../../data/company";
 import { services } from "../../data/services";
-import { projects } from "../../data/projects";
+import { getProjects, getTeam } from "../../lib/content";
+import { getSiteContact } from "../../lib/site-contact.server";
 import { processSteps } from "../../data/process";
 import { pageMetadata } from "../../lib/seo";
-import { site } from "../../lib/site";
 import { Container } from "../../components/ui/Container";
 import { Button, ArrowLink } from "../../components/ui/Button";
 import { principleIcons, serviceIcons } from "../../components/ui/icons";
 import { ProjectCard } from "../../components/portfolio/ProjectCard";
 import { AboutVisual } from "./AboutVisual";
+import { Founders } from "./Founders";
 import styles from "./about.module.css";
 import { Reveal } from "../../components/animations/Reveal";
 
@@ -26,7 +27,8 @@ export const metadata: Metadata = pageMetadata({
 
 const stagger = (index: number) => ({ "--reveal-delay": `${(index % 3) * 80}ms` }) as CSSProperties;
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const [projects, contact, team] = await Promise.all([getProjects(), getSiteContact(), getTeam()]);
   return (
     <div className={styles.page}>
       <section className={styles.hero} aria-labelledby="about-title">
@@ -43,7 +45,7 @@ export default function AboutPage() {
                 <Button href="/contact" size="lg" arrow>Let’s build together</Button>
                 <a href="#our-story" className={styles.storyLink}>Get to know us <ArrowDown aria-hidden size={16} /></a>
               </div>
-              <div className={styles.heroLocation}><MapPin aria-hidden size={15} /><span>Rooted in {site.address.city}. Building beyond borders.</span></div>
+              <div className={styles.heroLocation}><MapPin aria-hidden size={15} /><span>Rooted in {contact.address.city}. Building beyond borders.</span></div>
             </div>
             <AboutVisual />
           </div>
@@ -65,7 +67,7 @@ export default function AboutPage() {
             </Reveal>
             <Reveal className={styles.storyCopy}>
               <p>Technology should make your work simpler, your team stronger, and your next step clearer.</p>
-              <p>That’s why Mecatronix Software Development exists. Based in {site.address.city}, we design and build websites, applications, and business systems around the way your company actually works.</p>
+              <p>That’s why Mecatronix Software Development exists. Based in {contact.address.city}, we design and build websites, applications, and business systems around the way your company actually works.</p>
               <p>From manufacturing and textiles to education and retail, we help businesses replace repetitive work with software that makes a practical difference. We stay involved from the first conversation through launch and ongoing support.</p>
               <div className={styles.storyTags}><span><Check aria-hidden size={14} /> Built around your workflow</span><span><Check aria-hidden size={14} /> A partner beyond launch</span></div>
             </Reveal>
@@ -87,6 +89,8 @@ export default function AboutPage() {
           </div>
         </Container>
       </section>
+
+      <Founders members={team} />
 
       <section aria-labelledby="values-title" className={`${styles.section} ${styles.tinted}`}>
         <Container>
@@ -166,7 +170,7 @@ export default function AboutPage() {
         <Container>
           <Reveal className={styles.cta}>
             <div className={styles.ctaCopy}><p className={styles.eyebrow}><span /> THE NEXT GREAT IDEA COULD BE YOURS</p><h2 id="about-contact-title">Let’s build something<br />that moves you forward.</h2><p>Tell us what you have in mind. We’ll help you find the right way to build it.</p><Button href="/contact" variant="light" size="lg" arrow>Start a conversation</Button></div>
-            <div className={styles.ctaStamp}><Globe2 aria-hidden size={52} strokeWidth={1} /><p>From {site.address.city},<br /><strong>to wherever you are.</strong></p><span>DESIGN. ENGINEER. DELIVER.</span></div>
+            <div className={styles.ctaStamp}><Globe2 aria-hidden size={52} strokeWidth={1} /><p>From {contact.address.city},<br /><strong>to wherever you are.</strong></p><span>DESIGN. ENGINEER. DELIVER.</span></div>
           </Reveal>
         </Container>
       </section>

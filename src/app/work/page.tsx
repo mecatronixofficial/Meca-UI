@@ -7,10 +7,11 @@ import {
   Mail,
   MessageCircle,
 } from "lucide-react";
-import { projects } from "../../data/projects";
+import { getProjects } from "../../lib/content";
 import { serviceList } from "../../data/service-list";
 import { pageMetadata } from "../../lib/seo";
-import { site, whatsappLink } from "../../lib/site";
+import { whatsappLink } from "../../lib/site-contact";
+import { getSiteContact } from "../../lib/site-contact.server";
 import { Breadcrumbs } from "../../components/ui/Breadcrumbs";
 import { Button } from "../../components/ui/Button";
 import { serviceIcons } from "../../components/ui/icons";
@@ -37,7 +38,8 @@ export const metadata: Metadata = pageMetadata({
   socialTitle: "Selected work. Real solutions.",
 });
 
-export default function WorkPage() {
+export default async function WorkPage() {
+  const [projects, contact] = await Promise.all([getProjects(), getSiteContact()]);
   const spotlight =
     projects.find((project) => project.slug === "little-mahilam-preschool") ??
     projects.find((project) => project.services.includes("custom-software"));
@@ -46,7 +48,7 @@ export default function WorkPage() {
     <div className={styles.page}>
       <section className={styles.hero} aria-labelledby="work-title">
         <div className={styles.contentWidth}>
-          <Breadcrumbs crumbs={[{ path: "/work", label: "Work" }]} />
+          <Breadcrumbs crumbs={[{ path: "/work", label: "Our Work" }]} />
           <div className={styles.heroLayout}>
             <div className={styles.heroCopy}>
               <p className={styles.eyebrow}>
@@ -179,7 +181,7 @@ export default function WorkPage() {
                 Start Your Project
               </Button>
               <a
-                href={whatsappLink()}
+                href={whatsappLink(contact)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.whatsapp}
@@ -190,9 +192,9 @@ export default function WorkPage() {
               </a>
             </div>
             <div className={styles.ctaBottom}>
-              <a href={`mailto:${site.email}`}>
+              <a href={`mailto:${contact.email}`}>
                 <Mail size={16} aria-hidden="true" />
-                {site.email}
+                {contact.email}
                 <ArrowUpRight size={14} aria-hidden="true" />
               </a>
               <span>MECATRONIX / SOFTWARE DEVELOPMENT</span>

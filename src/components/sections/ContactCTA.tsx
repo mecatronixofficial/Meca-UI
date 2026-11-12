@@ -1,5 +1,6 @@
 import { Mail } from "lucide-react";
-import { site, whatsappLink } from "../../lib/site";
+import { whatsappLink } from "../../lib/site-contact";
+import { getSiteContact } from "../../lib/site-contact.server";
 import { cn } from "../../lib/cn";
 import { Button } from "../ui/Button";
 import { Container } from "../ui/Container";
@@ -7,7 +8,7 @@ import { Backdrop } from "../visuals/Backdrop";
 import { Reveal } from "../animations/Reveal";
 
 /** Closing call to action used at the end of most pages. `tone="dark"` is the animated home-page finale. */
-export function ContactCTA({
+export async function ContactCTA({
   title,
   text = "Tell us about your idea, challenge or business requirements. We would love to explore how technology can help.",
   tone = "light",
@@ -16,6 +17,7 @@ export function ContactCTA({
   text?: string;
   tone?: "light" | "dark";
 }) {
+  const contact = await getSiteContact();
   const dark = tone === "dark";
   const heading = title ?? (
     <>
@@ -64,7 +66,7 @@ export function ContactCTA({
           <div className="mt-11 flex flex-col justify-center gap-3 sm:flex-row">
             <Button href="/contact" size="lg" arrow>Start Your Project</Button>
             <Button
-              href={whatsappLink()}
+              href={whatsappLink(contact)}
               size="lg"
               variant={dark ? "outline-dark" : "outline-light"}
               arrow="external"
@@ -78,10 +80,10 @@ export function ContactCTA({
             <Mail aria-hidden className={cn("size-4", dark ? "text-accent-glow" : "text-accent")} />
             Prefer email?{" "}
             <a
-              href={`mailto:${site.email}`}
+              href={`mailto:${contact.email}`}
               className={cn("underline-offset-4 hover:underline", dark ? "text-white hover:text-accent-glow" : "text-ink hover:text-accent-ink")}
             >
-              {site.email}
+              {contact.email}
             </a>
           </p>
         </Reveal>

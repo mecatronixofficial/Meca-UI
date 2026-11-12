@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "../lib/seo";
 import { Hero } from "../components/home/Hero";
+import { BannerShowcase } from "../components/home/BannerShowcase";
 import { Intro } from "../components/home/Intro";
+import { ClientLogos } from "../components/home/ClientLogos";
 import { SelectedWork } from "../components/home/SelectedWork";
 import { ServicesSection } from "../components/home/ServicesSection";
 import { WhyMecatronix } from "../components/home/WhyMecatronix";
@@ -10,6 +12,8 @@ import { ProcessSection } from "../components/home/ProcessSection";
 import { TechSection } from "../components/home/TechSection";
 import { Testimonials } from "../components/home/Testimonials";
 import { InsightsSection } from "../components/home/InsightsSection";
+import { KuralOfTheDay } from "../components/home/KuralOfTheDay";
+import { PreviewSection } from "../components/home/PreviewSection";
 import { ContactCTA } from "../components/sections/ContactCTA";
 
 export const metadata: Metadata = pageMetadata({
@@ -32,21 +36,25 @@ export const metadata: Metadata = pageMetadata({
     "Websites, applications and business systems designed and built by Mecatronix in Coimbatore.",
 });
 
-// Verified reviews are fetched from the backend and refreshed hourly
-export const revalidate = 3600;
+// Banners, projects, articles, client logos and reviews come from the admin panel (src/lib/content.ts):
+// refreshed on demand via /api/revalidate, and at least every minute.
 
 export default function Page() {
   return (
     <>
       <Hero />
+      <BannerShowcase />
+      <ClientLogos />
       <Intro />
       <SelectedWork />
       <ServicesSection />
+      <PreviewSection />
       <WhyMecatronix />
       <IndustriesSection />
       <ProcessSection />
       <TechSection />
       <Testimonials />
+      <KuralOfTheDay />
       <InsightsSection />
       <ContactCTA tone="dark" />
     </>

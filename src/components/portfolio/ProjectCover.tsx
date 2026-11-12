@@ -29,6 +29,8 @@ export function ProjectCover({
           fill
           sizes={sizes}
           priority={priority}
+          // Admin uploads live on remote storage; serve them as-is
+          unoptimized={/^https?:\/\//.test(shot.src)}
           className="object-cover object-top transition-transform duration-700 ease-[var(--ease-out-expo)] group-hover:scale-[1.03]"
         />
       </div>

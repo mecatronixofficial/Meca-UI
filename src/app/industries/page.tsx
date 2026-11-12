@@ -15,11 +15,12 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { industries } from "../../data/industries";
-import { projects } from "../../data/projects";
+import { getProjects } from "../../lib/content";
 import { serviceList } from "../../data/service-list";
 import { processSteps } from "../../data/process";
 import { pageMetadata } from "../../lib/seo";
-import { whatsappLink } from "../../lib/site";
+import { whatsappLink } from "../../lib/site-contact";
+import { getSiteContact } from "../../lib/site-contact.server";
 import { Container } from "../../components/ui/Container";
 import { Button } from "../../components/ui/Button";
 import { Breadcrumbs } from "../../components/ui/Breadcrumbs";
@@ -83,7 +84,8 @@ const benefits = [
 const stagger = (index: number) =>
   ({ "--reveal-delay": `${(index % 3) * 65}ms` }) as CSSProperties;
 
-export default function IndustriesPage() {
+export default async function IndustriesPage() {
+  const [projects, contact] = await Promise.all([getProjects(), getSiteContact()]);
   return (
     <div className={styles.page}>
       <section className={styles.hero} aria-labelledby="industries-title">
@@ -500,7 +502,7 @@ export default function IndustriesPage() {
                   Start Your Project
                 </Button>
                 <a
-                  href={whatsappLink()}
+                  href={whatsappLink(contact)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.whatsapp}

@@ -1,0 +1,390 @@
+/*
+ * MECA mini robot. State comes from data attributes on the <svg>:
+ *   data-pose  idle | walk | run | carry | hold | crouch | jump | wave | type | dance | sleep | fly | charge
+ *   data-mood  normal | happy | focus | sleep | wow
+ *   data-dir   left | right      data-carrying / data-placed / data-paused
+ * Static poses always apply; motion only when the visitor allows it.
+ */
+
+.robot {
+  --ex: 0px;
+  --ey: 0px;
+  display: block;
+  overflow: visible;
+}
+
+.robot[data-paused],
+.robot[data-paused] * {
+  animation-play-state: paused !important;
+}
+
+/* ---------- Pivots ---------- */
+
+.lean,
+.bot {
+  transform-box: view-box;
+  transform-origin: 32px 78px;
+  transition: transform 0.35s ease;
+}
+
+.head {
+  transform-box: view-box;
+  transform-origin: 32px 37px;
+  transition: transform 0.3s ease;
+}
+
+.armL,
+.armR {
+  transform-box: view-box;
+  transition: transform 0.3s ease;
+}
+.armL { transform-origin: 16px 43px; }
+.armR { transform-origin: 48px 43px; }
+
+.legL,
+.legR {
+  transition: transform 0.2s ease;
+}
+
+.shadow,
+.eyes {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* ---------- Faces ---------- */
+
+.face {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.robot[data-mood="normal"] .faceNormal,
+.robot[data-mood="happy"] .faceHappy,
+.robot[data-mood="sleep"] .faceSleep,
+.robot[data-mood="focus"] .faceFocus,
+.robot[data-mood="wow"] .faceWow {
+  opacity: 1;
+}
+
+/* Eyes follow the cursor (MecaAssistant sets --ex / --ey) */
+.pupils {
+  transform: translate(var(--ex), var(--ey));
+  transition: transform 0.18s ease-out;
+}
+
+/* ...or look where it's going */
+.robot[data-dir="left"]:is([data-pose="walk"], [data-pose="run"], [data-pose="carry"]) .pupils { transform: translate(-2.6px, 0.6px); }
+.robot[data-dir="right"]:is([data-pose="walk"], [data-pose="run"], [data-pose="carry"]) .pupils { transform: translate(2.6px, 0.6px); }
+
+/* ---------- Props (hidden until their pose) ---------- */
+
+.flame,
+.battery,
+.laptop,
+.carried {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.flame {
+  transform-box: fill-box;
+  transform-origin: top center;
+}
+.robot[data-pose="fly"] .flame,
+.robot[data-pose="charge"] .battery,
+.robot[data-pose="type"] .laptop,
+.robot[data-carrying] .carried {
+  opacity: 1;
+}
+
+.batteryFill {
+  transform-box: fill-box;
+  transform-origin: left center;
+}
+
+.placed {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  transform: scale(0.5);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+.robot[data-placed] .placed {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ---------- Static poses ---------- */
+
+.robot[data-dir="left"]:is([data-pose="walk"], [data-pose="carry"]) .lean { transform: rotate(-5deg); }
+.robot[data-dir="right"]:is([data-pose="walk"], [data-pose="carry"]) .lean { transform: rotate(5deg); }
+.robot[data-dir="left"][data-pose="run"] .lean { transform: rotate(-10deg); }
+.robot[data-dir="right"][data-pose="run"] .lean { transform: rotate(10deg); }
+
+.robot:is([data-pose="carry"], [data-pose="hold"]) .armL { transform: rotate(-30deg); }
+.robot:is([data-pose="carry"], [data-pose="hold"]) .armR { transform: rotate(30deg); }
+
+.robot[data-pose="crouch"] .bot { transform: translateY(5px); }
+.robot[data-pose="crouch"] .armL { transform: rotate(-38deg); }
+.robot[data-pose="crouch"] .armR { transform: rotate(38deg); }
+
+.robot[data-pose="jump"] .armL { transform: rotate(150deg); }
+.robot[data-pose="jump"] .armR { transform: rotate(-150deg); }
+
+.robot[data-pose="wave"] .armR { transform: rotate(-140deg); }
+.robot[data-pose="wave"] .head { transform: rotate(-6deg); }
+
+.robot[data-pose="type"] .armL { transform: rotate(-24deg); }
+.robot[data-pose="type"] .armR { transform: rotate(24deg); }
+.robot[data-pose="type"] .head { transform: rotate(3deg); }
+
+.robot[data-pose="sleep"] .bot { transform: translateY(4px); }
+.robot[data-pose="sleep"] .head { transform: rotate(12deg); }
+.robot[data-pose="sleep"] .armL { transform: rotate(6deg); }
+.robot[data-pose="sleep"] .armR { transform: rotate(-6deg); }
+
+.robot[data-pose="fly"] .armL { transform: rotate(55deg); }
+.robot[data-pose="fly"] .armR { transform: rotate(-55deg); }
+
+.robot[data-pose="charge"] .armL { transform: rotate(12deg); }
+.robot[data-pose="charge"] .armR { transform: rotate(-12deg); }
+
+.robot[data-pose="dance"] .armL { transform: rotate(140deg); }
+
+/* ---------- Motion ---------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .eyes { animation: blink 4.5s ease-in-out infinite; }
+  .antennaTip { animation: pulse 1.8s ease-in-out infinite; }
+  .badge { animation: pulse 2.4s ease-in-out infinite; }
+
+  .robot[data-pose="idle"] .bot { animation: float 3s ease-in-out infinite; }
+  .robot[data-pose="idle"] .armL { animation: sway 3s ease-in-out infinite; }
+  .robot[data-pose="idle"] .armR { animation: sway 3s ease-in-out infinite reverse; }
+
+  /* Walk / carry */
+  .robot:is([data-pose="walk"], [data-pose="carry"]) .bot { animation: bob 0.44s linear infinite; }
+  .robot:is([data-pose="walk"], [data-pose="carry"]) .legL { animation: step 0.44s ease-in-out infinite; }
+  .robot:is([data-pose="walk"], [data-pose="carry"]) .legR { animation: step 0.44s ease-in-out -0.22s infinite; }
+  .robot[data-pose="walk"] .armL { animation: swing 0.44s ease-in-out infinite; }
+  .robot[data-pose="walk"] .armR { animation: swing 0.44s ease-in-out -0.22s infinite; }
+
+  /* Run */
+  .robot[data-pose="run"] .bot { animation: bob 0.28s linear infinite; }
+  .robot[data-pose="run"] .legL { animation: step 0.28s ease-in-out infinite; }
+  .robot[data-pose="run"] .legR { animation: step 0.28s ease-in-out -0.14s infinite; }
+  .robot[data-pose="run"] .armL { animation: swing-wide 0.28s ease-in-out infinite; }
+  .robot[data-pose="run"] .armR { animation: swing-wide 0.28s ease-in-out -0.14s infinite; }
+
+  /* Jump */
+  .robot[data-pose="jump"] .bot { animation: jump 0.5s ease-in-out infinite; }
+  .robot[data-pose="jump"] .shadow { animation: shadow-jump 0.5s ease-in-out infinite; }
+
+  /* Wave */
+  .robot[data-pose="wave"] .armR { animation: wave 0.32s ease-in-out infinite alternate; }
+
+  /* Type on the laptop */
+  .robot[data-pose="type"] .armL { animation: tap-l 0.22s ease-in-out infinite alternate; }
+  .robot[data-pose="type"] .armR { animation: tap-r 0.22s ease-in-out -0.11s infinite alternate; }
+  .robot[data-pose="type"] .laptopLogo { animation: pulse 0.9s ease-in-out infinite; }
+
+  /* Dance */
+  .robot[data-pose="dance"] .bot { animation: dance 0.8s ease-in-out infinite; }
+  .robot[data-pose="dance"] .armL { animation: dance-arm-l 0.8s ease-in-out infinite; }
+  .robot[data-pose="dance"] .armR { animation: dance-arm-r 0.8s ease-in-out infinite; }
+  .robot[data-pose="dance"] .legL { animation: step 0.4s ease-in-out infinite; }
+  .robot[data-pose="dance"] .legR { animation: step 0.4s ease-in-out -0.2s infinite; }
+  .robot[data-pose="dance"] .head { animation: head-bop 0.4s ease-in-out infinite alternate; }
+
+  /* Nap */
+  .robot[data-pose="sleep"] .bot { animation: breathe 2.4s ease-in-out infinite; }
+
+  /* Jetpack (3s flight, timed with MecaAssistant) */
+  .robot[data-pose="fly"] .bot { animation: fly 3s ease-in-out both; }
+  .robot[data-pose="fly"] .shadow { animation: shadow-fly 3s ease-in-out both; }
+  .robot[data-pose="fly"] .flame { animation: flicker 0.1s linear infinite alternate; }
+
+  /* Recharge (3s fill) */
+  .robot[data-pose="charge"] .batteryFill { animation: fill-up 3s linear both; }
+  .robot[data-pose="charge"] .bot { animation: float 1.5s ease-in-out infinite; }
+
+  .robot[data-carrying] .carried { animation: lift 0.35s ease-out; }
+
+  .dropBox { animation: drop 0.9s cubic-bezier(0.3, 0, 0.4, 1) both; }
+  .bubble { animation: pop 0.28s cubic-bezier(0.2, 1.4, 0.4, 1) both; }
+  .bugLegs { animation: scuttle 0.12s linear infinite alternate; }
+
+  .fx span { animation: rise 1.8s ease-out infinite; }
+  .fx span:nth-child(2) { animation-delay: 0.6s; }
+  .fx span:nth-child(3) { animation-delay: 1.2s; }
+}
+
+/* Floating effects above the robot (zzz, notes, code, sparkles) */
+.fx span {
+  position: absolute;
+  bottom: 0;
+  opacity: 0;
+  font-weight: 700;
+  line-height: 1;
+}
+.fx span:nth-child(1) { right: 6px; }
+.fx span:nth-child(2) { right: 20px; font-size: 1.15em; }
+.fx span:nth-child(3) { right: 34px; }
+
+/* Squashed bug */
+.bug {
+  transform-origin: center bottom;
+  transition: transform 0.3s ease, opacity 0.5s ease 0.4s;
+}
+.bug[data-squashed] {
+  transform: scale(1.3, 0.25);
+  opacity: 0;
+}
+
+/* ---------- Keyframes ---------- */
+
+@keyframes blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.1); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-1.5px); }
+}
+
+@keyframes sway {
+  0%, 100% { transform: rotate(4deg); }
+  50% { transform: rotate(-4deg); }
+}
+
+@keyframes bob {
+  0%, 50%, 100% { transform: translateY(0); }
+  25%, 75% { transform: translateY(-1.6px); }
+}
+
+@keyframes step {
+  0%, 50%, 100% { transform: translateY(0); }
+  25% { transform: translateY(-4px); }
+}
+
+@keyframes swing {
+  0%, 100% { transform: rotate(18deg); }
+  50% { transform: rotate(-18deg); }
+}
+
+@keyframes swing-wide {
+  0%, 100% { transform: rotate(35deg); }
+  50% { transform: rotate(-35deg); }
+}
+
+@keyframes jump {
+  0%, 100% { transform: translateY(0) scale(1, 1); }
+  14% { transform: translateY(0) scale(1.06, 0.9); }
+  45% { transform: translateY(-22px) scale(0.96, 1.05); }
+  78% { transform: translateY(0) scale(1.04, 0.94); }
+}
+
+@keyframes shadow-jump {
+  0%, 100% { transform: scale(1); opacity: 0.15; }
+  45% { transform: scale(0.55); opacity: 0.07; }
+}
+
+@keyframes wave {
+  from { transform: rotate(-158deg); }
+  to { transform: rotate(-122deg); }
+}
+
+@keyframes tap-l {
+  from { transform: rotate(-27deg); }
+  to { transform: rotate(-19deg); }
+}
+
+@keyframes tap-r {
+  from { transform: rotate(27deg); }
+  to { transform: rotate(19deg); }
+}
+
+@keyframes dance {
+  0%, 100% { transform: rotate(-8deg) translateY(0); }
+  25%, 75% { transform: rotate(0) translateY(-3px); }
+  50% { transform: rotate(8deg) translateY(0); }
+}
+
+@keyframes dance-arm-l {
+  0%, 100% { transform: rotate(150deg); }
+  50% { transform: rotate(25deg); }
+}
+
+@keyframes dance-arm-r {
+  0%, 100% { transform: rotate(-25deg); }
+  50% { transform: rotate(-150deg); }
+}
+
+@keyframes head-bop {
+  from { transform: rotate(-5deg); }
+  to { transform: rotate(5deg); }
+}
+
+@keyframes breathe {
+  0%, 100% { transform: translateY(4px) scale(1, 1); }
+  50% { transform: translateY(4px) scale(1.02, 0.97); }
+}
+
+@keyframes fly {
+  0% { transform: translateY(0); }
+  16% { transform: translateY(-48px) rotate(0); }
+  35% { transform: translateY(-44px) rotate(-6deg); }
+  58% { transform: translateY(-54px) rotate(6deg); }
+  82% { transform: translateY(-46px) rotate(0); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes shadow-fly {
+  0%, 100% { transform: scale(1); opacity: 0.15; }
+  16%, 82% { transform: scale(0.4); opacity: 0.06; }
+}
+
+@keyframes flicker {
+  from { transform: scaleY(0.75); }
+  to { transform: scaleY(1.15); }
+}
+
+@keyframes fill-up {
+  from { transform: scaleX(0.05); fill: #f59e0b; }
+  60% { fill: #84cc16; }
+  to { transform: scaleX(1); fill: #22c55e; }
+}
+
+@keyframes lift {
+  from { transform: translateY(14px); }
+  to { transform: translateY(0); }
+}
+
+@keyframes drop {
+  0% { transform: translateY(-180px) rotate(-14deg); opacity: 0; }
+  12% { opacity: 1; }
+  68% { transform: translateY(0) rotate(0); }
+  80% { transform: translateY(-9px) rotate(3deg); }
+  100% { transform: translateY(0) rotate(0); }
+}
+
+@keyframes pop {
+  from { opacity: 0; transform: translateY(6px) scale(0.85); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes scuttle {
+  from { transform: translateX(-0.8px); }
+  to { transform: translateX(0.8px); }
+}
+
+@keyframes rise {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.7); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-12px, -34px) scale(1.1); }
+}

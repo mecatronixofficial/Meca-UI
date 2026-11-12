@@ -1,5 +1,5 @@
 import { capabilities } from "../../data/company";
-import { site } from "../../lib/site";
+import { getSiteContact } from "../../lib/site-contact.server";
 import { cn } from "../../lib/cn";
 import { Container, Section } from "../ui/Container";
 import { Eyebrow } from "../ui/Heading";
@@ -10,7 +10,8 @@ import frame from "../visuals/VisionScene.module.css";
 import { Reveal } from "../animations/Reveal";
 import { Backdrop } from "../visuals/Backdrop";
 
-export function Intro() {
+export async function Intro() {
+  const { address } = await getSiteContact();
   return (
     <Section labelledBy="intro-title" className="overflow-hidden">
       <Backdrop image="contours" imageClassName="[mask-image:radial-gradient(ellipse_60%_70%_at_85%_30%,black,transparent_75%)]" />
@@ -41,7 +42,7 @@ export function Intro() {
                     <span className="absolute inset-0 rounded-full bg-accent motion-safe:animate-ping" />
                     <span className="relative size-1.5 rounded-full bg-accent" />
                   </span>
-                  Studio · {site.address.city}, {site.address.country}
+                  Studio · {address.city}, {address.country}
                 </p>
                 <p className="text-lead mt-6 text-muted-ink">
                   Mecatronix Software Development partners with businesses to transform ideas, workflows and challenges into

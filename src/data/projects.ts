@@ -22,12 +22,26 @@ export interface ProjectImage {
   height: number;
 }
 
+/** Industry filter key: src/data/industries.ts slugs, or "other". */
+export type IndustryKey =
+  | "textiles"
+  | "manufacturing"
+  | "retail"
+  | "ecommerce"
+  | "education"
+  | "logistics"
+  | "professional-services"
+  | "startups"
+  | "other";
+
+export type ProjectCoverStyle = { kind: CoverKind; from: string; to: string; ink: string };
+
 export interface Project {
   slug: string;
   client: string;
   industry: string;
   /** Industry filter key (matches src/data/industries.ts slugs) */
-  industryKey: "textiles" | "manufacturing" | "education" | "retail";
+  industryKey: IndustryKey;
   /** Service slugs from src/data/services.ts */
   services: string[];
   /** Short description for cards */
@@ -41,8 +55,10 @@ export interface Project {
   stack?: string[];
   url?: string;
   images?: ProjectImage[];
+  /** Case-study sections from the admin panel's linked Work */
+  sections?: { heading: string; details: string; img?: string }[];
   /** Designed cover shown until real screenshots are added */
-  cover: { kind: CoverKind; from: string; to: string; ink: string };
+  cover: ProjectCoverStyle;
 }
 
 export const projects: Project[] = [
@@ -110,11 +126,15 @@ export const projects: Project[] = [
 
 export const getProject = (slug: string) => projects.find((p) => p.slug === slug);
 
-export const isCaseStudyComplete = (p: Project) => Boolean(p.challenge && p.solution);
+/** Indexable once it has a written challenge + solution, or at least two case-study sections. */
+export const isCaseStudyComplete = (p: Project) => Boolean(p.challenge && p.solution) || (p.sections?.length ?? 0) >= 2;
 
 export const projectFilters = [
   { key: "all", label: "All work" },
   { key: "textiles", label: "Textiles" },
   { key: "manufacturing", label: "Manufacturing" },
   { key: "education", label: "Education" },
+  { key: "retail", label: "Retail" },
+  { key: "ecommerce", label: "E-commerce" },
+  { key: "other", label: "Other" },
 ] as const;

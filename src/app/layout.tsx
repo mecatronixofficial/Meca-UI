@@ -8,7 +8,11 @@ import PublicOnly from "../components/layout/PublicOnly";
 import PointerEffects from "../components/animations/PointerEffects";
 import PageLoader from "../components/animations/PageLoader";
 import MecaAssistant from "../components/assistant/MecaAssistant";
+import PreviewPrompt from "../components/preview/PreviewPrompt";
+import ReviewModal from "../components/reviews/ReviewModal";
 import JsonLd from "../components/seo/JsonLd";
+import { SiteContactProvider } from "../components/layout/SiteContactProvider";
+import { getSiteContact } from "../lib/site-contact.server";
 import {
   SITE_URL,
   SITE_NAME,
@@ -89,11 +93,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Contact details from the admin panel, shared with client components (header, studio clock)
+  const contact = await getSiteContact();
   return (
     // `js` class is added before paint so scroll-reveal styles only apply when JS runs
     <html
@@ -106,11 +112,12 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
       </head>
       <body>
+        <SiteContactProvider value={contact}>
         <PublicOnly>
           <PageLoader />
         </PublicOnly>
         <div id="top" />
-        <JsonLd data={organizationJsonLd()} />
+        <JsonLd data={organizationJsonLd(contact)} />
         <PublicOnly>
           <Header />
         </PublicOnly>
@@ -122,7 +129,10 @@ export default function RootLayout({
           <Footer />
           <PointerEffects />
           <MecaAssistant />
+          <PreviewPrompt />
+          <ReviewModal />
         </PublicOnly>
+        </SiteContactProvider>
       </body>
     </html>
   );

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "../../lib/seo";
 import { site } from "../../lib/site";
+import type { SiteContact } from "../../lib/site-contact";
+import { getSiteContact } from "../../lib/site-contact.server";
 import { PageHero } from "../../components/sections/PageHero";
 import { Container, Section } from "../../components/ui/Container";
 
@@ -10,7 +12,8 @@ export const metadata: Metadata = pageMetadata({
   path: "/privacy",
 });
 
-const sections: { title: string; body: React.ReactNode }[] = [
+/** Sections that mention how to reach us use the contact details from the admin panel. */
+const sectionsFor = (contact: SiteContact): { title: string; body: React.ReactNode }[] => [
   {
     title: "Information you send us",
     body: (
@@ -58,7 +61,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
     body: (
       <p>
         You can ask us to access, correct or delete the information you&apos;ve sent us at any time by emailing{" "}
-        <a href={`mailto:${site.email}`} className="text-accent-ink underline underline-offset-4">{site.email}</a>.
+        <a href={`mailto:${contact.email}`} className="text-accent-ink underline underline-offset-4">{contact.email}</a>.
       </p>
     ),
   },
@@ -66,15 +69,16 @@ const sections: { title: string; body: React.ReactNode }[] = [
     title: "Contact",
     body: (
       <p>
-        {site.legalName}, {site.address.full}. Email{" "}
-        <a href={`mailto:${site.email}`} className="text-accent-ink underline underline-offset-4">{site.email}</a> or call{" "}
-        <a href={`tel:${site.phone}`} className="text-accent-ink underline underline-offset-4">{site.phoneDisplay}</a>.
+        {site.legalName}, {contact.address.full}. Email{" "}
+        <a href={`mailto:${contact.email}`} className="text-accent-ink underline underline-offset-4">{contact.email}</a> or call{" "}
+        <a href={`tel:${contact.phone}`} className="text-accent-ink underline underline-offset-4">{contact.phoneDisplay}</a>.
       </p>
     ),
   },
 ];
 
-export default function PrivacyPage() {
+export default async function PrivacyPage() {
+  const sections = sectionsFor(await getSiteContact());
   return (
     <>
       <PageHero

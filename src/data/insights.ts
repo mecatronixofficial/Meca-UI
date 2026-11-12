@@ -1,5 +1,5 @@
 /**
- * Articles for /insights. Content is stored as simple blocks so it renders
+ * Hand-written articles for /blogs (merged with admin blogs in src/lib/content.ts). Content is stored as simple blocks so it renders
  * as semantic HTML on the server with no CMS dependency.
  *
  * `published` is the real publication date (ISO). Use the date the article
@@ -12,7 +12,8 @@ export type Block =
   | { type: "h3"; text: string }
   | { type: "ul"; items: string[] }
   | { type: "ol"; items: string[] }
-  | { type: "note"; text: string };
+  | { type: "note"; text: string }
+  | { type: "img"; src: string; alt: string };
 
 export interface Article {
   slug: string;
@@ -21,8 +22,10 @@ export interface Article {
   category: string;
   published: string;
   author: string;
-  /** Related service slug for internal linking */
+  /** Related service slug for internal linking ("" for none) */
   service: string;
+  /** Cover image URL (articles from the admin panel) */
+  cover?: string;
   body: Block[];
 }
 
@@ -176,7 +179,7 @@ export const getArticle = (slug: string) => articles.find((a) => a.slug === slug
 /** ~220 words per minute */
 export function readingTime(article: Article) {
   const words = article.body
-    .flatMap((b) => ("text" in b ? [b.text] : b.items))
+    .flatMap((b) => (b.type === "img" ? [] : "text" in b ? [b.text] : b.items))
     .join(" ")
     .split(/\s+/).length;
   return Math.max(1, Math.round(words / 220));

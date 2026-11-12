@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { budgetOptions, contactSchema, fieldErrors, labelFor, serviceOptions, type ContactData } from "../../../lib/contact";
 import { forwardEnquiryToBackend, backendBaseUrl } from "../../../lib/backend";
-import { site } from "../../../lib/site";
+import { getSiteContact } from "../../../lib/site-contact.server";
 
 /**
  * Project enquiry endpoint (POST /api/contact).
@@ -52,7 +52,7 @@ async function sendEmail(d: ContactData): Promise<"sent" | "skipped" | "failed">
   const key = process.env.RESEND_API_KEY;
   const from = process.env.CONTACT_FROM_EMAIL;
   if (!key || !from) return "skipped";
-  const to = (process.env.CONTACT_TO_EMAIL || site.email).split(",").map((s) => s.trim()).filter(Boolean);
+  const to = (process.env.CONTACT_TO_EMAIL || (await getSiteContact()).email).split(",").map((s) => s.trim()).filter(Boolean);
 
   try {
     const res = await fetch("https://api.resend.com/emails", {

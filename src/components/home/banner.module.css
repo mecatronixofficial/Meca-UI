@@ -1,0 +1,51 @@
+/* Home page banner carousel: slide timer bar and the content entrance. */
+
+.progress {
+  transform-origin: left center;
+  transform: scaleX(0);
+  animation: banner-progress var(--banner-duration, 7000ms) linear forwards;
+}
+
+.paused .progress {
+  animation-play-state: paused;
+}
+
+@keyframes banner-progress {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.enter > * {
+  animation: banner-enter 700ms var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) both;
+}
+.enter > *:nth-child(2) {
+  animation-delay: 60ms;
+}
+.enter > *:nth-child(3) {
+  animation-delay: 120ms;
+}
+.enter > *:nth-child(4) {
+  animation-delay: 180ms;
+}
+.enter > *:nth-child(5) {
+  animation-delay: 240ms;
+}
+
+@keyframes banner-enter {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* No auto-advance (the timer bar drives it) and no entrance motion */
+  .progress {
+    animation: none;
+    transform: scaleX(0);
+  }
+  .enter > * {
+    animation: none;
+  }
+}

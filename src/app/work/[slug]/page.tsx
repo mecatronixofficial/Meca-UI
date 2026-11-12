@@ -3,7 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowUpRight, Check } from "lucide-react";
-import { getProject, isCaseStudyComplete, projects } from "../../../data/projects";
+import { isCaseStudyComplete } from "../../../data/projects";
+import { getProject, getProjects } from "../../../lib/content";
 import { getService } from "../../../data/services";
 import { caseStudyJsonLd, pageMetadata } from "../../../lib/seo";
 import JsonLd from "../../../components/seo/JsonLd";
@@ -17,14 +18,15 @@ import { Reveal } from "../../../components/animations/Reveal";
 
 type Props = { params: Promise<{ slug: string }> };
 
-export const dynamicParams = false;
+// Projects added in the admin after a build render on first visit
+export const dynamicParams = true;
 
-export function generateStaticParams() {
-  return projects.map((p) => ({ slug: p.slug }));
+export async function generateStaticParams() {
+  return (await getProjects()).map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const project = getProject((await params).slug);
+  const project = await getProject((await params).slug);
   if (!project) return {};
   return pageMetadata({
     title: `${project.client} — ${project.industry} Case Study`,
@@ -45,23 +47,25 @@ function Block({ label, children }: { label: string; children: React.ReactNode }
 }
 
 export default async function CaseStudyPage({ params }: Props) {
-  const project = getProject((await params).slug);
+  const project = await getProject((await params).slug);
   if (!project) notFound();
 
   const path = `/work/${project.slug}`;
   const services = project.services.map((s) => getService(s)).filter((s) => s !== undefined);
-  const related = projects
+  const related = (await getProjects())
     .filter((p) => p.slug !== project.slug)
     .sort((a, b) => Number(b.industryKey === project.industryKey) - Number(a.industryKey === project.industryKey))
     .slice(0, 2);
-  const gallery = project.images?.slice(1) ?? [];
+  // Screens not already shown inside a case-study section
+  const sectionImages = new Set(project.sections?.map((s) => s.img).filter(Boolean));
+  const gallery = project.images?.slice(1).filter((img) => !sectionImages.has(img.src)) ?? [];
 
   return (
     <>
       <JsonLd data={caseStudyJsonLd({ client: project.client, description: project.overview, path, industry: project.industry })} />
 
       <PageHero
-        crumbs={[{ path: "/work", label: "Work" }, { path, label: project.client }]}
+        crumbs={[{ path: "/work", label: "Our Work" }, { path, label: project.client }]}
         eyebrow={project.industry}
         title={project.client}
         intro={project.summary}
@@ -74,6 +78,7 @@ export default async function CaseStudyPage({ params }: Props) {
           <div className="bg-white p-6">
             <dt className="text-label text-accent-ink">Services</dt>
             <dd className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-[15.5px] text-ink">
+              {services.length === 0 && "Software development"}
               {services.map((s) => (
                 <Link key={s.slug} href={`/services/${s.slug}`} className="underline decoration-line-strong underline-offset-4 transition-colors hover:text-accent-ink hover:decoration-accent">
                   {s.navLabel}
@@ -122,6 +127,24 @@ export default async function CaseStudyPage({ params }: Props) {
             </Block>
           )}
 
+          {/* Case-study sections written in the admin panel (Works) */}
+          {project.sections?.map((section, i) => (
+            <Block key={`${section.heading}-${i}`} label={section.heading || `Part ${i + 1}`}>
+              {section.details && <p className="text-lead whitespace-pre-line text-muted-ink">{section.details}</p>}
+              {section.img && (
+                <Image
+                  src={section.img}
+                  alt={section.heading || project.client}
+                  width={1600}
+                  height={1000}
+                  unoptimized
+                  className="mt-8 h-auto w-full rounded-card border border-line shadow-soft"
+                />
+              )}
+            </Block>
+          ))}
+
+          {project.scope.length > 0 && !project.sections?.length && (
           <Block label="Scope of work">
             <ul className="grid gap-x-8 sm:grid-cols-2">
               {project.scope.map((s) => (
@@ -131,6 +154,7 @@ export default async function CaseStudyPage({ params }: Props) {
               ))}
             </ul>
           </Block>
+          )}
 
           {project.stack && project.stack.length > 0 && (
             <Block label="Technology">
@@ -156,7 +180,7 @@ export default async function CaseStudyPage({ params }: Props) {
             <Reveal className="grid gap-6 border-t border-line py-12 md:grid-cols-2">
               <h2 className="sr-only">Screens</h2>
               {gallery.map((img) => (
-                <Image key={img.src} src={img.src} alt={img.alt} width={img.width} height={img.height} sizes="(min-width: 768px) 50vw, 100vw" className="h-auto w-full rounded-card shadow-soft" />
+                <Image key={img.src} src={img.src} alt={img.alt} width={img.width} height={img.height} unoptimized={/^https?:\/\//.test(img.src)} sizes="(min-width: 768px) 50vw, 100vw" className="h-auto w-full rounded-card shadow-soft" />
               ))}
             </Reveal>
           )}

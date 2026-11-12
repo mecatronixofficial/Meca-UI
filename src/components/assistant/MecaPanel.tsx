@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { ArrowUp, X } from "lucide-react";
 import { cn } from "../../lib/cn";
+import { MecaRobot } from "./MecaRobot";
 
 interface ChatMessage {
   role: "user" | "assistant";
@@ -19,7 +20,7 @@ const SUGGESTIONS = ["What services do you offer?", "Can you build an ERP for my
 
 /** Turns site paths in replies (e.g. /work) into links. */
 function renderWithLinks(text: string) {
-  const parts = text.split(/(\/(?:services(?:\/[a-z-]+)?|work|contact|process|industries|about|insights)\b)/g);
+  const parts = text.split(/(\/(?:services(?:\/[a-z-]+)?|work|contact|process|industries|about|blogs|insights)\b)/g);
   return parts.map((part, i) =>
     i % 2 === 1 ? (
       <Link key={i} href={part} className="font-medium text-accent-ink underline underline-offset-2">
@@ -89,12 +90,17 @@ export default function MecaPanel({ open, onClose }: { open: boolean; onClose: (
       role="dialog"
       aria-label="Chat with MECA, the Mecatronix assistant"
       hidden={!open}
-      className="fixed inset-x-3 bottom-20 z-40 flex max-h-[min(560px,calc(100dvh-7rem))] flex-col overflow-hidden rounded-[1.25rem] border border-line bg-white text-ink shadow-window sm:inset-x-auto sm:bottom-22 sm:right-6 sm:w-[380px]"
+      className="fixed inset-x-3 bottom-[128px] z-40 flex max-h-[min(560px,calc(100dvh-10rem))] flex-col overflow-hidden rounded-[1.25rem] border border-line bg-white text-ink shadow-window sm:inset-x-auto sm:bottom-[136px] sm:right-5 sm:w-[380px]"
     >
       <div className="flex items-center justify-between border-b border-line px-5 py-4">
-        <div>
-          <p className="font-display text-[15px] font-semibold">MECA</p>
-          <p className="text-xs text-muted">AI assistant · replies may be imperfect</p>
+        <div className="flex items-center gap-3">
+          <span className="flex size-10 items-center justify-center rounded-full bg-accent-soft">
+            <MecaRobot className="h-9 w-8" />
+          </span>
+          <div>
+            <p className="font-display text-[15px] font-semibold">MECA</p>
+            <p className="text-xs text-muted">AI assistant · replies may be imperfect</p>
+          </div>
         </div>
         <button type="button" onClick={onClose} aria-label="Close chat" className="flex size-9 items-center justify-center rounded-full text-muted hover:bg-paper hover:text-ink">
           <X aria-hidden className="size-4" />

@@ -2,11 +2,13 @@ import type { MetadataRoute } from "next";
 import { ROUTES, SITE_URL } from "../lib/seo";
 import { services } from "../data/services";
 import { industries } from "../data/industries";
-import { articles } from "../data/insights";
-import { isCaseStudyComplete, projects } from "../data/projects";
+import { isCaseStudyComplete } from "../data/projects";
+import { getArticles, getProjects } from "../lib/content";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const lastModified = new Date();
+  // Includes content added in the admin panel
+  const [articles, projects] = await Promise.all([getArticles(), getProjects()]);
   const url = (path: string) => `${SITE_URL}${path === "/" ? "" : path}`;
 
   return [
@@ -36,7 +38,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.6,
     })),
     ...articles.map((a) => ({
-      url: url(`/insights/${a.slug}`),
+      url: url(`/blogs/${a.slug}`),
       lastModified: new Date(a.published),
       changeFrequency: "yearly" as const,
       priority: 0.6,

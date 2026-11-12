@@ -1,4 +1,4 @@
-﻿.page { padding: 104px 0 72px; background: #f5f3ef; color: #202023; }
+.page { padding: 104px 0 72px; background: #f5f3ef; color: #202023; }
 .breadcrumbs { margin-bottom: 30px; }
 .workspace { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.18fr); align-items: start; gap: clamp(32px, 5vw, 80px); }
 .contactColumn { position: sticky; top: 98px; min-width: 0; }

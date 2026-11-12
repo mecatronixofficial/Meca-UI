@@ -1,12 +1,13 @@
-import { projects } from "../../data/projects";
+import { getProjects } from "../../lib/content";
 import { Container, Section } from "../ui/Container";
 import { SectionHeading } from "../ui/Heading";
 import { Button } from "../ui/Button";
 import { ProjectCard } from "../portfolio/ProjectCard";
 import { Reveal } from "../animations/Reveal";
 
-export function SelectedWork() {
-  const [feature, a, b, c, d] = projects;
+export async function SelectedWork() {
+  // Newest admin projects lead, then the hand-written ones
+  const [feature, a, b, c, d] = await getProjects();
 
   return (
     <Section labelledBy="work-title">

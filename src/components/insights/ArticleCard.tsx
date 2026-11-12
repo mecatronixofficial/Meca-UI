@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { formatDate, readingTime, type Article } from "../../data/insights";
@@ -20,17 +21,37 @@ export function ArticleCard({
         aria-hidden
         className={cn("relative overflow-hidden bg-sand", large ? "aspect-[16/9] lg:aspect-auto lg:min-h-[280px] lg:flex-1" : "aspect-[16/7]")}
       >
-        <div className="absolute inset-0 bg-grid" />
-        <div className="absolute -right-10 -top-16 size-56 glow-accent transition-transform duration-700 group-hover:scale-110" />
-        <div className="absolute -bottom-16 left-10 size-40 glow-wine" />
-        <span className="absolute bottom-5 left-6 font-mono text-[11px] uppercase tracking-[0.16em] text-accent-ink">{article.category}</span>
+        {article.cover ? (
+          <>
+            {/* Admin-uploaded cover (remote storage, served as-is) */}
+            <Image
+              src={article.cover}
+              alt=""
+              fill
+              unoptimized
+              sizes={large ? "(min-width: 1024px) 58vw, 100vw" : "(min-width: 1024px) 40vw, 100vw"}
+              className="object-cover transition-transform duration-700 ease-[var(--ease-out-expo)] group-hover:scale-[1.04]"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-ink/55 via-ink/5 to-transparent" />
+            <span className="absolute bottom-5 left-6 rounded-full bg-white/90 px-2.5 py-1 font-mono text-[11px] uppercase tracking-[0.16em] text-accent-ink backdrop-blur-sm">
+              {article.category}
+            </span>
+          </>
+        ) : (
+          <>
+            <div className="absolute inset-0 bg-grid" />
+            <div className="absolute -right-10 -top-16 size-56 glow-accent transition-transform duration-700 group-hover:scale-110" />
+            <div className="absolute -bottom-16 left-10 size-40 glow-wine" />
+            <span className="absolute bottom-5 left-6 font-mono text-[11px] uppercase tracking-[0.16em] text-accent-ink">{article.category}</span>
+          </>
+        )}
       </div>
       <div className={cn("flex flex-col p-7 lg:p-8", !large && "flex-1")}>
         <p className="text-[13px] text-muted-ink">
           <time dateTime={article.published}>{formatDate(article.published)}</time> · {readingTime(article)} min read
         </p>
         <Heading className={cn("mt-3 font-semibold tracking-[-0.025em] text-surface", large ? "text-h3" : "text-[1.25rem] leading-snug")}>
-          <Link href={`/insights/${article.slug}`} className="bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_1.5px] bg-left-bottom bg-no-repeat transition-[background-size,color] duration-500 after:absolute after:inset-0 after:content-[''] group-hover:bg-[length:100%_1.5px] group-hover:text-accent-ink">
+          <Link href={`/blogs/${article.slug}`} className="bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_1.5px] bg-left-bottom bg-no-repeat transition-[background-size,color] duration-500 after:absolute after:inset-0 after:content-[''] group-hover:bg-[length:100%_1.5px] group-hover:text-accent-ink">
             {article.title}
           </Link>
         </Heading>

@@ -5,14 +5,16 @@ import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { ArrowRight, ArrowUpRight, ChevronDown, Menu, X } from "lucide-react";
 import { mainNav } from "../../data/navigation";
-import { site, whatsappLink } from "../../lib/site";
+import { whatsappLink } from "../../lib/site-contact";
 import { cn } from "../../lib/cn";
+import { useSiteContact } from "./SiteContactProvider";
 import { Logo } from "../ui/Logo";
 
 const isActive = (pathname: string, href: string) =>
   href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
 
 export default function Header() {
+  const contact = useSiteContact();
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -155,7 +157,7 @@ export default function Header() {
                         aria-controls={dropdownId}
                         onClick={() => setServicesOpen((v) => !v)}
                         className={cn(
-                          "group/nav relative flex items-center gap-1 rounded-full px-3.5 py-2 text-[14.5px] transition-colors",
+                          "group/nav relative flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-2 text-[14px] transition-colors xl:px-3.5 xl:text-[14.5px]",
                           active || servicesOpen ? "text-ink" : "text-surface/70 hover:text-ink",
                         )}
                       >
@@ -212,7 +214,7 @@ export default function Header() {
                       href={item.href}
                       aria-current={active ? "page" : undefined}
                       className={cn(
-                        "group/nav relative block rounded-full px-3.5 py-2 text-[14.5px] transition-colors",
+                        "group/nav relative block whitespace-nowrap rounded-full px-2.5 py-2 text-[14px] transition-colors xl:px-3.5 xl:text-[14.5px]",
                         active ? "text-ink" : "text-surface/70 hover:text-ink",
                       )}
                     >
@@ -228,7 +230,7 @@ export default function Header() {
           <div className="flex items-center gap-2">
             <Link
               href="/contact"
-              className="group hidden h-10 items-center gap-2 btn-shine rounded-full bg-accent-strong px-5 text-[14.5px] font-medium text-white shadow-glow transition-[background-color,box-shadow] hover:bg-accent-ink hover:shadow-glow-lg sm:inline-flex"
+              className="group hidden h-10 items-center gap-2 whitespace-nowrap btn-shine rounded-full bg-accent-strong px-4 text-[14.5px] xl:px-5 font-medium text-white shadow-glow transition-[background-color,box-shadow] hover:bg-accent-ink hover:shadow-glow-lg sm:inline-flex"
             >
               Let&apos;s Talk
               <ArrowRight aria-hidden className="size-4 transition-transform group-hover:translate-x-0.5" />
@@ -305,7 +307,7 @@ export default function Header() {
               Start a Project <ArrowRight aria-hidden className="size-4" />
             </Link>
             <a
-              href={whatsappLink()}
+              href={whatsappLink(contact)}
               target="_blank"
               rel="noopener noreferrer"
               className="flex h-13 items-center justify-center gap-2 rounded-full border border-line-strong text-base text-ink"
@@ -313,7 +315,7 @@ export default function Header() {
               Talk on WhatsApp <ArrowUpRight aria-hidden className="size-4" />
             </a>
             <p className="pt-3 text-center text-sm text-muted">
-              <a href={`mailto:${site.email}`} className="hover:text-accent-ink">{site.email}</a>
+              <a href={`mailto:${contact.email}`} className="hover:text-accent-ink">{contact.email}</a>
             </p>
           </div>
         </div>

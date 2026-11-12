@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { site } from "../../lib/site";
+import { useEffect, useMemo, useState } from "react";
 import { cn } from "../../lib/cn";
+import { useSiteContact } from "./SiteContactProvider";
 
 /*
  * Live studio status for the footer: the current time in Coimbatore, whether
  * the studio is open, and a 24-hour bar with business hours marked in red.
- * Everything derives from site.businessHours, so it follows the env config.
+ * Everything derives from the opening hours set in the admin panel (Contact details).
  */
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -33,9 +33,10 @@ function parseDays(spec: string) {
   return open;
 }
 
-const OPEN_DAYS = parseDays(site.businessHours.days);
-const START = toMinutes(site.businessHours.start);
-const END = toMinutes(site.businessHours.end);
+type Hours = { days: string; start: string; end: string };
+type Schedule = Hours & { openDays: Set<number>; startMin: number; endMin: number };
+
+const toSchedule = (hours: Hours): Schedule => ({ ...hours, openDays: parseDays(hours.days), startMin: toMinutes(hours.start), endMin: toMinutes(hours.end) });
 
 const istFormat = new Intl.DateTimeFormat("en-GB", {
   timeZone: "Asia/Kolkata",
@@ -45,40 +46,63 @@ const istFormat = new Intl.DateTimeFormat("en-GB", {
   hourCycle: "h23",
 });
 
-function studioTime(date: Date) {
+function studioTime(date: Date, s: Schedule) {
   const parts = Object.fromEntries(istFormat.formatToParts(date).map((p) => [p.type, p.value]));
   const day = DAYS.indexOf(parts.weekday);
   const minutes = Number(parts.hour) * 60 + Number(parts.minute);
-  const open = OPEN_DAYS.has(day) && minutes >= START && minutes < END;
-  return { hour: parts.hour, minute: parts.minute, minutes, open, note: open ? `Open until ${site.businessHours.end}` : nextOpening(day, minutes) };
+  const open = s.openDays.has(day) && minutes >= s.startMin && minutes < s.endMin;
+  return { hour: parts.hour, minute: parts.minute, minutes, open, note: open ? `Open until ${s.end}` : nextOpening(day, minutes, s) };
 }
 
-function nextOpening(day: number, minutes: number) {
-  if (OPEN_DAYS.has(day) && minutes < START) return `Opens today at ${site.businessHours.start}`;
+function nextOpening(day: number, minutes: number, s: Schedule) {
+  if (s.openDays.has(day) && minutes < s.startMin) return `Opens today at ${s.start}`;
   for (let ahead = 1; ahead <= 7; ahead++) {
     const d = (day + ahead) % 7;
-    if (OPEN_DAYS.has(d)) return `Opens ${ahead === 1 ? "tomorrow" : DAYS[d]} at ${site.businessHours.start}`;
+    if (s.openDays.has(d)) return `Opens ${ahead === 1 ? "tomorrow" : DAYS[d]} at ${s.start}`;
   }
   return "Closed";
 }
 
 const pct = (minutes: number) => `${(minutes / DAY_MINUTES) * 100}%`;
 
-export function StudioClock({ className }: { className?: string }) {
-  // Rendered empty on the server and filled on mount, so the visitor's clock never causes a hydration mismatch
+/**
+ * Live studio status (IST time, open or closed, and when it next opens) from the admin-managed
+ * hours. Null until mounted, so the visitor's clock never causes a hydration mismatch.
+ */
+export function useStudioStatus() {
+  const contact = useSiteContact();
+  const { days, start, end } = contact.businessHours;
+  const schedule = useMemo(() => toSchedule({ days, start, end }), [days, start, end]);
   const [now, setNow] = useState<ReturnType<typeof studioTime> | null>(null);
 
   useEffect(() => {
-    const tick = () => setNow(studioTime(new Date()));
+    const tick = () => setNow(studioTime(new Date(), schedule));
     tick();
     const id = setInterval(tick, 15_000);
     return () => clearInterval(id);
-  }, []);
+  }, [schedule]);
+
+  return now;
+}
+
+export function StudioClock({ className }: { className?: string }) {
+  // Rendered empty on the server and filled on mount, so the visitor's clock never causes a hydration mismatch
+  const contact = useSiteContact();
+  const { days, start, end } = contact.businessHours;
+  const schedule = useMemo(() => toSchedule({ days, start, end }), [days, start, end]);
+  const [now, setNow] = useState<ReturnType<typeof studioTime> | null>(null);
+
+  useEffect(() => {
+    const tick = () => setNow(studioTime(new Date(), schedule));
+    tick();
+    const id = setInterval(tick, 15_000);
+    return () => clearInterval(id);
+  }, [schedule]);
 
   return (
     <div className={cn("rounded-2xl border border-line bg-white p-5 shadow-soft", className)}>
       <div className="flex items-center justify-between gap-3">
-        <span className="truncate text-[12.5px] text-muted">{site.address.city} studio</span>
+        <span className="truncate text-[12.5px] text-muted">{contact.address.city} studio</span>
         <span
           className={cn(
             "inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.12em]",
@@ -106,7 +130,7 @@ export function StudioClock({ className }: { className?: string }) {
       {/* 24-hour day: business hours in red, a marker for now */}
       <div aria-hidden className="mt-5">
         <div className="relative h-1.5 rounded-full bg-paper ring-1 ring-line">
-          <span className="absolute inset-y-0 rounded-full bg-accent/80" style={{ left: pct(START), width: pct(END - START) }} />
+          <span className="absolute inset-y-0 rounded-full bg-accent/80" style={{ left: pct(schedule.startMin), width: pct(schedule.endMin - schedule.startMin) }} />
           {now && (
             <span
               className="absolute top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-ink shadow-soft transition-[left] duration-700"
@@ -124,7 +148,7 @@ export function StudioClock({ className }: { className?: string }) {
       </div>
 
       <p className="mt-4 border-t border-line pt-4 text-[12.5px] text-muted-ink">
-        {site.businessHours.days} · {site.businessHours.start}–{site.businessHours.end}
+        {days} · {start}–{end}
       </p>
     </div>
   );

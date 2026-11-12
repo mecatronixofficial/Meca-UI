@@ -1,19 +1,20 @@
-import { articles } from "../../data/insights";
+import { getArticles } from "../../lib/content";
 import { Container, Section } from "../ui/Container";
 import { SectionHeading } from "../ui/Heading";
 import { ArrowLink } from "../ui/Button";
 import { ArticleCard } from "../insights/ArticleCard";
 import { Reveal } from "../animations/Reveal";
 
-export function InsightsSection() {
-  const [first, ...rest] = articles.slice(0, 3);
+export async function InsightsSection() {
+  const [first, ...rest] = (await getArticles()).slice(0, 3);
+  if (!first) return null;
   return (
     <Section labelledBy="insights-title">
       <Container>
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-          <SectionHeading id="insights-title" eyebrow="Insights" title="Ideas, engineering and insights." />
+          <SectionHeading id="insights-title" eyebrow="Blogs" title="Ideas, engineering and insights." />
           <Reveal className="shrink-0">
-            <ArrowLink href="/insights">All articles</ArrowLink>
+            <ArrowLink href="/blogs">All blogs</ArrowLink>
           </Reveal>
         </div>
 

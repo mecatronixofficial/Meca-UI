@@ -1,5 +1,5 @@
 import type { Metadata, MetadataRoute } from "next";
-import mecatronixConfig from "../config/envConfig";
+import type { SiteContact } from "./site-contact";
 import { brandLogo } from "./brand";
 
 export const SITE_URL = "https://www.mecatronix.one";
@@ -22,11 +22,12 @@ export const ROUTES: {
 }[] = [
   { path: "/", label: "Home", priority: 1, changeFrequency: "weekly" },
   { path: "/services", label: "Services", priority: 0.9, changeFrequency: "monthly" },
-  { path: "/work", label: "Work", priority: 0.8, changeFrequency: "monthly" },
+  { path: "/work", label: "Our Work", priority: 0.8, changeFrequency: "monthly" },
   { path: "/industries", label: "Industries", priority: 0.7, changeFrequency: "monthly" },
   { path: "/about", label: "About", priority: 0.7, changeFrequency: "monthly" },
   { path: "/process", label: "Process", priority: 0.6, changeFrequency: "yearly" },
-  { path: "/insights", label: "Insights", priority: 0.7, changeFrequency: "weekly" },
+  { path: "/blogs", label: "Blogs", priority: 0.7, changeFrequency: "weekly" },
+  { path: "/preview", label: "Website preview", priority: 0.7, changeFrequency: "monthly" },
   { path: "/contact", label: "Contact", priority: 0.8, changeFrequency: "yearly" },
   { path: "/privacy", label: "Privacy Policy", priority: 0.2, changeFrequency: "yearly" },
 ];
@@ -111,21 +112,28 @@ const DAY_CODES: Record<string, string> = {
 };
 
 /** "Mon-Sat" + "10:00" + "19:00" -> "Mo-Sa 10:00-19:00" (schema.org openingHours format) */
-function openingHours(): string | undefined {
-  const { days, hoursStart, hoursEnd } = mecatronixConfig.business;
+function openingHours({ days, start, end }: SiteContact["businessHours"]): string | undefined {
   const range = days
     .split("-")
     .map((d) => DAY_CODES[d.trim().slice(0, 3).toLowerCase()])
     .filter(Boolean);
-  if (!range.length || !hoursStart || !hoursEnd) return undefined;
-  return `${range.join("-")} ${hoursStart}-${hoursEnd}`;
+  if (!range.length || !start || !end) return undefined;
+  return `${range.join("-")} ${start}-${end}`;
 }
 
-const sameAs = () =>
-  Object.values(mecatronixConfig.social).filter((url): url is string => Boolean(url));
-
-export function organizationJsonLd() {
-  const { contact, location } = mecatronixConfig;
+/** Organisation + local business details for search engines, from the admin-managed contact details. */
+export function organizationJsonLd(site: SiteContact) {
+  const contact = { companyEmail: site.email, primaryPhone: site.phone };
+  const location = {
+    address: site.address.street,
+    city: site.address.city,
+    state: site.address.state,
+    pincode: site.address.pincode,
+    country: site.address.country,
+    googleMapsLink: site.address.mapsUrl,
+  };
+  const sameAs = () => site.socialLinks.map((s) => s.href);
+  const hours = site.businessHours;
 
   return {
     "@context": "https://schema.org",
@@ -160,7 +168,7 @@ export function organizationJsonLd() {
           addressCountry: location.country,
         },
         hasMap: location.googleMapsLink,
-        openingHours: openingHours(),
+        openingHours: openingHours(hours),
         areaServed: ["Coimbatore", "Tamil Nadu", "India"],
       },
       {

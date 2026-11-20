@@ -2374,3 +2374,745 @@
     scroll-behavior: auto;
   }
 }
+
+/* ======================================================================
+ * Motion & hover layer for every section below the hero
+ * ----------------------------------------------------------------------
+ * Headings: the red line shimmers and an underline draws in on reveal.
+ * Cards and rows: lift, red glow, light sweeps and red washes on hover.
+ * Workflow icons bob; the approach steps light up one after another.
+ * ====================================================================== */
+
+/* ---------- Section headings ---------- */
+.section .heading > span {
+  position: relative;
+  display: inline-block;
+  background-image: linear-gradient(100deg, #e10600 0%, #a30400 18%, #ff4a3d 32%, #e10600 50%, #a30400 68%, #ff4a3d 82%, #e10600 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: indShimmer 9s linear infinite;
+}
+.section .heading > span::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.04em;
+  height: 0.06em;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--color-accent), #ff8a80, transparent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1.1s var(--ease-out-expo) 0.35s;
+}
+.section [data-revealed] .heading > span::after {
+  transform: scaleX(1);
+}
+.section .eyebrow > span {
+  animation: indPulse 1.8s ease-in-out infinite;
+}
+
+/* ---------- 01 Explorer cards ---------- */
+.industryCard {
+  transition:
+    border-color 0.3s,
+    box-shadow 0.5s var(--ease-out-expo),
+    translate 0.5s var(--ease-out-expo);
+}
+.industryCard::after {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.6) 50%, transparent 65%);
+  translate: -120% 0;
+  pointer-events: none;
+}
+.cardArrow {
+  transition: color 0.3s, background-color 0.3s, transform 0.4s var(--ease-out-expo), rotate 0.5s var(--ease-out-expo);
+}
+
+/* ---------- 02 Spotlight ---------- */
+.spotlightVisual {
+  transition: translate 0.6s var(--ease-out-expo), box-shadow 0.6s var(--ease-out-expo);
+}
+.spotlightTabs > button {
+  transition: background-color 0.3s, color 0.3s, translate 0.3s var(--ease-out-expo);
+}
+
+/* ---------- 03 Workflow ---------- */
+.workflowIcon {
+  animation: indBob 4s ease-in-out infinite;
+}
+.stageIndex {
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s, scale 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s;
+}
+
+/* ---------- 04 Solutions rows: red wash sweeps in ---------- */
+.solutionRow {
+  isolation: isolate;
+}
+.solutionRow::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0 -12px;
+  border-radius: 14px;
+  background: linear-gradient(90deg, var(--color-accent-soft), rgb(255 240 239 / 0.35) 70%, transparent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.6s var(--ease-out-expo);
+}
+.rowIndex {
+  transition: color 0.3s, scale 0.4s var(--ease-out-expo);
+}
+.solutionRow > svg:not(.rowArrow) {
+  transition: transform 0.5s var(--ease-out-expo), rotate 0.5s var(--ease-out-expo);
+}
+
+/* ---------- 05 Benefits ---------- */
+.benefit {
+  position: relative;
+  isolation: isolate;
+  transition: padding 0.5s var(--ease-out-expo);
+}
+.benefit::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0 -14px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--color-accent-soft), transparent 75%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.benefit > svg {
+  transition: transform 0.5s var(--ease-out-expo), color 0.3s;
+}
+.benefit h3 {
+  transition: color 0.3s;
+}
+
+/* ---------- 06 Projects ---------- */
+.projectImage {
+  transition: translate 0.6s var(--ease-out-expo), box-shadow 0.6s var(--ease-out-expo), border-color 0.3s;
+}
+.projectImage::after {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.55) 50%, transparent 65%);
+  translate: -120% 0;
+  pointer-events: none;
+}
+
+/* ---------- 07 Approach: steps light up in turn ---------- */
+.approachSteps li {
+  position: relative;
+  transition: background-color 0.35s ease, translate 0.5s var(--ease-out-expo);
+}
+.approachSteps li::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 17px;
+  right: 17px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--color-accent), #ff8a80);
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: indStep 9s var(--ease-out-expo) infinite;
+}
+.approachSteps li:first-child::before { left: 0; }
+.approachSteps li:nth-child(2)::before { animation-delay: 1.5s; }
+.approachSteps li:nth-child(3)::before { animation-delay: 3s; }
+.approachSteps li:nth-child(4)::before { animation-delay: 4.5s; }
+.approachSteps li:nth-child(5)::before { animation-delay: 6s; }
+.approachSteps li:nth-child(6)::before { animation-delay: 7.5s; }
+.approachSteps li > span > svg {
+  transition: transform 0.4s var(--ease-out-expo);
+}
+.approachSteps li h3 {
+  transition: color 0.3s;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .industryCard:hover {
+    translate: 0 -6px;
+    box-shadow: var(--shadow-lift), 0 28px 56px -30px rgb(225 6 0 / 0.5);
+  }
+  .industryCard:hover::after {
+    translate: 120% 0;
+    transition: translate 1.1s var(--ease-out-expo);
+  }
+  .industryCard:hover .cardArrow {
+    rotate: 45deg;
+  }
+
+  .spotlightVisualWrap:hover .spotlightVisual {
+    translate: 0 -5px;
+    box-shadow: 0 34px 70px -36px var(--color-wine);
+  }
+  .spotlightTabs > button:hover:not([aria-selected="true"]) {
+    translate: 0 -1px;
+  }
+
+  .workflowStage:hover .stageIndex {
+    scale: 1.12;
+    border-color: var(--color-accent);
+    color: var(--color-accent-ink);
+    box-shadow: 0 0 0 5px rgb(225 6 0 / 0.1);
+  }
+
+  .solutionRow:hover::before { transform: scaleX(1); }
+  .solutionRow:hover .rowIndex {
+    color: var(--color-accent);
+    scale: 1.2;
+  }
+  .solutionRow:hover > svg:not(.rowArrow) { rotate: -10deg; }
+
+  .benefit:hover { padding-left: 6px; }
+  .benefit:hover::before { opacity: 1; }
+  .benefit:hover > svg {
+    transform: rotate(-12deg) scale(1.15);
+    color: var(--color-accent);
+  }
+  .benefit:hover h3 { color: var(--color-accent-ink); }
+
+  .projectLink:hover .projectImage {
+    translate: 0 -5px;
+    border-color: var(--color-accent);
+    box-shadow: var(--shadow-lift), 0 28px 60px -30px rgb(225 6 0 / 0.55);
+  }
+  .projectLink:hover .projectImage::after {
+    translate: 120% 0;
+    transition: translate 1.1s var(--ease-out-expo);
+  }
+
+  .approachSteps li:hover {
+    translate: 0 -4px;
+    background: linear-gradient(180deg, var(--color-accent-soft), transparent);
+  }
+  .approachSteps li:hover h3 { color: var(--color-accent-ink); }
+  .approachSteps li:hover > span > svg { transform: translateX(4px); }
+}
+
+@keyframes indShimmer {
+  to { background-position: -200% 0; }
+}
+@keyframes indPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgb(225 6 0 / 0.45); }
+  50% { box-shadow: 0 0 0 5px rgb(225 6 0 / 0); }
+}
+@keyframes indBob {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -5px; }
+}
+@keyframes indStep {
+  0% { transform: scaleX(0); opacity: 1; }
+  12%, 60% { transform: scaleX(1); opacity: 1; }
+  75%, 100% { transform: scaleX(1); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section .heading > span,
+  .section .eyebrow > span,
+  .workflowIcon,
+  .approachSteps li::before {
+    animation: none;
+  }
+  .industryCard:hover,
+  .spotlightVisualWrap:hover .spotlightVisual,
+  .projectLink:hover .projectImage,
+  .approachSteps li:hover {
+    translate: none;
+  }
+  .industryCard:hover::after,
+  .projectLink:hover .projectImage::after {
+    transition: none;
+  }
+}
+
+/* ---------- 01 Explorer: photo cards (replace the line-art bento) ----------
+ * An even grid of photo cards. On hover a card lifts with a red glow, its
+ * photo zooms under a red tint, the icon chip fills red and the arrow turns. */
+.photoGrid {
+  display: grid;
+  gap: 16px;
+}
+@media (min-width: 640px) {
+  .photoGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 1024px) {
+  .photoGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+}
+.photoCard {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--color-line-strong);
+  border-radius: 20px;
+  background: #fff;
+  transition:
+    border-color 0.3s,
+    box-shadow 0.5s var(--ease-out-expo),
+    translate 0.5s var(--ease-out-expo);
+}
+.photoCard[hidden] {
+  display: none;
+}
+.photoLink {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+}
+.photoMedia {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  background: var(--color-paper);
+}
+/* Red tint and a white fade into the card body */
+.photoMedia::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to top, rgb(255 255 255 / 0.55), transparent 35%),
+    linear-gradient(160deg, transparent 45%, rgb(225 6 0 / 0.4));
+  opacity: 0.5;
+  transition: opacity 0.5s ease;
+}
+.photoImg {
+  object-fit: cover;
+  transition: scale 1.1s var(--ease-out-expo);
+}
+.photoIndex {
+  position: absolute;
+  z-index: 1;
+  top: 12px;
+  left: 12px;
+  padding: 3px 9px;
+  border: 1px solid rgb(255 255 255 / 0.7);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.85);
+  backdrop-filter: blur(8px);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--color-accent-ink);
+}
+.photoIcon {
+  position: absolute;
+  z-index: 1;
+  right: 12px;
+  bottom: -18px;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 3px solid #fff;
+  border-radius: 13px;
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  box-shadow: var(--shadow-soft);
+  transition: background-color 0.4s, color 0.4s, rotate 0.6s var(--ease-out-expo);
+}
+.photoMedia { overflow: visible; }
+.photoMedia > img { border-radius: 19px 19px 0 0; }
+.photoBody {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 18px 18px 16px;
+}
+.photoBody h3 {
+  padding-right: 34px;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+  transition: color 0.3s;
+}
+.photoBody > p {
+  display: -webkit-box;
+  margin-top: 8px;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--color-muted-ink);
+}
+.photoFoot {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 14px;
+}
+.photoFoot ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.photoFoot li {
+  padding: 4px 8px;
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  font-size: 10.5px;
+  color: var(--color-muted-ink);
+  transition: border-color 0.3s, color 0.3s, background-color 0.3s;
+}
+.photoArrow {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--color-line-strong);
+  border-radius: 50%;
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s, rotate 0.5s var(--ease-out-expo);
+}
+
+/* ---------- 02 Spotlight: the industry photo instead of line art ---------- */
+.dashboardPhoto {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  margin: 20px 0 18px;
+  border: 1px solid var(--color-line);
+  border-radius: 12px;
+  background: var(--color-paper);
+}
+.dashboardPhoto::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgb(11 13 18 / 0.45), transparent 50%);
+}
+.dashboardPhotoImg {
+  object-fit: cover;
+  animation: photoIn 0.8s var(--ease-out-expo) both, kenBurns 14s ease-in-out infinite alternate;
+}
+.dashboardPhotoStep {
+  position: absolute;
+  z-index: 1;
+  left: 12px;
+  bottom: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px 6px 10px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.92);
+  backdrop-filter: blur(8px);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+.dashboardPhotoStep i {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--color-accent);
+  animation: indPulse 1.8s ease-in-out infinite;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .photoCard:hover {
+    translate: 0 -6px;
+    border-color: var(--color-accent);
+    box-shadow: var(--shadow-lift), 0 28px 56px -30px rgb(225 6 0 / 0.55);
+  }
+  .photoCard:hover .photoImg { scale: 1.1; }
+  .photoCard:hover .photoMedia::after { opacity: 1; }
+  .photoCard:hover .photoIcon {
+    background: var(--color-accent);
+    color: #fff;
+    rotate: -10deg;
+  }
+  .photoCard:hover h3 { color: var(--color-accent-ink); }
+  .photoCard:hover .photoFoot li {
+    border-color: rgb(225 6 0 / 0.25);
+    background: var(--color-accent-soft);
+    color: var(--color-accent-ink);
+  }
+  .photoCard:hover .photoArrow {
+    border-color: var(--color-accent);
+    background: var(--color-accent);
+    color: #fff;
+    rotate: 45deg;
+  }
+}
+
+@keyframes photoIn {
+  from { opacity: 0; scale: 1.06; }
+}
+@keyframes kenBurns {
+  to { transform: scale(1.08) translate(-1.5%, -1%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .photoCard,
+  .photoImg,
+  .photoIcon,
+  .photoArrow {
+    transition: none;
+  }
+  .photoCard:hover { translate: none; }
+  .photoCard:hover .photoImg { scale: none; }
+  .dashboardPhotoImg,
+  .dashboardPhotoStep i {
+    animation: none;
+  }
+}
+
+/* ---------- 06 How we get there: compact, with round motion ----------
+ * Tighter spacing; each step number sits in a circle with a red ring that
+ * keeps turning and a dot orbiting it (each step offset, so they ripple). */
+.approachSection {
+  padding: clamp(40px, 5vw, 64px) 0;
+}
+.approachSection .sectionHead {
+  margin-bottom: 22px;
+}
+.approachSteps li {
+  padding: 14px 14px 16px;
+}
+.approachSteps h3 {
+  margin-top: 14px;
+  font-size: 16px;
+}
+.approachSteps p {
+  margin-top: 8px;
+  font-size: 11.5px;
+  line-height: 1.65;
+}
+.approachSteps small {
+  padding-top: 14px;
+  font-size: 9.5px;
+}
+.stepRing {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px var(--color-line-strong);
+  font-weight: 600;
+  color: var(--color-accent-ink);
+  transition: background-color 0.35s, color 0.35s, scale 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s;
+}
+/* Turning red arc */
+.stepRing::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  background: conic-gradient(from 0deg, transparent 0 55%, var(--color-accent) 85%, transparent);
+  mask: radial-gradient(closest-side, transparent calc(100% - 2px), #000 calc(100% - 1.5px));
+  animation: ringSpin 3s linear infinite;
+  animation-delay: var(--ring-delay, 0s);
+}
+/* Dot orbiting the circle */
+.stepRing::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  margin: -3px;
+  border-radius: 999px;
+  background: var(--color-accent);
+  box-shadow: 0 0 8px rgb(225 6 0 / 0.6);
+  animation: ringOrbit 5s linear infinite;
+  animation-delay: var(--ring-delay, 0s);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .approachSteps li:hover .stepRing {
+    scale: 1.1;
+    background: var(--color-accent);
+    color: #fff;
+    box-shadow: var(--shadow-glow);
+  }
+  .approachSteps li:hover .stepRing::before {
+    animation-duration: 1.1s;
+  }
+  .approachSteps li:hover .stepRing::after {
+    animation-duration: 1.8s;
+  }
+}
+
+@keyframes ringSpin {
+  to { transform: rotate(360deg); }
+}
+@keyframes ringOrbit {
+  from { transform: rotate(0deg) translateX(1.55rem); }
+  to { transform: rotate(360deg) translateX(1.55rem); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stepRing::before,
+  .stepRing::after {
+    animation: none;
+  }
+  .stepRing::after { display: none; }
+}
+
+/* ---------- "The next chapter starts here": new animation ----------
+ * Same red card. Industry icons travel two rings in opposite directions
+ * (each chip counter-turns so it stays upright), sonar pulses leave the
+ * centre, a light sweeps the card and the heading lines rise in on reveal. */
+.ctaOrbit {
+  right: -20px;
+  width: clamp(300px, 34vw, 470px);
+  opacity: 1;
+}
+.ctaOrbit > span {
+  border-color: rgb(255 255 255 / 0.22);
+}
+.ctaOrbit > span:nth-child(1) { animation: ctaRingTurn 60s linear infinite; }
+.ctaOrbit > span:nth-child(2) { animation: ctaRingTurn 40s linear infinite reverse; }
+.ctaOrbit > svg {
+  position: relative;
+  z-index: 1;
+  width: 64px;
+  height: 64px;
+  padding: 14px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.12);
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.25), 0 0 40px rgb(255 255 255 / 0.25);
+  color: #fff;
+  backdrop-filter: blur(4px);
+}
+/* Sonar pulses from the centre */
+.ctaPulse {
+  position: absolute;
+  inset: 40%;
+  border: 1.5px solid rgb(255 255 255 / 0.55);
+  border-radius: 999px;
+  animation: ctaSonar 4s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+}
+.ctaPulse + .ctaPulse { animation-delay: 2s; }
+/* Rings that carry the icons */
+.ctaTrack {
+  position: absolute;
+  inset: 0;
+  animation: ctaRingTurn 28s linear infinite;
+}
+.ctaTrack[data-ring="1"] {
+  inset: 17%;
+  animation-duration: 20s;
+  animation-direction: reverse;
+}
+.ctaTrack > b {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin: -20px;
+  border: 1px solid rgb(255 255 255 / 0.35);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.14);
+  backdrop-filter: blur(6px);
+  color: #fff;
+  transform: rotate(var(--a)) translateY(calc(var(--r, 50%) * -1)) rotate(calc(var(--a) * -1));
+  --r: clamp(150px, 17vw, 235px);
+}
+.ctaTrack[data-ring="1"] > b {
+  --r: clamp(100px, 11.2vw, 155px);
+}
+/* Counter-turn so the icons stay upright while their ring spins */
+.ctaTrack > b > svg {
+  animation: ctaRingTurn 28s linear infinite reverse;
+}
+.ctaTrack[data-ring="1"] > b > svg {
+  animation-duration: 20s;
+  animation-direction: normal;
+}
+/* Light sweeping across the card every few seconds */
+.cta::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 40%, rgb(255 255 255 / 0.14) 50%, transparent 60%);
+  translate: -100% 0;
+  animation: ctaSweep 7s ease-in-out infinite;
+  pointer-events: none;
+}
+/* Heading lines rise in one after another */
+.ctaLine {
+  display: inline-block;
+  font-style: normal;
+  opacity: 0;
+  transform: translateY(0.5em);
+  transition: opacity 0.8s ease, transform 0.9s var(--ease-out-expo);
+}
+.ctaContent > h2 > .ctaLine:nth-of-type(2) { transition-delay: 0.12s; }
+.ctaContent > h2 > span.ctaLine { transition-delay: 0.24s; }
+.cta[data-revealed] .ctaLine {
+  opacity: 1;
+  transform: none;
+}
+.ctaContent > h2 > span.ctaLine {
+  background-image: linear-gradient(100deg, #fff 0%, #ffd2cc 25%, #fff 50%, #ffd2cc 75%, #fff 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: indShimmer 7s linear infinite;
+}
+.ctaActions a[href="/contact"] {
+  animation: ctaGlow 2.8s ease-in-out infinite;
+}
+
+@media (max-width: 767px) {
+  .ctaOrbit { opacity: 0.35; right: -120px; }
+}
+
+@keyframes ctaRingTurn {
+  to { transform: rotate(360deg); }
+}
+@keyframes ctaSonar {
+  0% { transform: scale(0.6); opacity: 0.9; }
+  100% { transform: scale(4.6); opacity: 0; }
+}
+@keyframes ctaSweep {
+  0%, 55% { translate: -100% 0; }
+  85%, 100% { translate: 100% 0; }
+}
+@keyframes ctaGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgb(255 255 255 / 0.45); }
+  50% { box-shadow: 0 0 0 8px rgb(255 255 255 / 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ctaOrbit > span,
+  .ctaPulse,
+  .ctaTrack,
+  .ctaTrack > b > svg,
+  .cta::after,
+  .ctaContent > h2 > span.ctaLine,
+  .ctaActions a[href="/contact"] {
+    animation: none;
+  }
+  .ctaLine {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

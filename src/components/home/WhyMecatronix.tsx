@@ -1,59 +1,81 @@
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { principles } from "../../data/company";
 import { principleIcons } from "../ui/icons";
 import { Container, Section } from "../ui/Container";
 import { Eyebrow } from "../ui/Heading";
-import { ArrowLink } from "../ui/Button";
-import { Backdrop } from "../visuals/Backdrop";
-import { cn } from "../../lib/cn";
 import { Reveal } from "../animations/Reveal";
+import styles from "./why.module.css";
 
+/** Why Mecatronix: the team photo on one side, the heading and principles on the other. */
 export function WhyMecatronix() {
   return (
-    <Section labelledBy="why-title" tone="dark" className="overflow-hidden">
-      <Backdrop tone="dark" image="contours" aurora motes sweep />
-      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent-glow/60 to-transparent" />
+    <Section compact labelledBy="why-title" className="overflow-hidden">
+      <span aria-hidden className="pointer-events-none absolute -left-40 top-10 size-[30rem] glow-accent" />
+
       <Container className="relative">
-        <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
-          <div className="lg:col-span-5">
-            <Reveal className="lg:sticky lg:top-32">
-              <Eyebrow tone="dark">Why Mecatronix</Eyebrow>
-              <h2 id="why-title" className="text-h2 mt-6 text-white">
+        <div className="grid gap-10 lg:grid-cols-12 lg:items-center lg:gap-12">
+          {/* ---------- Photo ---------- */}
+          <Reveal className="relative lg:col-span-5">
+            <div className={styles.frame}>
+              <Image src="/assets/why/team.jpg" alt="The Mecatronix team working together at laptops" fill sizes="(min-width: 1024px) 480px, 100vw" className={styles.photo} />
+            </div>
+            <span aria-hidden className={`${styles.badge} -right-2 bottom-6 sm:-right-5`}>
+              <span className="grid size-9 place-items-center rounded-xl bg-accent font-display text-[15px] font-semibold text-white">{principles.length}</span>
+              <span className="leading-tight">
+                <span className="block text-[13px] font-semibold text-ink">Principles</span>
+                <span className="block text-[11.5px] text-muted-ink">behind every project</span>
+              </span>
+            </span>
+            <span aria-hidden className={`${styles.badge} ${styles.badgeLate} -left-2 top-6 sm:-left-5`}>
+              <span className="size-2 rounded-full bg-emerald-500" />
+              <span className="text-[12.5px] font-semibold text-ink">One team, design to support</span>
+            </span>
+          </Reveal>
+
+          {/* ---------- Content ---------- */}
+          <div className="lg:col-span-7">
+            <Reveal>
+              <Eyebrow className="mb-4">Why Mecatronix</Eyebrow>
+              <h2 id="why-title" className="font-display text-[1.6rem] font-semibold leading-[1.1] tracking-[-0.03em] text-ink sm:text-[2rem] lg:text-[2.3rem]">
                 Technology with purpose.
                 <br />
-                <span className="text-shimmer-light">Engineering with precision.</span>
+                <span className="text-shimmer">Engineering with precision.</span>
               </h2>
-              <p className="text-lead mt-6 max-w-md text-white/65">
-                Good software is a business decision before it&apos;s a technical one. These are the principles behind
-                every project we take on.
+              <p className="mt-4 max-w-xl text-[14.5px] leading-relaxed text-muted-ink">
+                Good software is a business decision before it&apos;s a technical one. These are the principles behind every project we take on.
               </p>
-              <ArrowLink href="/process" tone="dark" className="mt-8">How we work</ArrowLink>
+            </Reveal>
+
+            <ol className="mt-6 grid gap-2.5 sm:grid-cols-2">
+              {principles.map((p, i) => {
+                const Icon = principleIcons[p.glyph];
+                return (
+                  <Reveal as="li" key={p.title} style={{ "--reveal-delay": `${(i % 2) * 70}ms` } as React.CSSProperties}>
+                    <div className={styles.item} title={p.text}>
+                      <span className={styles.icon}>
+                        <Icon aria-hidden className="size-4" strokeWidth={1.8} />
+                      </span>
+                      <span className="min-w-0">
+                        <span className={styles.itemTitle}>{p.title}</span>
+                        <span className="mt-0.5 block text-[12.5px] leading-snug text-muted-ink">{p.text}</span>
+                      </span>
+                    </div>
+                  </Reveal>
+                );
+              })}
+            </ol>
+
+            <Reveal className="mt-6">
+              <Link href="/process" className={styles.cta}>
+                How we work
+                <span className={styles.ctaArrow}>
+                  <ArrowRight aria-hidden className="size-3.5" />
+                </span>
+              </Link>
             </Reveal>
           </div>
-
-          <ol className="lg:col-span-7">
-            {principles.map((p, i) => {
-              const Icon = principleIcons[p.glyph];
-              const flip = i % 2 === 1;
-              return (
-                <Reveal as="li"
-                  key={p.title}
-                  className={cn(
-                    "group grid grid-cols-[auto_1fr] gap-x-6 gap-y-3 border-t border-white/10 py-9 sm:gap-x-8 lg:py-11",
-                    flip && "sm:pl-14",
-                  )}
-                >
-                  <span className="flex size-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-accent-glow backdrop-blur-sm transition-[background-color,color,box-shadow,rotate,border-color] duration-500 group-hover:-rotate-6 group-hover:border-accent group-hover:bg-accent group-hover:text-white group-hover:shadow-glow">
-                    <Icon aria-hidden className="size-5" strokeWidth={1.6} />
-                  </span>
-                  <div className="transition-[translate] duration-500 ease-[var(--ease-out-expo)] group-hover:translate-x-2">
-                    <p className="font-mono text-xs text-accent-glow">{String(i + 1).padStart(2, "0")}</p>
-                    <h3 className="mt-2 text-h3 text-white transition-colors duration-300 group-hover:text-accent-glow">{p.title}</h3>
-                    <p className="mt-3 max-w-lg text-[15.5px] leading-relaxed text-white/65">{p.text}</p>
-                  </div>
-                </Reveal>
-              );
-            })}
-          </ol>
         </div>
       </Container>
     </Section>

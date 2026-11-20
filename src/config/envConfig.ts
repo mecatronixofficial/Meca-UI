@@ -60,7 +60,7 @@ export const mecatronixConfig = Object.freeze({
 
   // Contact Information
   contact: {
-    companyEmail: process.env.NEXT_PUBLIC_COMPANY_EMAIL || 'connect@mecatronix.one',
+    companyEmail: process.env.NEXT_PUBLIC_COMPANY_EMAIL || 'mecatronixofficial@gmail.com',
     supportEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'mecatronixofficial@gmail.com',
     primaryPhone: process.env.NEXT_PUBLIC_PRIMARY_PHONE || '+918300454800',
     whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '+918300454800',
@@ -84,7 +84,15 @@ export const mecatronixConfig = Object.freeze({
     state: process.env.NEXT_PUBLIC_COMPANY_STATE || 'Tamil Nadu',
     country: process.env.NEXT_PUBLIC_COMPANY_COUNTRY || 'India',
     pincode: process.env.NEXT_PUBLIC_COMPANY_PINCODE || '641006',
-    googleMapsLink: process.env.NEXT_PUBLIC_GOOGLE_MAPS_LINK || 'https://maps.app.goo.gl/yoaoHinWEJ3pqrQv8',
+    // The Mecatronix Google Business profile, opened by its Place ID so it always shows the business
+    googleMapsLink:
+      process.env.NEXT_PUBLIC_GOOGLE_MAPS_LINK ||
+      'https://www.google.com/maps/search/?api=1&query=Mecatronix%20Software%20Development&query_place_id=ChIJ2VtuRthZqDsRn2UPG3POkIQ',
+    // Google "write a review" link (the printed review QR code). The admin panel's value wins.
+    googleReviewLink: process.env.NEXT_PUBLIC_GOOGLE_REVIEW_LINK || 'https://g.page/r/CZ9lDxtzzpCEEAE/review',
+    // Studio position on the map (decimal degrees, from the Google Business profile)
+    latitude: Number(process.env.NEXT_PUBLIC_COMPANY_LATITUDE) || 11.0198784,
+    longitude: Number(process.env.NEXT_PUBLIC_COMPANY_LONGITUDE) || 76.9785856,
   },
 
   // Business Hours

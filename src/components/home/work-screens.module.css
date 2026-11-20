@@ -1,0 +1,133 @@
+/* Highlights: endless strip of project screenshots. Two identical strips side
+ * by side each slide by their own width, so the loop is seamless. */
+
+.viewport {
+  display: flex;
+  overflow: hidden;
+  padding: 0.75rem 0 1.5rem;
+  margin: -0.75rem 0 -1.5rem;
+  mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+}
+
+.strip {
+  display: flex;
+  flex-shrink: 0;
+  gap: 1.25rem;
+  padding-right: 1.25rem;
+  animation: marquee var(--work-duration, 42s) linear infinite;
+}
+
+.viewport:hover .strip,
+.viewport:focus-within .strip {
+  animation-play-state: paused;
+}
+
+.item {
+  flex-shrink: 0;
+  width: 300px;
+}
+
+@media (min-width: 640px) {
+  .item { width: 420px; }
+}
+
+.card {
+  display: block;
+  transition: translate 0.6s var(--ease-out-expo);
+}
+
+.screen {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-card);
+  background: white;
+  box-shadow: var(--shadow-soft);
+  transition: box-shadow 0.6s var(--ease-out-expo), border-color 0.4s ease;
+}
+
+/* Slow zoom on the screenshot itself */
+.screen img {
+  transition: scale 1.2s var(--ease-out-expo);
+}
+
+/* Dark veil with the call to action */
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: end start;
+  padding: 1.1rem;
+  background: linear-gradient(to top, rgb(11 13 18 / 0.78), rgb(11 13 18 / 0.15) 55%, transparent);
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.95rem;
+  border-radius: 999px;
+  background: var(--color-accent);
+  box-shadow: var(--shadow-glow);
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+  translate: 0 10px;
+  transition: translate 0.55s var(--ease-out-expo);
+}
+
+.card:hover,
+.card:focus-visible {
+  translate: 0 -6px;
+}
+
+.card:hover .screen,
+.card:focus-visible .screen {
+  border-color: rgb(225 6 0 / 0.35);
+  box-shadow: var(--shadow-lift), 0 24px 50px -24px rgb(225 6 0 / 0.55);
+}
+
+.card:hover .screen img {
+  scale: 1.06;
+}
+
+.card:hover .overlay,
+.card:focus-visible .overlay {
+  opacity: 1;
+}
+
+.card:hover .cta,
+.card:focus-visible .cta {
+  translate: 0 0;
+}
+
+@keyframes marquee {
+  to { transform: translateX(-100%); }
+}
+
+/* Reduced motion: one still row the visitor can scroll sideways */
+@media (prefers-reduced-motion: reduce) {
+  .viewport {
+    overflow-x: auto;
+    mask-image: none;
+  }
+
+  .strip { animation: none; }
+  .copy { display: none; }
+
+  .card,
+  .screen img,
+  .cta {
+    transition: none;
+  }
+
+  .card:hover,
+  .card:focus-visible {
+    translate: none;
+  }
+
+  .card:hover .screen img { scale: none; }
+}

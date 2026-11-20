@@ -1,5 +1,4 @@
-import { Check, Star } from "lucide-react";
-import { engagementModels } from "../../data/company";
+import { Star } from "lucide-react";
 import { getVerifiedReviews } from "../../lib/backend";
 import { Container, Section } from "../ui/Container";
 import { SectionHeading } from "../ui/Heading";
@@ -7,14 +6,12 @@ import { Reveal } from "../animations/Reveal";
 import { ReviewButton } from "../reviews/ReviewButton";
 
 /**
- * Shows verified client reviews from the backend when there are any.
- * Until then, the slot explains how engagements work instead — no
- * placeholder or invented testimonials are ever shown. Either way, clients
- * can write a review (it appears once verified).
+ * Shows verified client reviews from the backend; renders nothing until there are any.
+ * No placeholder or invented testimonials are ever shown.
  */
 export async function Testimonials() {
   const reviews = (await getVerifiedReviews()).slice(0, 3);
-  return reviews.length ? <ReviewGrid reviews={reviews} /> : <Engagement />;
+  return reviews.length ? <ReviewGrid reviews={reviews} /> : null;
 }
 
 function Stars({ rating }: { rating: number }) {
@@ -29,7 +26,7 @@ function Stars({ rating }: { rating: number }) {
 
 function ReviewGrid({ reviews }: { reviews: Awaited<ReturnType<typeof getVerifiedReviews>> }) {
   return (
-    <Section labelledBy="reviews-title">
+    <Section compact labelledBy="reviews-title">
       <Container>
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <SectionHeading id="reviews-title" eyebrow="Client words" title="What our clients say." />
@@ -37,7 +34,7 @@ function ReviewGrid({ reviews }: { reviews: Awaited<ReturnType<typeof getVerifie
             <ReviewButton />
           </Reveal>
         </div>
-        <ul className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {reviews.map((r, i) => (
             <Reveal as="li" key={r.id} style={{ "--reveal-delay": `${i * 80}ms` } as React.CSSProperties}>
               <figure className="hover-card spotlight relative flex h-full flex-col rounded-panel border border-line bg-paper p-8">
@@ -54,50 +51,6 @@ function ReviewGrid({ reviews }: { reviews: Awaited<ReturnType<typeof getVerifie
             </Reveal>
           ))}
         </ul>
-      </Container>
-    </Section>
-  );
-}
-
-function Engagement() {
-  return (
-    <Section labelledBy="engage-title">
-      <Container>
-        <SectionHeading
-          id="engage-title"
-          align="split"
-          eyebrow="Working together"
-          title="Engagements shaped around the work."
-          intro="Different projects need different structures. We agree the right one with you at the start, so expectations are clear on both sides."
-        />
-        <ol className="mt-14 grid gap-5 lg:mt-20 lg:grid-cols-3">
-          {engagementModels.map((m, i) => (
-            <Reveal as="li"
-              key={m.title}
-              style={{ "--reveal-delay": `${i * 80}ms` } as React.CSSProperties}
-              className="hover-card spotlight group relative flex flex-col rounded-panel border border-line bg-white p-8 lg:p-9"
-            >
-              <span className="font-mono text-xs text-accent-ink">{String(i + 1).padStart(2, "0")}</span>
-              <h3 className="mt-8 text-h3 text-surface transition-colors duration-300 group-hover:text-accent-ink">{m.title}</h3>
-              <p className="mt-3 flex-1 text-[15px] leading-relaxed text-muted-ink">{m.text}</p>
-              <ul className="mt-8 space-y-2.5 border-t border-line pt-6">
-                {m.points.map((p) => (
-                  <li key={p} className="flex items-center gap-2.5 text-[14.5px] text-surface">
-                    <Check aria-hidden className="size-4 text-accent-ink transition-transform duration-300 group-hover:scale-125" strokeWidth={2.2} /> {p}
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
-          ))}
-        </ol>
-        {/* No public reviews yet: invite clients to write the first */}
-        <Reveal className="mt-10 flex flex-col items-start gap-4 rounded-panel border border-line bg-paper p-6 sm:flex-row sm:items-center sm:justify-between lg:p-8">
-          <div>
-            <p className="font-display text-[1.2rem] font-semibold text-surface">Worked with us?</p>
-            <p className="mt-1 text-[15px] text-muted-ink">Share your experience. Your review helps other businesses choose with confidence.</p>
-          </div>
-          <ReviewButton variant="solid" className="shrink-0" />
-        </Reveal>
       </Container>
     </Section>
   );

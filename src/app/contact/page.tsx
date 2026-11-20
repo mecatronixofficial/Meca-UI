@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ArrowDownRight, ArrowUpRight, Clock, Mail, MapPin, MessageCircle, Phone, AudioLines, Workflow, Rocket, Check, Navigation, Globe2 } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, Mail, MessageCircle, Phone, AudioLines, Workflow, Rocket, Check } from "lucide-react";
 import { pageMetadata } from "../../lib/seo";
 import { whatsappLink } from "../../lib/site-contact";
 import { getSiteContact } from "../../lib/site-contact.server";
@@ -8,6 +8,7 @@ import { Breadcrumbs } from "../../components/ui/Breadcrumbs";
 import { SocialIcon } from "../../components/ui/SocialIcon";
 import { ContactForm } from "../../components/contact/ContactForm";
 import { CopyEmail } from "../../components/contact/CopyEmail";
+import { StudioDirections } from "../../components/contact/StudioDirections";
 import styles from "./contact.module.css";
 import { Reveal } from "../../components/animations/Reveal";
 
@@ -94,75 +95,7 @@ export default async function ContactPage() {
           <div className={styles.visionFootnote}><span aria-hidden /><p>Human conversations. Thoughtful technology. Meaningful next steps.</p></div>
         </section>
 
-        <section className={styles.location} aria-labelledby="location-title">
-          <div className={styles.locationAmbient} aria-hidden />
-          <svg className={styles.locationLines} viewBox="0 0 1200 800" fill="none" preserveAspectRatio="xMidYMid slice" aria-hidden><path d="M-80 620C180 100 550 110 850 280S1200 250 1320 0M-100 660C180 140 550 150 850 320S1200 290 1320 40" /><circle cx="850" cy="280" r="8" /><circle cx="850" cy="280" r="22" /></svg>
-          <header className={styles.locationHeader}>
-            <div>
-              <Reveal as="p" className={styles.locationEyebrow}><Globe2 aria-hidden size={16} /> FIND US</Reveal>
-              <Reveal as="h2" id="location-title">Built locally.<br /><span>Connected globally.</span></Reveal>
-            </div>
-            <Reveal as="p" className={styles.locationLead}>Meet us in {contact.address.city}.<br />Build with us from anywhere.</Reveal>
-          </header>
-          <div className={styles.locationGrid}>
-            <div className={styles.mapColumn}>
-              <Reveal className={styles.mapFrame}>
-                <div className={styles.mapToolbar}><span><span /> OUR STUDIO ON THE MAP</span><a href={contact.address.mapsUrl} target="_blank" rel="noopener noreferrer" aria-label="Open Mecatronix studio in Google Maps"><ArrowUpRight aria-hidden size={19} /></a></div>
-                <iframe title={`Mecatronix studio — ${contact.address.city}`} src={`https://www.google.com/maps?q=${encodeURIComponent(contact.address.full)}&output=embed`} loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen />
-              <a className={styles.studioMapCard} href={contact.address.mapsUrl} target="_blank" rel="noopener noreferrer">
-                <span className={styles.studioMapPin}><MapPin aria-hidden size={20} /></span>
-                <span className={styles.studioMapCopy}><span>MECATRONIX STUDIO</span><strong>{contact.address.city}, India</strong></span>
-                <ArrowUpRight aria-hidden size={22} />
-              </a>
-              </Reveal>
-            </div>
-            <div className={styles.locationInfo}>
-              <Reveal className={styles.officeIntro}>
-                <div className={styles.officeOverline}><span>THE STUDIO VISIT</span><ArrowUpRight aria-hidden size={19} /></div>
-                <h3>Good ideas start<br />with <span>hello.</span></h3>
-                <p>Pull up a chair. Let’s talk about what you want to build.</p>
-              </Reveal>
-              <div className={styles.officeCards}>
-                {contact.addresses.map((address, i) => (
-                  <Reveal key={`${address.label}-${i}`} className={styles.officeCard} style={{ "--reveal-delay": `${70 + i * 70}ms` } as React.CSSProperties}>
-                    <span className={styles.officeIcon}><MapPin aria-hidden size={21} /></span>
-                    <div>
-                      <h4>{contact.addresses.length > 1 ? address.label : "Our address"}</h4>
-                      <p>{address.full}{address.country && address.country !== "India" ? `, ${address.country}` : ""}</p>
-                      {contact.addresses.length > 1 && (
-                        <p><a href={address.mapsUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">Open in Maps</a></p>
-                      )}
-                    </div>
-                  </Reveal>
-                ))}
-                <Reveal className={styles.officeCard} style={{ "--reveal-delay": `${70 + contact.addresses.length * 70}ms` } as React.CSSProperties}><span className={styles.officeIcon}><Clock aria-hidden size={21} /></span><div><h4>Studio hours</h4><p>{contact.hours}</p></div></Reveal>
-                {contact.emails.length > 1 && (
-                  <Reveal className={styles.officeCard}>
-                    <span className={styles.officeIcon}><Mail aria-hidden size={21} /></span>
-                    <div>
-                      <h4>Email us</h4>
-                      {contact.emails.map((e) => (
-                        <p key={e.email}>{e.label}: <a href={`mailto:${e.email}`} className="underline underline-offset-4">{e.email}</a></p>
-                      ))}
-                    </div>
-                  </Reveal>
-                )}
-                {contact.phones.length > 1 && (
-                  <Reveal className={styles.officeCard}>
-                    <span className={styles.officeIcon}><Phone aria-hidden size={21} /></span>
-                    <div>
-                      <h4>Call us</h4>
-                      {contact.phones.map((ph) => (
-                        <p key={ph.tel}>{ph.label}: <a href={`tel:${ph.tel}`} className="underline underline-offset-4">{ph.display}</a>{ph.whatsapp ? " · WhatsApp" : ""}</p>
-                      ))}
-                    </div>
-                  </Reveal>
-                )}
-              </div>
-              <a href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(contact.address.full)}`} target="_blank" rel="noopener noreferrer" className={styles.directions}><Navigation aria-hidden size={19} /> Get Directions <ArrowUpRight aria-hidden size={20} /></a>
-            </div>
-          </div>
-        </section>
+        <StudioDirections contact={contact} />
       </Container>
     </div>
   );

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUp, ArrowUpRight, MapPin, MessageCircle, Phone } from "lucide-react";
+import { ArrowUp, ArrowUpRight, MapPin, MessageCircle, Phone, Send } from "lucide-react";
 import { footerNav } from "../../data/navigation";
 import { site } from "../../lib/site";
 import { whatsappLink } from "../../lib/site-contact";
@@ -10,36 +10,41 @@ import { Container } from "../ui/Container";
 import { Logo } from "../ui/Logo";
 import { SocialIcon } from "../ui/SocialIcon";
 import { StudioClock } from "./StudioClock";
+import { HideOn } from "./HideOn";
+import contactStyles from "./footer-contact.module.css";
 
 /* All footer motion is CSS (transitions plus the marquee/spin keyframes in globals.css). */
 
 const WORDMARK = "MECATRONIX".split("");
 
+/** Pages whose footer skips the services strip and the contact bar. */
+const COMPACT_FOOTER_PATHS = ["/careers"];
+
 /** Endless strip of service names; pauses while hovered. */
 function ServiceMarquee() {
   return (
-    <div className="group/marquee relative flex overflow-hidden border-b border-line py-6 [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)] lg:py-8">
+    <div className="group/marquee relative flex overflow-hidden border-b border-line py-3.5 [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)] sm:py-4 lg:py-5">
       {[0, 1].map((copy) => (
         <ul
           key={copy}
           aria-hidden={copy === 1 || undefined}
-          className="flex shrink-0 items-center gap-8 pr-8 motion-safe:animate-marquee group-hover/marquee:[animation-play-state:paused] lg:gap-12 lg:pr-12"
+          className="flex shrink-0 items-center gap-5 pr-5 motion-safe:animate-marquee group-hover/marquee:[animation-play-state:paused] sm:gap-7 sm:pr-7 lg:gap-9 lg:pr-9"
         >
           {footerNav.services.map((s, i) => (
-            <li key={s.href} className="flex items-center gap-8 lg:gap-12">
+            <li key={s.href} className="flex items-center gap-5 sm:gap-7 lg:gap-9">
               <Link
                 href={s.href}
                 tabIndex={copy === 1 ? -1 : undefined}
                 className={cn(
-                  "whitespace-nowrap font-display text-[clamp(1.75rem,1rem+3vw,3.4rem)] font-semibold leading-none tracking-[-0.035em] transition-[color,-webkit-text-stroke-color] duration-300",
+                  "whitespace-nowrap font-display text-[clamp(0.95rem,0.8rem+0.75vw,1.4rem)] font-semibold leading-none tracking-[-0.035em] transition-[color,-webkit-text-stroke-color] duration-300",
                   i % 2
-                    ? "text-transparent [-webkit-text-stroke:1.5px_var(--color-accent)] hover:text-accent"
+                    ? "text-transparent [-webkit-text-stroke:1px_var(--color-accent)] hover:text-accent"
                     : "text-ink hover:text-accent",
                 )}
               >
                 {s.label}
               </Link>
-              <Image src={site.logo} alt="" width={296} height={387} className="h-7 w-auto opacity-90 lg:h-9" />
+              <Image src={site.logo} alt="" width={296} height={387} className="h-3.5 w-auto opacity-90 sm:h-4 lg:h-5" />
             </li>
           ))}
         </ul>
@@ -73,38 +78,39 @@ function FooterColumn({ index, title, links }: { index: string; title: string; l
   );
 }
 
-/** Phone / WhatsApp shortcut card; a red fill sweeps across it on hover. */
+/** One channel in the contact strip; `motion` picks how its icon moves (see footer-contact.module.css). */
 function ContactCard({
   href,
   icon: Icon,
   label,
   value,
+  motion,
   external,
 }: {
   href: string;
   icon: typeof Phone;
   label: string;
   value: string;
+  motion: "plane" | "ring" | "typing";
   external?: boolean;
 }) {
   return (
-    <a
-      href={href}
-      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-      className="group relative isolate flex items-center gap-4 overflow-hidden rounded-2xl border border-line bg-white p-4 transition-[border-color,box-shadow,transform] duration-500 hover:-translate-y-0.5 hover:border-accent hover:shadow-glow"
-    >
-      <span
-        aria-hidden
-        className="absolute inset-0 -z-10 origin-left scale-x-0 bg-gradient-to-r from-accent to-accent-strong transition-transform duration-500 ease-[var(--ease-out-expo)] group-hover:scale-x-100"
-      />
-      <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-accent transition-colors duration-500 group-hover:bg-white/15 group-hover:text-white">
-        <Icon aria-hidden className="size-5" strokeWidth={1.8} />
+    <a href={href} {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})} className={contactStyles.cell}>
+      <span aria-hidden className={cn(contactStyles.icon, motion !== "typing" && contactStyles[motion])}>
+        <Icon className="size-[18px]" strokeWidth={1.9} />
+        {motion === "typing" && (
+          <span className={contactStyles.typing}>
+            <i />
+            <i />
+            <i />
+          </span>
+        )}
       </span>
-      <span className="min-w-0 flex-1">
-        <span className="block text-[12.5px] text-muted transition-colors duration-500 group-hover:text-white/80">{label}</span>
-        <span className="mt-0.5 block truncate text-[15.5px] font-medium text-ink transition-colors duration-500 group-hover:text-white">{value}</span>
+      <span className="min-w-0 leading-tight">
+        <span className="block font-mono text-[10.5px] uppercase tracking-[0.14em] text-muted">{label}</span>
+        <span className={cn(contactStyles.value, "mt-1 block text-[clamp(0.85rem,0.8rem+0.25vw,0.98rem)] font-semibold text-ink [overflow-wrap:anywhere]")}>{value}</span>
       </span>
-      <ArrowUpRight aria-hidden className="size-4 shrink-0 text-muted transition-[color,transform] duration-500 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:rotate-45 group-hover:text-white" />
+      <ArrowUpRight aria-hidden className={cn(contactStyles.arrow, "size-4")} />
     </a>
   );
 }
@@ -147,40 +153,35 @@ export default async function Footer() {
       <div aria-hidden className="pointer-events-none absolute -top-48 right-[-10%] -z-10 h-[480px] w-[680px] glow-accent opacity-70" />
       <div aria-hidden className="pointer-events-none absolute bottom-24 left-[-12%] -z-10 h-[420px] w-[560px] glow-wine motion-safe:animate-float" />
 
-      <ServiceMarquee />
+      {/* Pages that already end with their own contact options skip the strip and the contact bar */}
+      <HideOn paths={COMPACT_FOOTER_PATHS}>
+        <ServiceMarquee />
+      </HideOn>
 
-      <Container className="pt-16 lg:pt-24">
+      <Container className="pt-10 lg:pt-14">
         {/* Contact */}
-        <div className="grid gap-10 border-b border-line pb-14 lg:grid-cols-12 lg:items-end lg:gap-12 lg:pb-20">
-          <div className="lg:col-span-8">
-            <p className="text-label flex items-center gap-2.5 text-muted-ink">
-              <span className="relative flex size-1.5">
+        <HideOn paths={COMPACT_FOOTER_PATHS}>
+        <div className="border-b border-line pb-8 lg:pb-10">
+          <div className={cn(contactStyles.strip, "grid divide-y divide-line lg:grid-cols-[auto_1.45fr_1fr_1fr] lg:divide-x lg:divide-y-0")}>
+            <div className="flex items-center gap-2.5 bg-paper/70 px-4 py-3 lg:pr-6">
+              <span className="relative flex size-2 shrink-0">
                 <span className="absolute inset-0 rounded-full bg-accent motion-safe:animate-ping" />
-                <span className="relative size-1.5 rounded-full bg-accent" />
+                <span className="relative size-2 rounded-full bg-accent" />
               </span>
-              Start a conversation
-            </p>
-            <a href={`mailto:${contact.email}`} className="group mt-6 inline-flex max-w-full items-center gap-4 sm:gap-6">
-              <span className="relative pb-2 font-display text-[clamp(1.4rem,7vw-0.2rem,3rem)] font-semibold leading-[1.05] tracking-[-0.04em] text-ink transition-colors duration-300 [overflow-wrap:anywhere] group-hover:text-accent-ink lg:text-[clamp(2rem,5.1vw-1rem,3.5rem)]">
-                {contact.email}
-                <span
-                  aria-hidden
-                  className="absolute inset-x-0 bottom-0 h-[3px] origin-left scale-x-0 rounded-full bg-gradient-to-r from-accent to-wine transition-transform duration-700 ease-[var(--ease-out-expo)] group-hover:scale-x-100"
-                />
+              <span className="leading-tight">
+                <span className="block font-display text-[15px] font-semibold text-ink">Start a conversation</span>
+                <span className="block text-[12px] text-muted-ink">We usually reply within a day</span>
               </span>
-              <span className="flex size-12 shrink-0 items-center justify-center rounded-full border border-line-strong text-ink transition-[background-color,border-color,color,box-shadow] duration-300 group-hover:border-accent group-hover:bg-accent group-hover:text-white group-hover:shadow-glow sm:size-16">
-                <ArrowUpRight aria-hidden className="size-5 transition-transform duration-300 group-hover:rotate-45 sm:size-6" />
-              </span>
-            </a>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2 lg:col-span-4 lg:grid-cols-1">
-            <ContactCard href={`tel:${contact.phone}`} icon={Phone} label="Call us" value={contact.phoneDisplay} />
-            <ContactCard href={whatsappLink(contact)} icon={MessageCircle} label="WhatsApp" value="Chat with our team" external />
+            </div>
+            <ContactCard href={`mailto:${contact.email}`} icon={Send} label="Email us" value={contact.email} motion="plane" />
+            <ContactCard href={`tel:${contact.phone}`} icon={Phone} label="Call us" value={contact.phoneDisplay} motion="ring" />
+            <ContactCard href={whatsappLink(contact)} icon={MessageCircle} label="WhatsApp" value="Chat with our team" motion="typing" external />
           </div>
         </div>
+        </HideOn>
 
         {/* Brand + navigation */}
-        <div className="grid gap-14 py-14 lg:grid-cols-12 lg:gap-10 lg:py-20">
+        <div className="grid gap-10 py-10 lg:grid-cols-12 lg:gap-10 lg:py-12">
           <div className="lg:col-span-4">
             <Logo />
             <p className="mt-6 max-w-sm text-[15px] leading-relaxed text-muted-ink">

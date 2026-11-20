@@ -13,6 +13,7 @@ import ReviewModal from "../components/reviews/ReviewModal";
 import JsonLd from "../components/seo/JsonLd";
 import { SiteContactProvider } from "../components/layout/SiteContactProvider";
 import { getSiteContact } from "../lib/site-contact.server";
+import { getMecaBoard } from "../lib/meca-board.server";
 import {
   SITE_URL,
   SITE_NAME,
@@ -99,7 +100,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   // Contact details from the admin panel, shared with client components (header, studio clock)
-  const contact = await getSiteContact();
+  const [contact, mecaBoard] = await Promise.all([getSiteContact(), getMecaBoard()]);
   return (
     // `js` class is added before paint so scroll-reveal styles only apply when JS runs
     <html
@@ -128,7 +129,7 @@ export default async function RootLayout({
           <PageWatermark />
           <Footer />
           <PointerEffects />
-          <MecaAssistant />
+          <MecaAssistant board={mecaBoard} />
           <PreviewPrompt />
           <ReviewModal />
         </PublicOnly>

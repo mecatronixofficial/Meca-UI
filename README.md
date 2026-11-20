@@ -51,6 +51,42 @@ Content lives in `src/data/`; pages update automatically.
 
 ## Environment variables
 
+### Work details, screenshots, videos and MECA robot board
+
+All content management lives in the separate **mec-admin** app (`Meca AdminUi/Meca-Adminui`).
+
+- **Works** and **Projects** manage names, descriptions, clients, publication and case-study sections.
+- **Work details & media** (`/mec-admin/project-media`) includes existing website projects as well as backend projects. Use **Edit work details** to create or edit a case study, upload screenshots or videos, then **Save media**. The first screenshot becomes the cover; descriptions, order, removals and video preview images are editable.
+- **MECA robot board** (`/mec-admin/meca-board`) manages visibility, message, highlighted phrase, destination and repeat interval, with a message preview.
+
+This website has no admin UI or admin authentication proxy. `/admin` returns 404 unless
+`ADMIN_PANEL_URL` redirects legacy links to the separate admin app. The public
+`GET /api/portfolio` endpoint supplies its project catalog to mec-admin without credentials.
+
+Set mec-admin's `VITE_API_CUSTOMER_BASE_URL` to this website's origin (locally,
+`http://localhost:3000`) so existing website projects appear in its library. Set its
+`VITE_API_BASE_URL` to the backend's `/mec-api` URL or use its development proxy.
+
+Images support JPEG, PNG, WebP and GIF up to 10 MB (30 per project). Videos support
+MP4 and WebM up to 100 MB (10 per project). Media records stay in PostgreSQL and
+files stay in the existing Cloudflare R2 bucket. Removing media removes it from
+the public gallery after saving; storage files are retained for existing links.
+
+The companion backend already includes project-media endpoints and the
+`1793500000000-ProjectMedia` migration. Run `bun run migration:run:prod` when
+deploying that feature for the first time. Its `API_URL` must be browser-accessible,
+and `ADMIN_URL` must allow the separate admin app's origin for login and uploads.
+Set this website's `MECA_API_BASE_URL` to the backend's public `/mec-api` URL.
+
+Configure the backend's `SITE_REVALIDATE_URL` and `SITE_REVALIDATE_SECRET` to match
+this website's `/api/revalidate` and `REVALIDATE_SECRET` for immediate updates.
+Without the webhook, saved website content refreshes within 60 seconds.
+
+Admin accounts are managed by the existing backend. To create the owner account,
+configure its server-only `SUPERADMIN_EMAIL` and `SUPERADMIN_PASSWORD`, then run
+`bun run seed:superadmin` there. Credentials are never included in this website's
+source code or browser bundle.
+
 See `.env.example`. The contact form needs at least one delivery channel in production:
 
 - `RESEND_API_KEY` + `CONTACT_FROM_EMAIL` (+ optional `CONTACT_TO_EMAIL`) to email enquiries, and/or

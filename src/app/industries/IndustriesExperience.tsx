@@ -8,6 +8,7 @@ import {
   type KeyboardEvent,
   type PointerEvent,
 } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import {
   AnimatePresence,
@@ -30,9 +31,20 @@ import { industries, type Industry } from "../../data/industries";
 import { serviceList } from "../../data/service-list";
 import { industryIcons } from "../../components/ui/icons";
 import { PauseOffscreen } from "../../components/animations/PauseOffscreen";
-import { IndustryArt } from "./IndustryArt";
 import { industryFilters, industryPresentation } from "./industry-presentation";
 import styles from "./industries.module.css";
+
+/** One photo per industry (Unsplash, stored locally), shown on the explorer cards. */
+const industryPhotos: Record<Industry["icon"], string> = {
+  textiles: "/assets/industries/textiles.jpg",
+  manufacturing: "/assets/industries/manufacturing.jpg",
+  retail: "/assets/industries/retail.jpg",
+  ecommerce: "/assets/services/ecommerce.jpg",
+  education: "/assets/industries/education.jpg",
+  logistics: "/assets/industries/logistics.jpg",
+  services: "/assets/industries/professional.jpg",
+  startups: "/assets/industries/startups.jpg",
+};
 
 const positions = [
   [25, 16],
@@ -204,7 +216,7 @@ export function IndustryExplorer() {
           {String(visible.length).padStart(2, "0")} INDUSTRIES
         </p>
       </div>
-      <div className={styles.bento} data-filter={filter}>
+      <div className={styles.photoGrid}>
         {industries.map((industry, i) => {
           const Icon = industryIcons[industry.icon];
           const shown =
@@ -217,34 +229,37 @@ export function IndustryExplorer() {
               hidden={!shown}
               layout={!reduceMotion}
               transition={{ duration: reduceMotion ? 0 : 0.3 }}
-              className={`${styles.industryCard} ${styles[industry.icon]} spotlight`}
+              className={styles.photoCard}
             >
-              <Link
-                href={`/industries/${industry.slug}`}
-                className={styles.industryCardLink}
-              >
-                <div className={styles.cardTop}>
-                  <span>{String(i + 1).padStart(2, "0")} /</span>
-                  <Icon size={24} strokeWidth={1.4} aria-hidden="true" />
+              <Link href={`/industries/${industry.slug}`} className={styles.photoLink}>
+                <div className={styles.photoMedia}>
+                  <Image
+                    src={industryPhotos[industry.icon]}
+                    alt=""
+                    fill
+                    sizes="(min-width: 1024px) 320px, (min-width: 640px) 50vw, 100vw"
+                    className={styles.photoImg}
+                  />
+                  <span className={styles.photoIndex}>{String(i + 1).padStart(2, "0")}</span>
+                  <span className={styles.photoIcon}>
+                    <Icon size={18} strokeWidth={1.7} aria-hidden="true" />
+                  </span>
                 </div>
-                <div className={styles.cardArt}>
-                  <IndustryArt kind={industry.icon} />
-                </div>
-                <div className={styles.cardCopy}>
+                <div className={styles.photoBody}>
                   <h3>{industry.name}</h3>
                   <p>{industry.useCase}</p>
-                </div>
-                <div className={styles.cardFoot}>
-                  <ul aria-label="Example solutions">
-                    {industryPresentation[industry.icon].steps
-                      .slice(0, 3)
-                      .map((step) => (
-                        <li key={step}>{step}</li>
-                      ))}
-                  </ul>
-                  <span className={styles.cardArrow}>
-                    <ArrowUpRight size={20} aria-hidden="true" />
-                  </span>
+                  <div className={styles.photoFoot}>
+                    <ul aria-label="Example solutions">
+                      {industryPresentation[industry.icon].steps
+                        .slice(0, 2)
+                        .map((step) => (
+                          <li key={step}>{step}</li>
+                        ))}
+                    </ul>
+                    <span className={styles.photoArrow}>
+                      <ArrowUpRight size={17} aria-hidden="true" />
+                    </span>
+                  </div>
                 </div>
               </Link>
             </motion.article>
@@ -279,9 +294,19 @@ function SpotlightVisual({ industry }: { industry: Industry }) {
         </div>
         <Icon size={29} strokeWidth={1.3} aria-hidden="true" />
       </div>
-      <div className={styles.dashboardArt}>
-        <IndustryArt kind={industry.icon} />
-        <span>ILLUSTRATIVE WORKFLOW</span>
+      <div className={styles.dashboardPhoto}>
+        <Image
+          key={industry.icon}
+          src={industryPhotos[industry.icon]}
+          alt=""
+          fill
+          sizes="(min-width: 1024px) 520px, 100vw"
+          className={styles.dashboardPhotoImg}
+        />
+        <span className={styles.dashboardPhotoStep}>
+          <i aria-hidden="true" />
+          {String(step + 1).padStart(2, "0")} · {presentation.steps[step]}
+        </span>
       </div>
       <div
         className={styles.flowButtons}

@@ -3,13 +3,18 @@ import { Container, Section } from "../ui/Container";
 import { SectionHeading } from "../ui/Heading";
 import { ArrowLink } from "../ui/Button";
 import { Reveal } from "../animations/Reveal";
-import { Backdrop } from "../visuals/Backdrop";
+import styles from "./process.module.css";
 
-/** Horizontal timeline on large screens, vertical on small ones. */
+/** One emoji per step, in process order. */
+const emojis = ["🔍", "🧭", "🎨", "💻", "🧪", "🚀"];
+/** Soft tint behind each emoji, so every step has its own colour. */
+const tints = ["#fff0ef", "#eef4ff", "#fdf0ff", "#ecfdf5", "#fff8e6", "#fff0ef"];
+
+/** Step cards with an emoji each, joined by arrows; three per row on large screens. */
 export function ProcessSection() {
   return (
-    <Section labelledBy="process-title" tone="paper" className="overflow-hidden">
-      <Backdrop beams />
+    <Section compact labelledBy="process-title" tone="paper" className="overflow-hidden">
+      <span aria-hidden className={styles.dots} />
       <Container className="relative">
         <SectionHeading
           id="process-title"
@@ -19,33 +24,34 @@ export function ProcessSection() {
           intro="A clear, collaborative process — so you always know what's happening, what's next and what we need from you."
         />
 
-        <ol className="relative mt-16 grid gap-0 lg:mt-24 lg:grid-cols-6 lg:gap-6">
-          {/* Connecting line (desktop) */}
-          <span aria-hidden className="absolute left-0 right-0 top-[19px] hidden h-px bg-gradient-to-r from-accent via-line-strong to-line-strong lg:block" />
-
+        <ol className="mt-10 grid gap-4 sm:grid-cols-2 lg:mt-12 lg:grid-cols-3 lg:gap-5">
           {processSteps.map((step, i) => (
-            <Reveal as="li"
-              key={step.n}
-              style={{ "--reveal-delay": `${i * 80}ms` } as React.CSSProperties}
-              className="group relative grid grid-cols-[40px_1fr] gap-x-5 pb-10 last:pb-0 lg:block lg:pb-0"
-            >
-              {/* Vertical line (mobile) */}
-              {i < processSteps.length - 1 && (
-                <span aria-hidden className="absolute bottom-0 left-[19.5px] top-10 w-px bg-line-strong lg:hidden" />
-              )}
-              <span className="relative z-10 flex size-10 items-center justify-center rounded-full border border-line-strong bg-white font-mono text-[12px] text-surface transition-[background-color,border-color,color,box-shadow,scale] duration-500 ease-[var(--ease-out-expo)] group-hover:scale-110 group-hover:border-accent group-hover:bg-accent group-hover:text-white group-hover:shadow-glow">
-                {i === 0 ? <span className="size-2.5 rounded-full bg-accent transition-colors group-hover:bg-white" /> : step.n}
-              </span>
-              <div className="transition-[translate] duration-500 ease-[var(--ease-out-expo)] group-hover:translate-x-1 lg:mt-8 lg:group-hover:-translate-y-1 lg:group-hover:translate-x-0">
-                <p className="font-mono text-xs text-accent-ink lg:hidden">{step.n}</p>
-                <h3 className="mt-1 text-[1.2rem] font-semibold leading-snug tracking-tight text-surface transition-colors duration-300 group-hover:text-accent-ink lg:mt-0">{step.title}</h3>
-                <p className="mt-2.5 text-[14.5px] leading-relaxed text-muted-ink">{step.text}</p>
+            <Reveal as="li" key={step.n} className="relative" style={{ "--reveal-delay": `${(i % 3) * 80}ms` } as React.CSSProperties}>
+              <div className={styles.card} style={{ "--tint": tints[i % tints.length] } as React.CSSProperties}>
+                <span aria-hidden className={styles.ghost}>{step.n}</span>
+                <div className="flex items-center justify-between gap-3">
+                  <span aria-hidden className={styles.emoji}>
+                    <span>{emojis[i] ?? "✨"}</span>
+                  </span>
+                  <span className={styles.step}>Step {step.n}</span>
+                </div>
+                <h3 className="mt-5 font-display text-[1.15rem] font-semibold leading-snug tracking-tight text-ink transition-colors duration-300">
+                  {step.title}
+                </h3>
+                <p className="mt-2 text-[14px] leading-relaxed text-muted-ink">{step.text}</p>
+                <span aria-hidden className={styles.bar} />
               </div>
+              {/* Arrow to the next step (desktop, within a row) */}
+              {i < processSteps.length - 1 && (i + 1) % 3 !== 0 && (
+                <span aria-hidden className={styles.next}>
+                  →
+                </span>
+              )}
             </Reveal>
           ))}
         </ol>
 
-        <Reveal className="mt-14">
+        <Reveal className="mt-10">
           <ArrowLink href="/process">See the full process</ArrowLink>
         </Reveal>
       </Container>

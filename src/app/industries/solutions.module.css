@@ -1,0 +1,272 @@
+/* /industries "What we engineer": service list + photo panel that auto-plays.
+ * The active item gets a red fill and a timer bar; photos cross-fade with a
+ * slow zoom and the copy rises in on each change. */
+
+.showcase {
+  display: grid;
+  gap: 1.25rem;
+}
+
+@media (min-width: 1024px) {
+  .showcase {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    align-items: stretch;
+    gap: 1.75rem;
+  }
+}
+
+/* ---------- List ---------- */
+.list {
+  display: grid;
+  gap: 0.5rem;
+  align-content: start;
+}
+
+.item {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--color-line);
+  border-radius: 1rem;
+  background: #fff;
+  text-align: left;
+  transition: border-color 0.3s, box-shadow 0.4s var(--ease-out-expo), translate 0.4s var(--ease-out-expo);
+}
+
+/* Red fill that sweeps in behind the active item */
+.item::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(90deg, var(--color-accent), var(--color-accent-strong) 60%, var(--color-wine));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.55s var(--ease-out-expo);
+}
+
+.itemIndex {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-muted);
+  transition: color 0.3s;
+}
+
+.itemIcon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 0.7rem;
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  transition: background-color 0.3s, color 0.3s, rotate 0.5s var(--ease-out-expo);
+}
+
+.itemTitle {
+  flex: 1;
+  min-width: 0;
+  font-size: clamp(0.92rem, 0.86rem + 0.25vw, 1.02rem);
+  font-weight: 600;
+  color: var(--color-ink);
+  transition: color 0.3s;
+}
+
+.itemArrow {
+  flex-shrink: 0;
+  color: var(--color-muted);
+  transition: color 0.3s, translate 0.4s var(--ease-out-expo);
+}
+
+/* Timer under the active item; its end moves the showcase on */
+.timer {
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  bottom: 0.4rem;
+  height: 2px;
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+.timer > span {
+  position: absolute;
+  inset: 0;
+  background: rgb(255 255 255 / 0.85);
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: timer 5.5s linear forwards;
+}
+
+.showcase[data-paused] .timer > span {
+  animation-play-state: paused;
+}
+
+.item[aria-pressed="true"] {
+  border-color: transparent;
+  box-shadow: 0 16px 34px -18px rgb(225 6 0 / 0.75);
+}
+
+.item[aria-pressed="true"]::before { transform: scaleX(1); }
+.item[aria-pressed="true"] .itemIndex { color: rgb(255 255 255 / 0.75); }
+.item[aria-pressed="true"] .itemTitle { color: #fff; }
+.item[aria-pressed="true"] .itemIcon {
+  background: rgb(255 255 255 / 0.18);
+  color: #fff;
+  rotate: -8deg;
+}
+.item[aria-pressed="true"] .itemArrow {
+  color: #fff;
+  translate: 3px 0;
+}
+
+.item:not([aria-pressed="true"]):hover {
+  translate: 4px 0;
+  border-color: rgb(225 6 0 / 0.35);
+}
+
+/* ---------- Panel ---------- */
+.panel {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  border-radius: 1.4rem;
+  background: #fff;
+  box-shadow: var(--shadow-lift), 0 36px 70px -46px rgb(225 6 0 / 0.55);
+}
+
+.photo {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  background: var(--color-paper);
+}
+
+.photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgb(11 13 18 / 0.35), transparent 45%);
+}
+
+.photoImg {
+  object-fit: cover;
+  opacity: 0;
+  scale: 1.08;
+  transition: opacity 0.7s ease, scale 6s ease-out;
+}
+
+.photoImg[data-on] {
+  opacity: 1;
+  scale: 1;
+}
+
+.badge {
+  position: absolute;
+  z-index: 1;
+  left: 14px;
+  bottom: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.8rem 0.4rem 0.6rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.92);
+  backdrop-filter: blur(8px);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--color-accent-ink);
+}
+
+.copy {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: clamp(1.1rem, 2vw, 1.5rem);
+  animation: rise 0.6s var(--ease-out-expo) both;
+}
+
+.copy h3 {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 1rem + 1vw, 1.65rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+.copy > p {
+  margin-top: 0.5rem;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--color-muted-ink);
+}
+
+.copy > .benefit {
+  margin-top: 0.85rem;
+  padding-left: 0.85rem;
+  border-left: 2px solid var(--color-accent);
+  color: var(--color-surface);
+}
+
+.cta {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1.1rem;
+  padding: 0.3rem 0.3rem 0.3rem 1rem;
+  border-radius: 999px;
+  background: var(--color-accent-strong);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #fff;
+  box-shadow: var(--shadow-glow);
+  transition: translate 0.4s var(--ease-out-expo), box-shadow 0.4s, background-color 0.3s;
+}
+
+.cta > span {
+  display: grid;
+  place-items: center;
+  width: 1.85rem;
+  height: 1.85rem;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--color-accent-ink);
+  transition: rotate 0.5s var(--ease-out-expo);
+}
+
+.cta:hover {
+  translate: 0 -2px;
+  background: var(--color-accent-ink);
+  box-shadow: var(--shadow-glow-lg);
+}
+
+.cta:hover > span { rotate: 45deg; }
+
+@keyframes timer {
+  to { transform: scaleX(1); }
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* No auto-advance: the timer never runs */
+  .timer > span { animation: none; }
+  .copy { animation: none; }
+  .item,
+  .item::before,
+  .photoImg,
+  .cta {
+    transition: none;
+  }
+}

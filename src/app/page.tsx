@@ -1,14 +1,11 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "../lib/seo";
 import { Hero } from "../components/home/Hero";
-import { BannerShowcase } from "../components/home/BannerShowcase";
 import { Intro } from "../components/home/Intro";
 import { ClientLogos } from "../components/home/ClientLogos";
-import { SelectedWork } from "../components/home/SelectedWork";
 import { ServicesSection } from "../components/home/ServicesSection";
 import { WhyMecatronix } from "../components/home/WhyMecatronix";
-import { IndustriesSection } from "../components/home/IndustriesSection";
-import { ProcessSection } from "../components/home/ProcessSection";
+import { GoogleReviews } from "../components/home/GoogleReviews";
 import { TechSection } from "../components/home/TechSection";
 import { Testimonials } from "../components/home/Testimonials";
 import { InsightsSection } from "../components/home/InsightsSection";
@@ -43,20 +40,17 @@ export default function Page() {
   return (
     <>
       <Hero />
-      <BannerShowcase />
+      <KuralOfTheDay />
       <ClientLogos />
       <Intro />
-      <SelectedWork />
       <ServicesSection />
       <PreviewSection />
       <WhyMecatronix />
-      <IndustriesSection />
-      <ProcessSection />
+      <GoogleReviews />
       <TechSection />
       <Testimonials />
-      <KuralOfTheDay />
       <InsightsSection />
-      <ContactCTA tone="dark" />
+      <ContactCTA tone="red" />
     </>
   );
 }

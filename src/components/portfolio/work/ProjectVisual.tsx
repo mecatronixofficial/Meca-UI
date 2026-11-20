@@ -46,6 +46,7 @@ export function ProjectVisual({
             fill
             sizes={sizes}
             priority={priority}
+            unoptimized={/^https?:\/\//.test(image.src)}
             className={styles.realImage}
           />
         </div>

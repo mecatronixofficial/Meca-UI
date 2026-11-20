@@ -19,7 +19,7 @@ const toMinutes = (hhmm: string) => {
 };
 
 /** "Mon-Sat" or "Mon-Fri,Sat" -> weekday indexes (Sun = 0) */
-function parseDays(spec: string) {
+export function parseDays(spec: string) {
   const index = (name: string) => DAYS.findIndex((d) => d.toLowerCase() === name.trim().slice(0, 3).toLowerCase());
   const open = new Set<number>();
   for (const part of spec.split(",")) {
@@ -51,7 +51,8 @@ function studioTime(date: Date, s: Schedule) {
   const day = DAYS.indexOf(parts.weekday);
   const minutes = Number(parts.hour) * 60 + Number(parts.minute);
   const open = s.openDays.has(day) && minutes >= s.startMin && minutes < s.endMin;
-  return { hour: parts.hour, minute: parts.minute, minutes, open, note: open ? `Open until ${s.end}` : nextOpening(day, minutes, s) };
+  // `day`: today in IST (Sun = 0)
+  return { day, hour: parts.hour, minute: parts.minute, minutes, open, note: open ? `Open until ${s.end}` : nextOpening(day, minutes, s) };
 }
 
 function nextOpening(day: number, minutes: number, s: Schedule) {

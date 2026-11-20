@@ -23,26 +23,33 @@ const sectionTones = {
   dark: "border-white/10 bg-ink text-white/80",
 };
 
-/** Page section with consistent vertical rhythm; white canvas unless a tone is given. */
+/** Page section with consistent vertical rhythm; white canvas unless a tone is given. `compact` is the tighter home-page rhythm. */
 export function Section({
   className,
   children,
   id,
   labelledBy,
   tone = "light",
+  compact,
 }: {
   className?: string;
   children: React.ReactNode;
   id?: string;
   labelledBy?: string;
   tone?: keyof typeof sectionTones;
+  compact?: boolean;
 }) {
   return (
     <section
       id={id}
       aria-labelledby={labelledBy}
       // content-visibility lets the browser skip layout/paint of off-screen sections until they near the viewport
-      className={cn("relative border-t py-20 [contain-intrinsic-size:auto_900px] [content-visibility:auto] sm:py-24 lg:py-32", sectionTones[tone], className)}
+      className={cn(
+        "relative border-t [contain-intrinsic-size:auto_900px] [content-visibility:auto]",
+        compact ? "py-12 sm:py-14 lg:py-20" : "py-20 sm:py-24 lg:py-32",
+        sectionTones[tone],
+        className,
+      )}
     >
       {children}
     </section>

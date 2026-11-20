@@ -22,6 +22,12 @@ export interface ProjectImage {
   height: number;
 }
 
+export interface ProjectVideo {
+  src: string;
+  title: string;
+  poster?: string;
+}
+
 /** Industry filter key: src/data/industries.ts slugs, or "other". */
 export type IndustryKey =
   | "textiles"
@@ -55,6 +61,7 @@ export interface Project {
   stack?: string[];
   url?: string;
   images?: ProjectImage[];
+  videos?: ProjectVideo[];
   /** Case-study sections from the admin panel's linked Work */
   sections?: { heading: string; details: string; img?: string }[];
   /** Designed cover shown until real screenshots are added */

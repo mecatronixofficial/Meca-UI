@@ -28,6 +28,7 @@ export const ROUTES: {
   { path: "/process", label: "Process", priority: 0.6, changeFrequency: "yearly" },
   { path: "/blogs", label: "Blogs", priority: 0.7, changeFrequency: "weekly" },
   { path: "/preview", label: "Website preview", priority: 0.7, changeFrequency: "monthly" },
+  { path: "/careers", label: "Careers", priority: 0.6, changeFrequency: "monthly" },
   { path: "/contact", label: "Contact", priority: 0.8, changeFrequency: "yearly" },
   { path: "/privacy", label: "Privacy Policy", priority: 0.2, changeFrequency: "yearly" },
 ];

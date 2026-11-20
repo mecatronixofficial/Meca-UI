@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowDown,
-  ArrowRight,
+  Check,
   ArrowUpRight,
   Mail,
   MessageCircle,
@@ -23,6 +24,18 @@ import {
 } from "../../components/portfolio/work/WorkHeroPreview";
 import { ProjectSpotlight } from "../../components/portfolio/work/ProjectSpotlight";
 import styles from "../../components/portfolio/work/work.module.css";
+import next from "../../components/portfolio/work/next.module.css";
+import expertise from "../../components/portfolio/work/expertise.module.css";
+
+/** Service photos (Unsplash, stored locally in /public/assets/services), shared with the home page. */
+const servicePhotos: Record<string, string> = {
+  "web-development": "/assets/services/web.jpg",
+  "custom-software": "/assets/services/software.jpg",
+  "mobile-app-development": "/assets/services/mobile.jpg",
+  "ecommerce-development": "/assets/services/ecommerce.jpg",
+  "erp-development": "/assets/services/erp.jpg",
+  "ai-automation": "/assets/services/ai.jpg",
+};
 
 export const metadata: Metadata = pageMetadata({
   title: "Our Work — Websites, E-commerce & Business Systems",
@@ -124,33 +137,44 @@ export default async function WorkPage() {
         aria-labelledby="work-expertise-title"
       >
         <div className={styles.contentWidth}>
-          <Reveal className={styles.expertiseHeading}>
-            <h2 id="work-expertise-title">
-              More than beautiful
-              <br />
-              interfaces.
-            </h2>
-            <p>
+          <Reveal className={expertise.head}>
+            <div>
+              <p className={next.tag}>
+                <i aria-hidden="true" /> WHAT ELSE WE BUILD
+              </p>
+              <h2 id="work-expertise-title" className={next.title}>
+                More than beautiful <span className="text-shimmer">interfaces.</span>
+              </h2>
+            </div>
+            <p className="max-w-md text-[clamp(13.5px,0.8rem+0.2vw,15px)] leading-relaxed text-muted-ink">
               We engineer connected digital experiences, applications and
               business systems that support the way companies work.
             </p>
           </Reveal>
-          <Reveal>
-            <ul className={styles.expertiseLinks}>
-              {serviceList.map((service) => {
-                const Icon = serviceIcons[service.slug];
-                return (
-                  <li key={service.slug}>
-                    <Link href={`/services/${service.slug}`}>
-                      <Icon size={21} strokeWidth={1.5} aria-hidden="true" />
-                      <span>{service.navLabel}</span>
-                      <ArrowUpRight size={12} aria-hidden="true" />
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </Reveal>
+          <ul className={expertise.grid}>
+            {serviceList.map((service, i) => {
+              const Icon = serviceIcons[service.slug];
+              return (
+                <Reveal as="li" key={service.slug} style={{ "--reveal-delay": `${(i % 3) * 80}ms` } as React.CSSProperties}>
+                  <Link href={`/services/${service.slug}`} className={expertise.tile}>
+                    <span className={expertise.photo}>
+                      <Image src={servicePhotos[service.slug] ?? servicePhotos["web-development"]} alt="" fill sizes="96px" />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className={expertise.icon}>
+                        <Icon size={14} strokeWidth={2} aria-hidden="true" />
+                      </span>
+                      <span className="mt-2 block text-[15px] font-semibold leading-tight text-ink">{service.navLabel}</span>
+                      <span className="mt-1 line-clamp-2 block text-[12.5px] leading-snug text-muted-ink">{service.summary}</span>
+                    </span>
+                    <span className={expertise.go} aria-hidden="true">
+                      <ArrowUpRight size={15} />
+                    </span>
+                  </Link>
+                </Reveal>
+              );
+            })}
+          </ul>
         </div>
       </section>
 
@@ -159,45 +183,71 @@ export default async function WorkPage() {
         aria-labelledby="work-contact-title"
       >
         <div className={styles.contentWidth}>
-          <Reveal className={styles.workCta}>
-            <div className={styles.ctaLines} aria-hidden="true" />
-            <div className={styles.ctaCorner} aria-hidden="true">
-              <ArrowRight />
-            </div>
-            <p className={styles.eyebrow}>
-              <span /> YOUR PROJECT, NEXT
-            </p>
-            <h2 id="work-contact-title">
-              Your next big idea deserves
-              <br />
-              <span>great engineering.</span>
-            </h2>
-            <p>
-              Have a website, application or business system in mind? Let’s
-              build something that makes a difference.
-            </p>
-            <div className={styles.ctaActions}>
-              <Button href="/contact" size="lg" arrow>
-                Start Your Project
-              </Button>
-              <a
-                href={whatsappLink(contact)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.whatsapp}
-              >
-                <MessageCircle size={17} aria-hidden="true" />
-                Talk on WhatsApp
-                <ArrowUpRight size={16} aria-hidden="true" />
-              </a>
-            </div>
-            <div className={styles.ctaBottom}>
-              <a href={`mailto:${contact.email}`}>
+          <Reveal className={next.card}>
+            <div>
+              <p className={next.tag}>
+                <i aria-hidden="true" /> YOUR PROJECT, NEXT
+              </p>
+              <h2 id="work-contact-title" className={next.title}>
+                Your next big idea deserves{" "}
+                <span className="text-shimmer">great engineering.</span>
+              </h2>
+              <p className="mt-3 max-w-md text-[clamp(13.5px,0.8rem+0.2vw,15px)] leading-relaxed text-muted-ink">
+                Have a website, application or business system in mind? Let’s
+                build something that makes a difference.
+              </p>
+              <div className="mt-6 flex flex-wrap items-center gap-2.5">
+                <Button href="/contact" arrow>
+                  Start Your Project
+                </Button>
+                <a
+                  href={whatsappLink(contact)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={next.whatsapp}
+                >
+                  <MessageCircle size={17} aria-hidden="true" />
+                  Talk on WhatsApp
+                  <ArrowUpRight size={15} aria-hidden="true" />
+                </a>
+              </div>
+              <a href={`mailto:${contact.email}`} className={`${next.mail} mt-5`}>
                 <Mail size={16} aria-hidden="true" />
                 {contact.email}
                 <ArrowUpRight size={14} aria-hidden="true" />
               </a>
-              <span>MECATRONIX / SOFTWARE DEVELOPMENT</span>
+            </div>
+
+            {/* Roadmap that keeps replaying: each step fills, then the rocket lifts off */}
+            <div className={next.board} aria-hidden="true">
+              <div className={next.boardBar}>
+                <span className={next.live} />
+                your-project.app
+                <span className="ml-auto">building…</span>
+              </div>
+              <ol className={next.steps}>
+                {[
+                  ["💡", "Idea & discovery"],
+                  ["🎨", "Design"],
+                  ["💻", "Build"],
+                  ["🚀", "Launch"],
+                ].map(([emoji, label], i) => (
+                  <li key={label} className={next.step} style={{ "--i": i } as React.CSSProperties}>
+                    <span className={next.emoji}>
+                      <span className={i === 3 ? next.rocket : undefined}>{emoji}</span>
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block text-[13.5px] font-semibold text-ink">{label}</span>
+                      <span className={next.track}>
+                        <span />
+                      </span>
+                    </span>
+                    <span className={next.check}>
+                      <Check size={13} strokeWidth={3} />
+                    </span>
+                  </li>
+                ))}
+              </ol>
             </div>
           </Reveal>
         </div>

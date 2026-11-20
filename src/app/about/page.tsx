@@ -2,11 +2,12 @@ import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowDown, ArrowRight, ArrowUpRight, Check, Compass, Globe2, MapPin, Target } from "lucide-react";
-import { principles, techStack } from "../../data/company";
+import { principles } from "../../data/company";
+import { getTechStack } from "../../lib/tech-stack.server";
+import { TechLogo } from "../../components/ui/TechLogo";
 import { services } from "../../data/services";
 import { getProjects, getTeam } from "../../lib/content";
 import { getSiteContact } from "../../lib/site-contact.server";
-import { processSteps } from "../../data/process";
 import { pageMetadata } from "../../lib/seo";
 import { Container } from "../../components/ui/Container";
 import { Button, ArrowLink } from "../../components/ui/Button";
@@ -14,6 +15,7 @@ import { principleIcons, serviceIcons } from "../../components/ui/icons";
 import { ProjectCard } from "../../components/portfolio/ProjectCard";
 import { AboutVisual } from "./AboutVisual";
 import { Founders } from "./Founders";
+import { ProcessSection } from "../../components/home/ProcessSection";
 import styles from "./about.module.css";
 import { Reveal } from "../../components/animations/Reveal";
 
@@ -28,7 +30,7 @@ export const metadata: Metadata = pageMetadata({
 const stagger = (index: number) => ({ "--reveal-delay": `${(index % 3) * 80}ms` }) as CSSProperties;
 
 export default async function AboutPage() {
-  const [projects, contact, team] = await Promise.all([getProjects(), getSiteContact(), getTeam()]);
+  const [projects, contact, team, techStack] = await Promise.all([getProjects(), getSiteContact(), getTeam(), getTechStack()]);
   return (
     <div className={styles.page}>
       <section className={styles.hero} aria-labelledby="about-title">
@@ -112,23 +114,8 @@ export default async function AboutPage() {
         </Container>
       </section>
 
-      <section aria-labelledby="process-title" className={styles.section}>
-        <Container>
-          <Reveal className={styles.sectionHeader}>
-            <div><p className={styles.eyebrow}><span /> FROM FIRST HELLO TO LAUNCH</p><h2 id="process-title" className={styles.heading}>A clear process.<br /><span>A shared direction.</span></h2></div>
-            <div className={styles.headerAside}><p>We listen first, build in the open, and make sure you have something real to review at every stage.</p><ArrowLink href="/process">Explore our process</ArrowLink></div>
-          </Reveal>
-          <ol className={styles.cardGrid}>
-            {processSteps.map((step, index) => (
-              <Reveal as="li" key={step.n} className={`${styles.processCard} hover-card`} style={stagger(index)}>
-                <div className={styles.cardTop}><span className={styles.stepNumber}>{step.n}</span><ArrowRight aria-hidden className={styles.stepArrow} size={21} /></div>
-                <h3>{step.title}</h3><p>{step.text}</p>
-                <span className={styles.deliverable}><Check aria-hidden size={14} />{step.deliverables[0]}</span>
-              </Reveal>
-            ))}
-          </ol>
-        </Container>
-      </section>
+      {/* Our process: the emoji step cards (moved here from the home page) */}
+      <ProcessSection />
 
       <section aria-labelledby="services-title" className={`${styles.section} ${styles.tinted}`}>
         <Container>
@@ -151,7 +138,7 @@ export default async function AboutPage() {
           </ul>
           <Reveal className={styles.techPanel}>
             <div><p className={styles.eyebrow}>OUR TOOLKIT</p><h3>Modern tools.<br />Solid foundations.</h3><p>A focused stack chosen for performance and maintainability.</p></div>
-            <dl className={styles.techGroups}>{techStack.map((group) => <div key={group.category}><dt>{group.category}</dt><dd>{group.items.map((item) => <span key={item}>{item}</span>)}</dd></div>)}</dl>
+            <dl className={styles.techGroups}>{techStack.map((group) => <div key={group.category}><dt>{group.category}</dt><dd>{group.items.map((item) => <span key={item}><TechLogo name={item} size={14} />{item}</span>)}</dd></div>)}</dl>
           </Reveal>
         </Container>
       </section>

@@ -1,0 +1,143 @@
+/* /work "More than beautiful interfaces.": service tiles with a photo each.
+ * On hover a red wash sweeps in from the left, the photo zooms and tilts,
+ * the icon fills red and the arrow turns. */
+
+.head {
+  display: grid;
+  gap: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .head {
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 2.5rem;
+  }
+}
+
+.grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1024px) {
+  .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+}
+
+.tile {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  height: 100%;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.6rem 0.9rem 0.6rem 0.6rem;
+  border: 1px solid var(--color-line);
+  border-radius: 1.1rem;
+  background: #fff;
+  transition: border-color 0.35s ease, translate 0.5s var(--ease-out-expo), box-shadow 0.5s var(--ease-out-expo);
+}
+
+/* Red wash that sweeps in from the left on hover */
+.tile::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(90deg, var(--color-accent-soft), rgb(255 240 239 / 0.3) 70%, transparent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.6s var(--ease-out-expo);
+}
+
+.photo {
+  position: relative;
+  flex-shrink: 0;
+  overflow: hidden;
+  width: clamp(4.25rem, 3.5rem + 2vw, 5.5rem);
+  aspect-ratio: 1;
+  border-radius: 0.8rem;
+  background: var(--color-paper);
+}
+
+.photo img {
+  object-fit: cover;
+  transition: scale 0.9s var(--ease-out-expo), rotate 0.9s var(--ease-out-expo), filter 0.5s ease;
+  filter: saturate(0.85);
+}
+
+.icon {
+  display: inline-grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 0.5rem;
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  transition: background-color 0.3s ease, color 0.3s ease, rotate 0.5s var(--ease-out-expo);
+}
+
+.go {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  align-self: flex-start;
+  border: 1px solid var(--color-line-strong);
+  border-radius: 999px;
+  color: var(--color-muted-ink);
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, rotate 0.5s var(--ease-out-expo);
+}
+
+.tile:hover,
+.tile:focus-visible {
+  translate: 0 -3px;
+  border-color: rgb(225 6 0 / 0.35);
+  box-shadow: var(--shadow-lift), 0 20px 40px -26px rgb(225 6 0 / 0.55);
+}
+
+.tile:hover::before,
+.tile:focus-visible::before {
+  transform: scaleX(1);
+}
+
+.tile:hover .photo img {
+  scale: 1.12;
+  rotate: -2deg;
+  filter: saturate(1.1);
+}
+
+.tile:hover .icon,
+.tile:focus-visible .icon {
+  background: var(--color-accent);
+  color: #fff;
+  rotate: -10deg;
+}
+
+.tile:hover .go,
+.tile:focus-visible .go {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: #fff;
+  rotate: 45deg;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tile,
+  .tile::before,
+  .photo img,
+  .icon,
+  .go {
+    transition: none;
+  }
+
+  .tile:hover { translate: none; }
+  .tile:hover .photo img { scale: none; rotate: none; }
+}

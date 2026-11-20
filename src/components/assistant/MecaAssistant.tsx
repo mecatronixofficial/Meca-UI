@@ -1,16 +1,27 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import localFont from "next/font/local";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "../../lib/cn";
+import { splitHighlight, type MecaBoard } from "../../lib/meca-board";
 import { LAPTOP_DISMISSED_KEY, LAPTOP_EVENTS, LAPTOP_SNOOZE_MS, LaptopVisual, laptopSceneClass } from "../preview/PreviewPrompt";
 import { MecaRobot, mecaRobotStyles as styles } from "./MecaRobot";
 import type { RobotScene, RobotState } from "./robot3d";
 
 // The panel (and its logic) is only downloaded when someone opens it
 const MecaPanel = dynamic(() => import("./MecaPanel"), { ssr: false });
+
+// Handwriting for MECA's board (Caveat, OFL). Not preloaded: the board appears a few seconds in.
+const handwriting = localFont({ src: "../../app/fonts/caveat-latin-wght-normal.woff2", weight: "400 700", display: "swap", preload: false });
+
+/** How long the board stays up: raise, then three shakes with still moments between. */
+const BOARD_SHAKES = 3;
+const BOARD_SHAKE_MS = 1400;
+const BOARD_STILL_MS = 1900;
 
 /** Speeds, px per second. */
 const WALK = 70;
@@ -34,6 +45,50 @@ class Cancelled extends Error {}
 const nextFrame = () => new Promise<number>((resolve) => requestAnimationFrame(resolve));
 const between = (min: number, max: number) => min + Math.random() * (max - min);
 
+/**
+ * MECA's handwritten board, held overhead (its bottom edge sits in MECA's raised hands).
+ * Links to `board.link`; a full URL opens in a new tab.
+ */
+function BoardSign({
+  board,
+  shaking,
+  onPointerEnter,
+  onPointerLeave,
+}: {
+  board: MecaBoard;
+  shaking: boolean;
+  onPointerEnter: () => void;
+  onPointerLeave: () => void;
+}) {
+  const [before, marked, after] = splitHighlight(board.text, board.highlight);
+  const external = /^https?:\/\//i.test(board.link);
+  const className = cn(styles.board, handwriting.className, "pointer-events-auto");
+  // The shake is on an inner wrapper, so the board's pop-in plays only once
+  const content = (
+    <span className={cn(styles.boardSwing, shaking && styles.boardShake)}>
+      <span className={styles.boardFace}>
+        {before}
+        {marked && <mark className={styles.boardMark}>{marked}</mark>}
+        {after}
+        <span aria-hidden className={styles.boardCta}>
+          Try it <ArrowRight className="size-3" />
+        </span>
+      </span>
+      <span aria-hidden className={cn(styles.boardGrip, styles.boardGripL)} />
+      <span aria-hidden className={cn(styles.boardGrip, styles.boardGripR)} />
+    </span>
+  );
+  return external ? (
+    <a href={board.link} target="_blank" rel="noopener noreferrer" className={className} onPointerEnter={onPointerEnter} onPointerLeave={onPointerLeave}>
+      {content}
+    </a>
+  ) : (
+    <Link href={board.link} className={className} onPointerEnter={onPointerEnter} onPointerLeave={onPointerLeave}>
+      {content}
+    </Link>
+  );
+}
+
 /** The angle equivalent to `target` (mod 2π) closest to `from`, so turns take the short way. */
 const nearest = (from: number, target: number) => target + Math.round((from - target) / (Math.PI * 2)) * Math.PI * 2;
 
@@ -44,9 +99,21 @@ const nearest = (from: number, target: number) => target + Math.round((from - ta
  * turning its body, making U-turns and turning its head as it goes. Hovering stops
  * it to face you; its head follows the cursor. A flat SVG MECA shows until the 3D
  * one is ready (and stays if WebGL is unavailable).
+ *
+ * MECA's board (`board`, from the admin panel): when the site opens, MECA raises a handwritten
+ * board ("Preview your website for free") overhead and shakes it, then again every
+ * `board.intervalMinutes`. Clicking the board opens `board.link`. Not shown on the preview pages.
  */
-export default function MecaAssistant() {
+export default function MecaAssistant({ board = null }: { board?: MecaBoard | null }) {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  /** The board is up / being shaken. */
+  const [sign, setSign] = useState(false);
+  const [signShake, setSignShake] = useState(false);
+  const activeBoard = pathname?.startsWith("/preview") ? null : board;
+  // Read by the running routine without restarting it
+  const boardRef = useRef(activeBoard);
+  boardRef.current = activeBoard;
   const [loaded, setLoaded] = useState(false);
   const [hovered, setHovered] = useState(false);
   const [ready, setReady] = useState(false);
@@ -65,7 +132,8 @@ export default function MecaAssistant() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<RobotScene | null>(null);
-  const ctl = useRef<{ gen: number; paused: boolean; laptopX: number | null }>({ gen: 0, paused: false, laptopX: null });
+  /** `lastSign`: when the board was last raised (0 = not yet, so it goes up when the site opens). */
+  const ctl = useRef<{ gen: number; paused: boolean; laptopX: number | null; lastSign: number }>({ gen: 0, paused: false, laptopX: null, lastSign: 0 });
 
   // Load the 3D robot once the page is idle
   useEffect(() => {
@@ -185,9 +253,12 @@ export default function MecaAssistant() {
     };
 
     const reset = () => {
-      Object.assign(s, { carrying: false, placed: false, box: null, bug: null, headYaw: null, altitude: 0, mood: "normal" });
+      Object.assign(s, { carrying: false, placed: false, box: null, bug: null, headYaw: null, altitude: 0, mood: "normal", signShake: false });
+      if (s.pose === "sign") s.pose = "idle";
       setFx(null);
       setSay(null);
+      setSign(false);
+      setSignShake(false);
     };
 
     async function goHome() {
@@ -408,6 +479,36 @@ export default function MecaAssistant() {
       s.mood = "normal";
     }
 
+    /** Raises the board overhead and shakes it a few times, then lowers it. */
+    async function signBoard() {
+      c.lastSign = Date.now();
+      await turn(FRONT, 300);
+      s.headYaw = null;
+      s.pose = "sign";
+      s.mood = "happy";
+      await wait(350);
+      setSign(true);
+      await wait(400);
+      for (let i = 0; i < BOARD_SHAKES; i++) {
+        s.signShake = true;
+        setSignShake(true);
+        await wait(BOARD_SHAKE_MS);
+        s.signShake = false;
+        setSignShake(false);
+        await wait(BOARD_STILL_MS);
+      }
+      setSign(false);
+      await wait(250);
+      s.pose = "idle";
+      s.mood = "normal";
+    }
+
+    /** Time for the board again (first time: as soon as the site opens). */
+    const boardDue = () => {
+      const b = boardRef.current;
+      return Boolean(b) && Date.now() - c.lastSign >= (b?.intervalMinutes ?? 3) * 60_000;
+    };
+
     /** Runs across to the closed laptop, picks it up and carries it home. */
     async function fetchLaptop(laptopX: number) {
       reset();
@@ -455,6 +556,12 @@ export default function MecaAssistant() {
       await wait(2500);
       const acts = [deliver, code, bugHunt, dance, patrol, hello, jetpack, nap, deliver, recharge, bugHunt];
       for (let i = 0; ; i++) {
+        // The board comes first when the site opens, then whenever its interval has passed
+        if (boardDue()) {
+          await signBoard();
+          s.pose = "idle";
+          await wait(between(3000, 5000));
+        }
         await acts[i % acts.length]();
         s.pose = "idle";
         await wait(between(4000, 7000));
@@ -471,7 +578,8 @@ export default function MecaAssistant() {
 
   // On the laptop in MECA's hand: it lifts the laptop and offers a preview. On the robot itself: the usual hello.
   const presenting = laptopHot && holding && ready && !open;
-  const bubble = (hovered || laptopHot) && !open ? (presenting ? null : "Hi, I'm MECA! Click to chat.") : say;
+  const showBoard = sign && !open && activeBoard !== null;
+  const bubble = showBoard ? null : (hovered || laptopHot) && !open ? (presenting ? null : "Hi, I'm MECA! Click to chat.") : say;
 
   // Shared by the robot and the card, with a short grace period to move between them
   const enter = () => {
@@ -524,6 +632,8 @@ export default function MecaAssistant() {
               {bubble}
             </span>
           )}
+
+          {showBoard && activeBoard && <BoardSign board={activeBoard}shaking={signShake && !hovered} onPointerEnter={enter} onPointerLeave={leave} />}
 
           {presenting && (
             <div

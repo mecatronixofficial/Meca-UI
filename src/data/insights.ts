@@ -24,7 +24,7 @@ export interface Article {
   author: string;
   /** Related service slug for internal linking ("" for none) */
   service: string;
-  /** Cover image URL (articles from the admin panel) */
+  /** Cover image URL: admin-uploaded, or a photo in /public/assets/blog for hand-written articles */
   cover?: string;
   body: Block[];
 }
@@ -41,6 +41,7 @@ export const articles: Article[] = [
     published: "2026-10-14",
     author: AUTHOR,
     service: "erp-development",
+    cover: "/assets/blog/erp-dashboard.jpg",
     body: [
       { type: "p", text: "Most growing businesses don't decide to need an ERP. They notice symptoms first: stock figures nobody fully trusts, invoices raised days after goods leave, production updates that arrive by phone call, and an owner who can only get a clear picture by asking three different people." },
       { type: "p", text: "An ERP — enterprise resource planning — system addresses those symptoms by connecting the stages of your operation in one place. A custom ERP does it around the way your business already works, rather than asking your team to adopt someone else's process." },
@@ -63,6 +64,7 @@ export const articles: Article[] = [
         "You can extend it as the business changes, without waiting for a vendor's roadmap.",
       ] },
       { type: "p", text: "Custom is not automatically the right answer. If a well-supported product fits your process with little configuration, it may be the better choice. The decision should come from mapping your real workflow first." },
+      { type: "img", src: "/assets/blog/erp-warehouse.jpg", alt: "Warehouse shelving stocked with labelled boxes and bins" },
       { type: "h2", text: "Start with one module, not the whole system" },
       { type: "p", text: "The most common reason ERP projects struggle is trying to change everything at once. A phased approach reduces risk and gets value into the business sooner." },
       { type: "ol", items: [
@@ -92,6 +94,7 @@ export const articles: Article[] = [
     published: "2026-10-14",
     author: AUTHOR,
     service: "web-development",
+    cover: "/assets/blog/nextjs-workspace.jpg",
     body: [
       { type: "p", text: "A business website has three jobs: be found, be trusted and make it easy to take the next step. The framework it's built on affects all three — through how fast pages load, how well search engines can read them and how easily the site can grow into something more." },
       { type: "p", text: "Next.js is a React framework that has become a common foundation for business websites and web applications. Here is what it offers in practical terms." },
@@ -107,6 +110,7 @@ export const articles: Article[] = [
         "Structured data (JSON-LD) that describes your business, services and articles.",
         "Permanent redirects that preserve rankings when URLs change.",
       ] },
+      { type: "img", src: "/assets/blog/nextjs-code.jpg", alt: "Website source code open in an editor on a laptop" },
       { type: "h2", text: "A website that can become an application" },
       { type: "p", text: "Many businesses start with a marketing site and later need more: a customer portal, product configurator, booking flow or dashboard. With Next.js these can be added to the same codebase, sharing design components and infrastructure, instead of being built as a separate system." },
       { type: "h2", text: "Flexible content management" },
@@ -133,6 +137,7 @@ export const articles: Article[] = [
     published: "2026-10-14",
     author: AUTHOR,
     service: "custom-software",
+    cover: "/assets/blog/stack-laptop.jpg",
     body: [
       { type: "p", text: "When you commission a business application — an internal system, a customer portal, a mobile app — you'll hear about its 'stack': the languages, frameworks, databases and hosting it's built on. These choices are technical, but their consequences are business ones: cost, speed of delivery, reliability and how easy it will be to find people to maintain the software in future." },
       { type: "p", text: "You don't need to be an engineer to ask the right questions. Here is a practical way to think about it." },
@@ -145,6 +150,7 @@ export const articles: Article[] = [
         "Whether it must work offline or in low-connectivity environments.",
         "Any regulatory, data-location or security requirements.",
       ] },
+      { type: "img", src: "/assets/blog/stack-backend.jpg", alt: "Server-side JavaScript code open in an editor on a laptop" },
       { type: "h2", text: "The main layers of a stack" },
       { type: "h3", text: "Frontend: what users see" },
       { type: "p", text: "For web applications, React-based frameworks such as Next.js are a widely used, well-supported choice. For mobile, cross-platform tools such as React Native let one codebase serve both Android and iOS. Using the same language across web and mobile — typically TypeScript — reduces duplication." },

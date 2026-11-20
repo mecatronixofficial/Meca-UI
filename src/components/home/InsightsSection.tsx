@@ -9,7 +9,7 @@ export async function InsightsSection() {
   const [first, ...rest] = (await getArticles()).slice(0, 3);
   if (!first) return null;
   return (
-    <Section labelledBy="insights-title">
+    <Section compact labelledBy="insights-title">
       <Container>
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <SectionHeading id="insights-title" eyebrow="Blogs" title="Ideas, engineering and insights." />
@@ -18,7 +18,7 @@ export async function InsightsSection() {
           </Reveal>
         </div>
 
-        <div className="mt-14 grid gap-5 lg:mt-16 lg:grid-cols-12">
+        <div className="mt-10 grid gap-5 lg:mt-12 lg:grid-cols-12">
           <Reveal className="lg:col-span-7">
             <ArticleCard article={first} large />
           </Reveal>

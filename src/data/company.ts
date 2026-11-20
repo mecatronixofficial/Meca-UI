@@ -42,29 +42,21 @@ export const principles: { title: string; text: string; glyph: PrincipleGlyph }[
   },
 ];
 
-export const techStack = [
+export interface TechGroup {
+  category: string;
+  items: string[];
+}
+
+/**
+ * The "Technology" list. Managed in the admin panel (mec-api settings/tech) and loaded by
+ * getTechStack() (src/lib/tech-stack.server.ts); this is the fallback when the API is unavailable.
+ * Each item shows its official logo when src/components/ui/brand-logos.ts knows the name.
+ */
+export const techStack: TechGroup[] = [
   { category: "Frontend", items: ["Next.js", "React", "TypeScript", "Tailwind CSS"] },
   { category: "Backend", items: ["Node.js", "NestJS", "REST APIs"] },
   { category: "Databases", items: ["PostgreSQL", "MongoDB"] },
   { category: "Mobile", items: ["React Native"] },
   { category: "Cloud & Deployment", items: ["Vercel", "Cloudflare", "Managed cloud hosting"] },
-] as const;
+];
 
-/** How engagements are structured — shown on the homepage in place of testimonials until verified reviews exist */
-export const engagementModels = [
-  {
-    title: "Defined-scope projects",
-    text: "For websites and well-understood systems. Scope, milestones and deliverables are agreed up front, and progress is reviewed at each milestone.",
-    points: ["Agreed scope and timeline", "Milestone reviews", "Launch and handover"],
-  },
-  {
-    title: "Phased product builds",
-    text: "For ERP, custom software and apps. We release the most valuable module first, learn from real use, then plan the next phase together.",
-    points: ["Prioritised roadmap", "Working software early", "Room to adapt"],
-  },
-  {
-    title: "Ongoing improvement",
-    text: "For live products that need to keep evolving. A steady cadence of enhancements, fixes and monitoring after launch.",
-    points: ["Agreed monthly scope", "Monitoring and fixes", "Continuous enhancements"],
-  },
-] as const;

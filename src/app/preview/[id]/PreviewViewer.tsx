@@ -105,9 +105,10 @@ export default function PreviewViewer({ preview }: { preview: SavedPreview }) {
       </header>
 
       {/* The website */}
-      <main className={cn("transition-[padding] duration-300", frameWidth && "px-4 py-8")}>
+      {/* --site-top: the site's sticky header and pop-ups sit below this toolbar */}
+      <main className={cn("transition-[padding] duration-300 [--site-top:57px]", frameWidth && "px-4 py-8")}>
         <div
-          className={cn("mx-auto transition-[max-width] duration-500 ease-out", frameWidth && "overflow-hidden rounded-[28px] border-[10px] border-ink bg-white shadow-[0_40px_100px_-40px_rgba(11,13,18,0.5)]")}
+          className={cn("mx-auto transition-[max-width] duration-500 ease-out", frameWidth && "overflow-clip rounded-[28px] border-[10px] border-ink bg-white shadow-[0_40px_100px_-40px_rgba(11,13,18,0.5)]")}
           style={{ maxWidth: frameWidth ?? "100%" }}
         >
           <SiteTemplate

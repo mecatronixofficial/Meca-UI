@@ -36,6 +36,8 @@ export interface RobotState {
   holdingLaptop: boolean;
   /** Pointer is on the held laptop: lift it up to show the visitor. */
   presenting: boolean;
+  /** In the "sign" pose: shake the board side to side. */
+  signShake: boolean;
 }
 
 export interface RobotScene {
@@ -88,6 +90,7 @@ export function createRobotScene(
     hovered: false,
     holdingLaptop: false,
     presenting: false,
+    signShake: false,
   };
 
   /* ---------- Renderer, camera, lights ---------- */
@@ -590,7 +593,8 @@ export function createRobotScene(
     if (!state.hovered) scriptClock += dt;
 
     const flying = state.pose === "fly";
-    const greet = state.hovered && !flying;
+    // Keeps holding the board up when hovered
+    const greet = state.hovered && !flying && state.pose !== "sign";
     const pose: RobotPose = greet ? (state.carrying ? "hold" : state.holdingLaptop && state.presenting ? "present" : "wave") : state.pose;
     const targetYaw = greet ? nearest(yaw, 0) : state.yaw;
     yaw = motion ? damp(yaw, targetYaw, 7, dt) : targetYaw;
@@ -741,6 +745,19 @@ export function createRobotScene(
         T.kneeL = T.kneeR = state.altitude > 0.2 ? 0.6 : 0;
         T.lean = 0.14;
         break;
+      case "sign": {
+        // Both arms straight up holding the board overhead; shaking swings arms and body together
+        const shake = state.signShake && !state.hovered && motion ? Math.sin(t * 16) : 0;
+        T.armLz = -2.98 + shake * 0.12;
+        T.armRz = 2.98 + shake * 0.12;
+        T.elbowL = T.elbowR = -0.18;
+        T.sway = shake * 0.06;
+        T.bodyY = Math.abs(shake) * 0.03;
+        T.headPitch = -0.12;
+        T.headRoll = shake * 0.08;
+        followCursor = !state.signShake;
+        break;
+      }
       case "charge":
         T.bodyY = Math.sin(t * 4) * 0.015;
         T.armLz = -0.3;
@@ -779,7 +796,8 @@ export function createRobotScene(
     carried.visible = state.carrying;
     placed.visible = state.placed;
     laptop.visible = pose === "type";
-    heldLaptop.visible = state.holdingLaptop && pose !== "type";
+    // Both hands are on the board in the "sign" pose
+    heldLaptop.visible = state.holdingLaptop && pose !== "type" && pose !== "sign";
     // Presenting: turn the laptop to face the viewer (undoing the raised forearm); otherwise carry it at the side
     const presenting = pose === "present";
     heldLaptop.rotation.x = damp(heldLaptop.rotation.x, presenting ? 1.7 : 0.08, 10, motion ? dt : 1);

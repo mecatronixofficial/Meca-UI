@@ -17,6 +17,7 @@ export const footerNav = {
     { href: "/process", label: "Our Process" },
     { href: "/industries", label: "Industries" },
     { href: "/blogs", label: "Blogs" },
+    { href: "/careers", label: "Careers" },
     { href: "/contact", label: "Contact" },
     // Opens the review dialog on any page (src/components/reviews/ReviewModal.tsx)
     { href: "#write-review", label: "Write a review" },

@@ -1,0 +1,79 @@
+/* Technology section: a framed photo showcase where three laptop/dashboard
+ * photos cross-fade (6s each, 18s loop) with a slow zoom, plus floating chips. */
+
+.frame {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  border: 6px solid white;
+  border-radius: var(--radius-panel);
+  background: var(--color-paper);
+  box-shadow: var(--shadow-window), 0 40px 90px -40px rgb(225 6 0 / 0.35);
+}
+
+.slides {
+  position: absolute;
+  inset: 0;
+}
+
+.slide {
+  object-fit: cover;
+  opacity: 0;
+  animation: slide 18s linear infinite;
+}
+
+@keyframes slide {
+  0% { opacity: 0; transform: scale(1.08); }
+  6% { opacity: 1; }
+  33% { opacity: 1; }
+  40% { opacity: 0; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1); }
+}
+
+/* Light fade at the foot only, so the caption reads without darkening the photo */
+.shade {
+  position: absolute;
+  inset: auto 0 0;
+  height: 45%;
+  background: linear-gradient(to top, rgb(110 10 15 / 0.55), rgb(225 6 0 / 0.12) 60%, transparent);
+}
+
+.chip {
+  position: absolute;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.45rem 0.85rem 0.45rem 0.5rem;
+  border: 1px solid rgb(255 255 255 / 0.8);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.88);
+  box-shadow: var(--shadow-lift);
+  backdrop-filter: blur(14px) saturate(1.4);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--color-ink);
+  animation: bob 6s ease-in-out infinite;
+}
+
+.chipLate {
+  padding-left: 0.85rem;
+  animation-delay: -3s;
+}
+
+@keyframes bob {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -8px; }
+}
+
+/* Reduced motion: one still photo, still chips */
+@media (prefers-reduced-motion: reduce) {
+  .slide,
+  .chip {
+    animation: none;
+  }
+
+  .slide:first-child {
+    opacity: 1;
+  }
+}

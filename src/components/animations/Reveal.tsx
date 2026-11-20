@@ -28,7 +28,7 @@ function useReveal<T extends HTMLElement>() {
 }
 
 type RevealProps = HTMLAttributes<HTMLElement> & {
-  as?: "div" | "p" | "h2" | "article" | "li" | "section";
+  as?: "div" | "p" | "h2" | "article" | "ul" | "li" | "section";
 };
 
 /** The first client render matches the server; React owns the reveal attribute. */

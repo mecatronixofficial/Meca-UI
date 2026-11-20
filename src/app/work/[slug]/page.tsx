@@ -184,6 +184,29 @@ export default async function CaseStudyPage({ params }: Props) {
               ))}
             </Reveal>
           )}
+
+          {!!project.videos?.length && (
+            <Block label="Project videos">
+              <div className="space-y-8">
+                {project.videos.map((video) => (
+                  <figure key={video.src}>
+                    <video
+                      controls
+                      playsInline
+                      preload="metadata"
+                      poster={video.poster}
+                      aria-label={video.title || `${project.client} project video`}
+                      className="aspect-video w-full rounded-card bg-black object-contain shadow-soft"
+                    >
+                      <source src={video.src} />
+                      <a href={video.src}>Download project video</a>
+                    </video>
+                    {video.title && <figcaption className="mt-3 text-sm text-muted-ink">{video.title}</figcaption>}
+                  </figure>
+                ))}
+              </div>
+            </Block>
+          )}
         </Container>
       </Section>
 

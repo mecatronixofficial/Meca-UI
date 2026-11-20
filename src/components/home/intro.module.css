@@ -1,0 +1,231 @@
+/* "Who we are" capabilities: an expanding panel row. On large screens the
+ * hovered (or focused) panel widens, fills with the brand-red gradient and
+ * reveals its description; the first panel is open while none is hovered.
+ * Below lg the panels stack and every description shows. */
+
+.row {
+  display: grid;
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1024px) {
+  .row {
+    display: flex;
+    height: clamp(10.5rem, 8rem + 4vw, 12.5rem);
+    gap: 0.7rem;
+  }
+}
+
+.panel {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  padding: 0.95rem 1rem;
+  border: 1px solid var(--color-line);
+  border-radius: 1.1rem;
+  background: #fff;
+  outline: none;
+  cursor: default;
+  transition:
+    flex-grow 0.7s var(--ease-out-expo),
+    border-color 0.4s ease,
+    box-shadow 0.6s var(--ease-out-expo);
+}
+
+@media (min-width: 1024px) {
+  .panel { flex: 1 1 0; padding: 1rem 1.1rem; }
+}
+
+/* Brand-red fill, revealed from the bottom */
+.panel::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background:
+    radial-gradient(120% 80% at 100% 0%, rgb(255 82 71 / 0.55), transparent 60%),
+    linear-gradient(150deg, var(--color-accent), var(--color-accent-strong) 55%, var(--color-wine));
+  clip-path: inset(100% 0 0 0 round 1.1rem);
+  transition: clip-path 0.7s var(--ease-out-expo);
+}
+
+/* Faint grid that drifts inside the open panel */
+.panel::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.09) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.09) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  animation: pan 16s linear infinite;
+}
+
+.number {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.85rem;
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--color-line-strong);
+  transition: -webkit-text-stroke-color 0.4s ease, translate 0.6s var(--ease-out-expo), scale 0.6s var(--ease-out-expo);
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  width: 2.3rem;
+  height: 2.3rem;
+  border-radius: 0.7rem;
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  transition: background-color 0.4s, color 0.4s, rotate 0.6s var(--ease-out-expo);
+}
+
+.copy {
+  margin-top: auto;
+  padding-top: 0.9rem;
+}
+
+.copy h3 {
+  font-size: clamp(0.92rem, 0.86rem + 0.25vw, 1.05rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+  transition: color 0.4s ease;
+}
+
+.copy p {
+  margin-top: 0.35rem;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--color-muted-ink);
+  transition: color 0.4s ease, opacity 0.5s ease, translate 0.6s var(--ease-out-expo);
+}
+
+/* Bar that fills along the foot of the open panel */
+.progress {
+  position: absolute;
+  left: 1.1rem;
+  right: 1.1rem;
+  bottom: 0.6rem;
+  height: 2px;
+  border-radius: 2px;
+  background: rgb(255 255 255 / 0.85);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.9s var(--ease-out-expo) 0.1s;
+}
+
+/* ---------- Large screens: expand on hover / focus ---------- */
+@media (min-width: 1024px) {
+  /* Collapsed panels keep the title but hide the description */
+  .copy p {
+    opacity: 0;
+    translate: 0 8px;
+  }
+
+  .row:not(:hover, :focus-within) .panel:first-child,
+  .panel:hover,
+  .panel:focus-visible {
+    flex-grow: 2.1;
+    border-color: transparent;
+    box-shadow: var(--shadow-lift), 0 30px 60px -30px rgb(225 6 0 / 0.6);
+  }
+
+  .row:not(:hover, :focus-within) .panel:first-child::before,
+  .panel:hover::before,
+  .panel:focus-visible::before {
+    clip-path: inset(0 0 0 0 round 1.1rem);
+  }
+
+  .row:not(:hover, :focus-within) .panel:first-child::after,
+  .panel:hover::after,
+  .panel:focus-visible::after {
+    opacity: 1;
+  }
+
+  .row:not(:hover, :focus-within) .panel:first-child .number,
+  .panel:hover .number,
+  .panel:focus-visible .number {
+    -webkit-text-stroke-color: rgb(255 255 255 / 0.55);
+    scale: 1.25;
+    translate: -0.3rem 0.3rem;
+  }
+
+  .row:not(:hover, :focus-within) .panel:first-child .icon,
+  .panel:hover .icon,
+  .panel:focus-visible .icon {
+    background: rgb(255 255 255 / 0.16);
+    color: #fff;
+    rotate: -10deg;
+  }
+
+  .row:not(:hover, :focus-within) .panel:first-child h3,
+  .panel:hover h3,
+  .panel:focus-visible h3 {
+    color: #fff;
+  }
+
+  .row:not(:hover, :focus-within) .panel:first-child p,
+  .panel:hover p,
+  .panel:focus-visible p {
+    opacity: 1;
+    translate: 0 0;
+    color: rgb(255 255 255 / 0.85);
+    transition-delay: 0.15s;
+  }
+
+  .row:not(:hover, :focus-within) .panel:first-child .progress,
+  .panel:hover .progress,
+  .panel:focus-visible .progress {
+    transform: scaleX(1);
+  }
+}
+
+/* ---------- Small screens: everything visible, light hover ---------- */
+@media (max-width: 1023px) {
+  .panel:hover,
+  .panel:focus-visible {
+    border-color: rgb(225 6 0 / 0.35);
+    box-shadow: var(--shadow-lift);
+  }
+
+  .panel:hover .icon,
+  .panel:focus-visible .icon {
+    background: var(--color-accent);
+    color: #fff;
+  }
+}
+
+@keyframes pan {
+  to { background-position: 28px 28px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel,
+  .panel::before,
+  .copy p,
+  .number,
+  .icon,
+  .progress {
+    transition: none;
+  }
+
+  .panel::after { animation: none; }
+}

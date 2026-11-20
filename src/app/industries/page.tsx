@@ -15,8 +15,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { industries } from "../../data/industries";
-import { getProjects } from "../../lib/content";
-import { serviceList } from "../../data/service-list";
+import { industryIcons } from "../../components/ui/icons";
 import { processSteps } from "../../data/process";
 import { pageMetadata } from "../../lib/seo";
 import { whatsappLink } from "../../lib/site-contact";
@@ -24,16 +23,15 @@ import { getSiteContact } from "../../lib/site-contact.server";
 import { Container } from "../../components/ui/Container";
 import { Button } from "../../components/ui/Button";
 import { Breadcrumbs } from "../../components/ui/Breadcrumbs";
-import { serviceIcons } from "../../components/ui/icons";
-import { ProjectCover } from "../../components/portfolio/ProjectCover";
 import {
   IndustryExplorer,
   IndustryOrbit,
   IndustrySpotlight,
   WorkflowSystem,
 } from "./IndustriesExperience";
+import { SolutionsShowcase } from "./SolutionsShowcase";
 import styles from "./industries.module.css";
-import { Reveal, RevealLink } from "../../components/animations/Reveal";
+import { Reveal } from "../../components/animations/Reveal";
 
 export const metadata: Metadata = pageMetadata({
   title: "Software for Manufacturing, Textiles, Retail & Education",
@@ -85,7 +83,7 @@ const stagger = (index: number) =>
   ({ "--reveal-delay": `${(index % 3) * 65}ms` }) as CSSProperties;
 
 export default async function IndustriesPage() {
-  const [projects, contact] = await Promise.all([getProjects(), getSiteContact()]);
+  const contact = await getSiteContact();
   return (
     <div className={styles.page}>
       <section className={styles.hero} aria-labelledby="industries-title">
@@ -231,8 +229,8 @@ export default async function IndustriesPage() {
 
       <section className={styles.section} aria-labelledby="solutions-title">
         <Container>
-          <div className={styles.solutionsLayout}>
-            <Reveal className={styles.solutionsIntro}>
+          <Reveal className={styles.sectionHead}>
+            <div>
               <p className={styles.eyebrow}>
                 <span /> 04 / WHAT WE ENGINEER
               </p>
@@ -241,6 +239,8 @@ export default async function IndustriesPage() {
                 <br />
                 <span>Built your way.</span>
               </h2>
+            </div>
+            <div className={styles.headAside}>
               <p>
                 A storefront, an operations platform, or the connection between
                 them. The technology follows what your business needs.
@@ -249,53 +249,11 @@ export default async function IndustriesPage() {
                 Explore our capabilities{" "}
                 <ArrowUpRight size={17} aria-hidden="true" />
               </Link>
-              <div className={styles.solutionsSignature} aria-hidden="true">
-                <Code2 size={30} strokeWidth={1.2} />
-                <span>
-                  HUMAN PROBLEMS.
-                  <br />
-                  <strong>THOUGHTFUL SOFTWARE.</strong>
-                </span>
-              </div>
-            </Reveal>
-            <div className={styles.solutionRows}>
-              {serviceList.map((service, index) => {
-                const Icon = serviceIcons[service.slug];
-                return (
-                  <RevealLink
-                    key={service.slug}
-                    href={`/services/${service.slug}`}
-                    className={styles.solutionRow}
-                    style={stagger(index)}
-                  >
-                    <span className={styles.rowIndex}>
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <Icon size={24} strokeWidth={1.4} aria-hidden="true" />
-                    <div>
-                      <h3>{service.title}</h3>
-                      <p>{service.summary}</p>
-                    </div>
-                    <div
-                      className={styles.servicePreview}
-                      data-service={service.slug}
-                      aria-hidden="true"
-                    >
-                      <span />
-                      <span />
-                      <span />
-                      <span />
-                    </div>
-                    <ArrowUpRight
-                      size={21}
-                      className={styles.rowArrow}
-                      aria-hidden="true"
-                    />
-                  </RevealLink>
-                );
-              })}
             </div>
-          </div>
+          </Reveal>
+          <Reveal>
+            <SolutionsShowcase />
+          </Reveal>
         </Container>
       </section>
 
@@ -341,91 +299,6 @@ export default async function IndustriesPage() {
         </Container>
       </section>
 
-      <section className={styles.section} aria-labelledby="projects-title">
-        <Container>
-          <Reveal className={styles.sectionHead}>
-            <div>
-              <p className={styles.eyebrow}>
-                <span /> 06 / FROM OUR WORK
-              </p>
-              <h2 id="projects-title" className={styles.heading}>
-                Real businesses.
-                <br />
-                <span>Considered digital work.</span>
-              </h2>
-            </div>
-            <div className={styles.headAside}>
-              <p>
-                A selection of websites, storefronts and management systems
-                built for the businesses behind them.
-              </p>
-              <Link href="/work" className={styles.textLink}>
-                View all work <ArrowUpRight size={17} aria-hidden="true" />
-              </Link>
-            </div>
-          </Reveal>
-          <div className={styles.projectGrid}>
-            {projects.map((project, index) => (
-              <Reveal as="article"
-                key={project.slug}
-                className={styles.project}
-                style={stagger(index)}
-              >
-                <Link
-                  href={`/work/${project.slug}`}
-                  className={`${styles.projectLink} group`}
-                >
-                  <div className={styles.projectImage}>
-                    <ProjectCover
-                      project={{
-                        ...project,
-                        cover: {
-                          ...project.cover,
-                          from: "#fff5f4",
-                          to: "#fff0ef",
-                          ink: "#a30400",
-                        },
-                      }}
-                      className={styles.projectCover}
-                      sizes="(min-width: 768px) 55vw, 100vw"
-                    />
-                    <span className={styles.projectCoverLabel}>
-                      {project.images?.length
-                        ? "PROJECT VIEW"
-                        : "ABSTRACT PROJECT COVER"}
-                    </span>
-                    <span className={styles.projectImageArrow}>
-                      <ArrowUpRight size={23} aria-hidden="true" />
-                    </span>
-                  </div>
-                  <div className={styles.projectDetails}>
-                    <p className={styles.microLabel}>{project.industry}</p>
-                    <h3>
-                      {project.client}
-                      <ArrowUpRight size={22} aria-hidden="true" />
-                    </h3>
-                    <p>{project.summary}</p>
-                    <ul aria-label="Services delivered">
-                      {project.services.map((slug) => (
-                        <li key={slug}>
-                          {
-                            serviceList.find((service) => service.slug === slug)
-                              ?.navLabel
-                          }
-                        </li>
-                      ))}
-                    </ul>
-                    <span className={styles.textLink}>
-                      View Project <ArrowUpRight size={16} aria-hidden="true" />
-                    </span>
-                  </div>
-                </Link>
-              </Reveal>
-            ))}
-          </div>
-        </Container>
-      </section>
-
       <section
         className={`${styles.section} ${styles.approachSection}`}
         aria-labelledby="approach-title"
@@ -434,7 +307,7 @@ export default async function IndustriesPage() {
           <Reveal className={styles.sectionHead}>
             <div>
               <p className={styles.eyebrow}>
-                <span /> 07 / HOW WE GET THERE
+                <span /> 06 / HOW WE GET THERE
               </p>
               <h2 id="approach-title" className={styles.heading}>
                 A clear process.
@@ -455,9 +328,9 @@ export default async function IndustriesPage() {
           </Reveal>
           <ol className={styles.approachSteps}>
             {processSteps.map((step, index) => (
-              <Reveal as="li" key={step.n} style={stagger(index)}>
+              <Reveal as="li" key={step.n} style={{ ...stagger(index), "--ring-delay": `${index * -0.6}s` } as CSSProperties}>
                 <span>
-                  {step.n}
+                  <b className={styles.stepRing}>{step.n}</b>
                   <ArrowRight size={16} aria-hidden="true" />
                 </span>
                 <h3>{step.title}</h3>
@@ -476,10 +349,25 @@ export default async function IndustriesPage() {
         <Container>
           <Reveal className={styles.cta}>
             <div className={styles.ctaGrid} aria-hidden="true" />
+            {/* Industry icons travel two rings (opposite directions) while sonar pulses leave the centre */}
             <div className={styles.ctaOrbit} aria-hidden="true">
               <span />
               <span />
               <span />
+              <i className={styles.ctaPulse} />
+              <i className={styles.ctaPulse} />
+              {[industries.slice(0, 4), industries.slice(4, 8)].map((ring, r) => (
+                <div key={r} className={styles.ctaTrack} data-ring={r}>
+                  {ring.map((industry, i) => {
+                    const Icon = industryIcons[industry.icon];
+                    return (
+                      <b key={industry.slug} style={{ "--a": `${i * 90 + r * 45}deg` } as CSSProperties}>
+                        <Icon size={18} strokeWidth={1.7} />
+                      </b>
+                    );
+                  })}
+                </div>
+              ))}
               <Code2 strokeWidth={0.8} />
             </div>
             <div className={styles.ctaContent}>
@@ -487,11 +375,11 @@ export default async function IndustriesPage() {
                 <span /> THE NEXT CHAPTER STARTS HERE
               </p>
               <h2 id="enquiry-title">
-                Your industry.
+                <em className={styles.ctaLine}>Your industry.</em>
                 <br />
-                Your challenges.
+                <em className={styles.ctaLine}>Your challenges.</em>
                 <br />
-                <span>Our engineering.</span>
+                <span className={styles.ctaLine}>Our engineering.</span>
               </h2>
               <p>
                 From manufacturing workflows to digital storefronts, we build

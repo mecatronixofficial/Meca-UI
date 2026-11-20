@@ -1,0 +1,155 @@
+/* Home-page "Let's talk": a chat window whose messages pop in on a loop
+ * (our greeting, a red client reply, then us typing), with red light drifting
+ * behind it and a pulsing ring on the label. */
+
+.glow {
+  position: absolute;
+  z-index: -1;
+  left: -10%;
+  top: 50%;
+  width: 44rem;
+  aspect-ratio: 1;
+  translate: 0 -50%;
+  border-radius: 999px;
+  background: radial-gradient(closest-side, rgb(225 6 0 / 0.13), rgb(225 6 0 / 0.04) 55%, transparent);
+  animation: drift 12s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+.chat {
+  position: relative;
+  overflow: hidden;
+  max-width: 26rem;
+  border: 1px solid var(--color-line);
+  border-radius: 1.4rem;
+  background: rgb(255 255 255 / 0.9);
+  box-shadow: var(--shadow-lift), 0 30px 60px -36px rgb(225 6 0 / 0.5);
+  backdrop-filter: blur(10px);
+  transition: translate 0.6s var(--ease-out-expo), box-shadow 0.6s var(--ease-out-expo);
+}
+
+.chat:hover {
+  translate: 0 -4px;
+  box-shadow: var(--shadow-lift), 0 36px 70px -32px rgb(225 6 0 / 0.6);
+}
+
+/* Logo avatar with a red ring that orbits */
+.avatar {
+  position: relative;
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 999px;
+  background: var(--color-accent-soft);
+}
+
+.avatar::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  background: conic-gradient(from 0deg, transparent 0 60%, var(--color-accent) 85%, transparent);
+  mask: radial-gradient(closest-side, transparent calc(100% - 2px), black calc(100% - 1.5px));
+  animation: spin 2.4s linear infinite;
+}
+
+.msg {
+  max-width: 85%;
+  padding: 0.55rem 0.85rem;
+  font-size: 13.5px;
+  line-height: 1.35;
+  animation: chat 9s cubic-bezier(0.34, 1.4, 0.64, 1) infinite both;
+}
+
+.them {
+  align-self: flex-start;
+  border-radius: 1rem 1rem 1rem 0.3rem;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  transform-origin: bottom left;
+}
+
+.you {
+  align-self: flex-end;
+  border-radius: 1rem 1rem 0.3rem 1rem;
+  background: linear-gradient(135deg, #ff3b2f, var(--color-accent) 50%, var(--color-accent-strong));
+  color: white;
+  box-shadow: 0 10px 22px -12px rgb(225 6 0 / 0.8);
+  transform-origin: bottom right;
+}
+
+.typing {
+  display: inline-flex;
+  gap: 4px;
+  padding: 0.75rem 0.9rem;
+}
+
+.typing i {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-accent);
+  animation: dot 1s ease-in-out infinite;
+}
+
+.typing i:nth-child(2) { animation-delay: 0.15s; }
+.typing i:nth-child(3) { animation-delay: 0.3s; }
+
+/* Red dot with an expanding ring */
+.pulse {
+  position: relative;
+  display: inline-block;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: var(--color-accent);
+}
+
+.pulse::after {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border: 1.5px solid var(--color-accent);
+  border-radius: inherit;
+  animation: ring 1.8s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+}
+
+/* Hidden, pops in, stays, then fades before the loop restarts */
+@keyframes chat {
+  0% { opacity: 0; transform: translateY(8px) scale(0.85); }
+  5%, 80% { opacity: 1; transform: none; }
+  88%, 100% { opacity: 0; transform: translateY(-4px); }
+}
+
+@keyframes dot {
+  0%, 100% { opacity: 0.35; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-3px); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes drift {
+  to { translate: 30% -40%; scale: 1.15; }
+}
+
+@keyframes ring {
+  0% { transform: scale(0.4); opacity: 0.9; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glow,
+  .avatar::before,
+  .msg,
+  .typing i,
+  .pulse::after {
+    animation: none;
+  }
+
+  .chat { transition: none; }
+  .chat:hover { translate: none; }
+}

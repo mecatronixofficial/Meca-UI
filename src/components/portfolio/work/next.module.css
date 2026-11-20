@@ -1,0 +1,284 @@
+/* /work closing call to action: a light split card. The copy sits on the left;
+ * on the right a project roadmap plays on a loop — each step's bar fills and
+ * gets a check, then the rocket lifts off. */
+
+.card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  gap: 1.75rem;
+  padding: clamp(1.25rem, 3vw, 2.25rem);
+  border: 1px solid var(--color-line);
+  border-radius: 1.5rem;
+  background: #fff;
+  box-shadow: var(--shadow-lift);
+}
+
+@media (min-width: 1024px) {
+  .card {
+    grid-template-columns: 1.15fr 1fr;
+    align-items: center;
+    gap: 3rem;
+  }
+}
+
+/* Soft red light drifting behind everything */
+.card::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  right: -15%;
+  top: -40%;
+  width: 34rem;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background: radial-gradient(closest-side, rgb(225 6 0 / 0.12), transparent);
+  animation: drift 14s ease-in-out infinite alternate;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--color-accent-ink);
+}
+
+.tag i {
+  position: relative;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: var(--color-accent);
+}
+
+.tag i::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border: 1.5px solid var(--color-accent);
+  border-radius: inherit;
+  animation: ring 1.8s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+}
+
+.title {
+  margin-top: 0.75rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  color: var(--color-ink);
+}
+
+.whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0 1.1rem;
+  border: 1px solid var(--color-line-strong);
+  border-radius: 999px;
+  background: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-ink);
+  transition: border-color 0.3s, background-color 0.3s, translate 0.4s var(--ease-out-expo), box-shadow 0.4s;
+}
+
+.whatsapp > svg:first-child {
+  color: #25d366;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.whatsapp:hover {
+  translate: 0 -2px;
+  border-color: #25d366;
+  background: #effcf4;
+  box-shadow: 0 12px 26px -14px rgb(37 211 102 / 0.7);
+}
+
+.whatsapp:hover > svg:first-child {
+  transform: rotate(-12deg) scale(1.15);
+}
+
+.mail {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 13.5px;
+  color: var(--color-ink);
+  overflow-wrap: anywhere;
+  transition: color 0.3s;
+}
+
+.mail > svg:first-child { color: var(--color-accent); }
+.mail > svg:last-child { transition: transform 0.3s; }
+.mail:hover { color: var(--color-accent-ink); }
+.mail:hover > svg:last-child { transform: translate(2px, -2px) rotate(45deg); }
+
+/* ---------- Roadmap ---------- */
+.board {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  border-radius: 1.2rem;
+  background: rgb(255 255 255 / 0.85);
+  box-shadow: 0 30px 60px -36px rgb(225 6 0 / 0.45);
+  backdrop-filter: blur(8px);
+  transition: translate 0.6s var(--ease-out-expo), box-shadow 0.6s var(--ease-out-expo);
+}
+
+.card:hover .board {
+  translate: 0 -4px;
+  box-shadow: 0 36px 70px -32px rgb(225 6 0 / 0.55);
+}
+
+.boardBar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.65rem 0.9rem;
+  border-bottom: 1px solid var(--color-line);
+  background: var(--color-paper);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-muted-ink);
+}
+
+.live {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: #22c55e;
+  box-shadow: 0 0 0 3px rgb(34 197 94 / 0.2);
+  animation: blink 1.4s ease-in-out infinite;
+}
+
+.steps {
+  display: grid;
+  gap: 0.7rem;
+  padding: 1rem 0.95rem 1.1rem;
+}
+
+.step {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.emoji {
+  display: grid;
+  place-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 0.7rem;
+  background: var(--color-accent-soft);
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.track {
+  position: relative;
+  display: block;
+  height: 6px;
+  margin-top: 0.4rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--color-line);
+}
+
+/* Each bar fills in turn (staggered by --i), holds, then empties for the next loop */
+.track > span {
+  display: block;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--color-accent), #ff8a80);
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: fill 8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  animation-delay: calc(var(--i) * 1.3s);
+}
+
+.check {
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 999px;
+  background: var(--color-accent);
+  color: #fff;
+  opacity: 0;
+  scale: 0.4;
+  animation: tick 8s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+  animation-delay: calc(var(--i) * 1.3s);
+}
+
+/* Rocket bobs, then lifts off right after the last step completes */
+.rocket {
+  display: inline-block;
+  animation: launch 8s ease-in infinite;
+  animation-delay: 3.9s;
+}
+
+@keyframes fill {
+  0% { transform: scaleX(0); }
+  16%, 82% { transform: scaleX(1); }
+  90%, 100% { transform: scaleX(0); }
+}
+
+@keyframes tick {
+  0%, 14% { opacity: 0; scale: 0.4; }
+  20%, 82% { opacity: 1; scale: 1; }
+  90%, 100% { opacity: 0; scale: 0.4; }
+}
+
+@keyframes launch {
+  0%, 20% { transform: translate(0, 0) rotate(0); opacity: 1; }
+  10% { transform: translate(0, -2px) rotate(-4deg); }
+  32% { transform: translate(18px, -30px) rotate(10deg); opacity: 0; }
+  33% { transform: translate(-10px, 14px); opacity: 0; }
+  45%, 100% { transform: translate(0, 0); opacity: 1; }
+}
+
+@keyframes blink {
+  50% { opacity: 0.35; }
+}
+
+@keyframes drift {
+  to { translate: -30% 25%; scale: 1.15; }
+}
+
+@keyframes ring {
+  0% { transform: scale(0.4); opacity: 0.9; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card::before,
+  .tag i::after,
+  .live,
+  .rocket {
+    animation: none;
+  }
+
+  .track > span {
+    animation: none;
+    transform: scaleX(1);
+  }
+
+  .check {
+    animation: none;
+    opacity: 1;
+    scale: 1;
+  }
+
+  .board,
+  .whatsapp { transition: none; }
+}

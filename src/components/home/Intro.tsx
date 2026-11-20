@@ -9,11 +9,15 @@ import { VisionScene } from "../visuals/VisionScene";
 import frame from "../visuals/VisionScene.module.css";
 import { Reveal } from "../animations/Reveal";
 import { Backdrop } from "../visuals/Backdrop";
+import { Cpu, Layers, PencilRuler, Target } from "lucide-react";
+import styles from "./intro.module.css";
+
+const capabilityIcons = [PencilRuler, Target, Cpu, Layers];
 
 export async function Intro() {
   const { address } = await getSiteContact();
   return (
-    <Section labelledBy="intro-title" className="overflow-hidden">
+    <Section compact labelledBy="intro-title" className="overflow-hidden">
       <Backdrop image="contours" imageClassName="[mask-image:radial-gradient(ellipse_60%_70%_at_85%_30%,black,transparent_75%)]" />
       <Container className="relative">
         <div className="grid gap-12 lg:grid-cols-12 lg:items-end lg:gap-10">
@@ -57,20 +61,25 @@ export async function Intro() {
           </Reveal>
         </div>
 
-        <ul className="mt-16 grid gap-px overflow-hidden rounded-panel border border-line bg-line sm:grid-cols-2 lg:mt-24 lg:grid-cols-4">
-          {capabilities.map((c, i) => (
-            <Reveal as="li"
-              key={c.title}
-              style={{ "--reveal-delay": `${i * 70}ms` } as React.CSSProperties}
-              className="spotlight group relative bg-white p-7 lg:p-8"
-            >
-              <span className="-ml-1.5 inline-block rounded-md px-1.5 py-0.5 font-mono text-xs text-accent-ink transition-colors duration-300 group-hover:bg-accent group-hover:text-white">{String(i + 1).padStart(2, "0")}</span>
-              <h3 className="mt-10 text-[1.3rem] font-semibold leading-tight tracking-tight text-surface transition-colors duration-300 group-hover:text-accent-ink lg:mt-16">{c.title}</h3>
-              <p className="mt-3 text-[15px] leading-relaxed text-muted-ink">{c.text}</p>
-              <span aria-hidden className="mt-6 block h-px w-8 bg-accent transition-[width] duration-500 group-hover:w-16" />
-            </Reveal>
-          ))}
-        </ul>
+        {/* Expanding panels: the hovered (or focused) one widens and fills red; the first is open by default */}
+        <Reveal as="ul" className={cn(styles.row, "mt-10 lg:mt-14")}>
+          {capabilities.map((c, i) => {
+            const Icon = capabilityIcons[i] ?? Layers;
+            return (
+              <li key={c.title} tabIndex={0} className={styles.panel}>
+                <span aria-hidden className={styles.number}>{String(i + 1).padStart(2, "0")}</span>
+                <span className={styles.icon}>
+                  <Icon aria-hidden className="size-4" strokeWidth={1.9} />
+                </span>
+                <div className={styles.copy}>
+                  <h3>{c.title}</h3>
+                  <p>{c.text}</p>
+                </div>
+                <span aria-hidden className={styles.progress} />
+              </li>
+            );
+          })}
+        </Reveal>
       </Container>
     </Section>
   );

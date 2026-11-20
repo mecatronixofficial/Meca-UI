@@ -388,3 +388,133 @@
   20% { opacity: 1; }
   100% { opacity: 0; transform: translate(-12px, -34px) scale(1.1); }
 }
+
+/* ---------- MECA's board (held overhead; see MecaAssistant BoardSign) ---------- */
+.board {
+  position: absolute;
+  right: -6px;
+  bottom: 96px;
+  display: block;
+  width: 152px;
+  /* Rises out of MECA's hands */
+  transform-origin: calc(100% - 48px) 100%;
+  border-radius: 12px;
+  outline-offset: 4px;
+}
+
+.board:focus-visible { outline: 2px solid var(--color-accent); }
+
+/* Neon brand sign: dark glass in Mecatronix black, a red glowing tube for a border */
+.boardFace {
+  display: block;
+  padding: 9px 12px 8px;
+  border: 1.5px solid #ff5a4f;
+  border-radius: 14px;
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgb(225 6 0 / 0.22), transparent 60%),
+    linear-gradient(160deg, #1d2029, #0f1116 70%);
+  box-shadow:
+    0 0 0 1px rgb(225 6 0 / 0.35),
+    0 0 10px rgb(255 59 48 / 0.55),
+    0 0 26px rgb(225 6 0 / 0.35),
+    inset 0 0 14px rgb(225 6 0 / 0.25),
+    0 16px 30px -14px rgb(15 17 22 / 0.7);
+  font-size: 21px;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  color: #f4f5f7;
+  text-shadow: 0 0 6px rgb(255 255 255 / 0.25);
+  transform: rotate(-2deg);
+  transition: transform 0.3s cubic-bezier(0.2, 1.4, 0.4, 1), box-shadow 0.3s;
+}
+
+.board:hover .boardFace {
+  transform: rotate(0deg) scale(1.04);
+  box-shadow:
+    0 0 0 1px rgb(225 6 0 / 0.5),
+    0 0 14px rgb(255 59 48 / 0.75),
+    0 0 36px rgb(225 6 0 / 0.5),
+    inset 0 0 16px rgb(225 6 0 / 0.3),
+    0 16px 30px -14px rgb(15 17 22 / 0.7);
+}
+
+/* The highlighted word, lit like a red neon tube */
+.boardMark {
+  display: inline-block;
+  margin-top: 2px;
+  padding: 0 2px;
+  background: none;
+  font-size: 1.5em;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #fff1f0;
+  text-shadow:
+    0 0 2px #fff,
+    0 0 6px #ff3b30,
+    0 0 12px #ff3b30,
+    0 0 22px #e10600,
+    0 0 34px #e10600;
+}
+
+/* Small "Try it →" line under the text */
+.boardCta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 5px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-shadow: none;
+  color: #ff8a82;
+  transition: color 0.3s, gap 0.3s;
+}
+
+.board:hover .boardCta { gap: 7px; color: #fff; }
+
+/* Swings from MECA's hands when shaking (the robot's centre is 48px in from the board's right edge) */
+.boardSwing {
+  position: relative;
+  display: block;
+  transform-origin: calc(100% - 48px) 100%;
+}
+
+/* Two handles down into MECA's raised hands (30px either side of its centre, at hand height) */
+.boardGripL { right: 76px; }
+.boardGripR { right: 16px; }
+.boardGrip {
+  position: absolute;
+  z-index: -1;
+  bottom: -22px;
+  width: 4px;
+  height: 26px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #4a5263, #2b3242);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .board { animation: board-up 0.45s cubic-bezier(0.2, 1.4, 0.4, 1) both; }
+  .boardShake { animation: board-shake 0.2s ease-in-out infinite alternate; }
+  .boardMark { animation: neon-flicker 4s linear infinite; }
+}
+
+/* Mostly steady, with the odd neon stutter */
+@keyframes neon-flicker {
+  0%, 18%, 22%, 24%, 62%, 64%, 100% { opacity: 1; }
+  20%, 23%, 63% { opacity: 0.55; }
+}
+
+@keyframes board-up {
+  from { opacity: 0; transform: translateY(26px) scale(0.7); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes board-shake {
+  from { transform: rotate(-6deg); }
+  to { transform: rotate(6deg); }
+}

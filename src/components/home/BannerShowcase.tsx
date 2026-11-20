@@ -1,15 +1,15 @@
-import { getBanners } from "../../lib/content";
+import { getProjects } from "../../lib/content";
 import { Container } from "../ui/Container";
 import { Eyebrow } from "../ui/Heading";
 import { Reveal } from "../animations/Reveal";
-import { BannerCarousel } from "./BannerCarousel";
+import { WorkScreens } from "./WorkScreens";
 
-/** Banners managed in the admin panel (Banners). Renders nothing when none are active. */
+/** Highlights: an auto-scrolling strip of project screenshots. Renders nothing without projects. */
 export async function BannerShowcase() {
-  const banners = await getBanners();
-  if (!banners.length) return null;
+  const projects = await getProjects();
+  if (!projects.length) return null;
   return (
-    <section aria-labelledby="banners-title" className="py-12 lg:py-16">
+    <section aria-labelledby="banners-title" className="overflow-hidden py-10 lg:py-12">
       <Container>
         <Reveal className="mb-7 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between lg:mb-9">
           <div>
@@ -21,7 +21,7 @@ export async function BannerShowcase() {
           <p className="max-w-sm text-[14.5px] leading-relaxed text-muted-ink">Launches, offers and recent work from our studio — updated by our team.</p>
         </Reveal>
         <Reveal>
-          <BannerCarousel banners={banners} />
+          <WorkScreens projects={projects} />
         </Reveal>
       </Container>
     </section>

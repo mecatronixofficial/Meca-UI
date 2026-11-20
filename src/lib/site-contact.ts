@@ -27,6 +27,11 @@ export interface SiteAddress {
   country: string;
   pincode: string;
   mapsUrl: string;
+  /** Map position, when known (admin panel, or the env fallback for the studio). */
+  lat?: number;
+  lng?: number;
+  /** Google Maps directions to this address (exact position when known). */
+  directionsUrl: string;
 }
 
 export interface SitePhone {
@@ -54,6 +59,10 @@ export interface SiteContact {
   /** e.g. "Mon-Sat, 10:00–19:00 IST". */
   hours: string;
   socialLinks: { key: SocialKey; label: string; href: string }[];
+  /** Google "write a review" link — the same link as the printed review QR code. */
+  reviewUrl: string;
+  /** The Google Business profile on Google Maps ("See us on Google"). */
+  googleProfileUrl: string;
 }
 
 /** Shape returned by mec-api GET settings/contact. */
@@ -61,9 +70,19 @@ export interface ContactSettings {
   emails: { label: string; email: string }[];
   phones: { label: string; number: string; whatsapp: boolean }[];
   socials: { platform: string; url: string }[];
-  addresses: { label: string; street: string; city: string; state: string; pincode: string; country: string; map_url: string }[];
+  addresses: { label: string; street: string; city: string; state: string; pincode: string; country: string; map_url: string; lat?: number | null; lng?: number | null }[];
   hours: { days: string; open: string; close: string };
+  /** Google "write a review" link; optional (older API versions don't send it). */
+  review_url?: string;
+  /** Google Business profile link; optional (older API versions don't send it). */
+  google_profile_url?: string;
 }
+
+/** An admin-entered link when it is a full web URL, else the fallback. */
+const webLink = (value: string | undefined, fallback: string) => {
+  const link = value?.trim();
+  return link && /^https?:\/\//i.test(link) ? link : fallback;
+};
 
 const digits = (phone: string) => phone.replace(/[^\d]/g, "");
 
@@ -88,9 +107,27 @@ const waFor = (phone: string) => {
   return d.length === 10 ? `91${d}` : d;
 };
 
+const coordinate = (value: unknown, limit: number) => {
+  const n = typeof value === "number" ? value : typeof value === "string" && value.trim() ? Number(value) : NaN;
+  return Number.isFinite(n) && Math.abs(n) <= limit ? n : undefined;
+};
+
+/** Normalised street for comparing addresses ("No.3/12, Old ESI St," == "no.3/12 old esi st"). */
+const sameStreet = (a = "", b = "") => a.toLowerCase().replace(/[^a-z0-9]/g, "") === b.toLowerCase().replace(/[^a-z0-9]/g, "");
+
 function toAddress(a: ContactSettings["addresses"][number]): SiteAddress {
   const statePin = [a.state, a.pincode].map((s) => s?.trim()).filter(Boolean).join(" ");
   const full = [a.street?.replace(/,\s*$/, ""), a.city, statePin].map((s) => s?.trim()).filter(Boolean).join(", ");
+  const { location } = mecatronixConfig;
+  let lat = coordinate(a.lat, 90);
+  let lng = coordinate(a.lng, 180);
+  // Details saved before positions existed: the studio's own address still gets its known position
+  if ((lat === undefined || lng === undefined) && sameStreet(a.street, location.address)) {
+    lat = location.latitude;
+    lng = location.longitude;
+  }
+  const located = lat !== undefined && lng !== undefined;
+  const destination = located ? `${lat},${lng}` : [full, a.country].filter(Boolean).join(", ");
   return {
     label: a.label?.trim() || "Mecatronix Studio",
     full,
@@ -100,6 +137,8 @@ function toAddress(a: ContactSettings["addresses"][number]): SiteAddress {
     country: a.country?.trim() || "India",
     pincode: a.pincode?.trim() ?? "",
     mapsUrl: a.map_url?.trim() || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(full)}`,
+    ...(located ? { lat, lng } : {}),
+    directionsUrl: `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}`,
   };
 }
 
@@ -126,6 +165,8 @@ function envSettings(): ContactSettings {
         pincode: location.pincode,
         country: location.country,
         map_url: location.googleMapsLink,
+        lat: location.latitude,
+        lng: location.longitude,
       },
     ],
     hours: { days: business.days, open: business.hoursStart, close: business.hoursEnd },
@@ -162,6 +203,8 @@ export function toSiteContact(settings: ContactSettings | null | undefined): Sit
     socialLinks: s.socials
       .filter((x): x is { platform: SocialKey; url: string } => x.platform in SOCIAL_LABELS && Boolean(x.url))
       .map((x) => ({ key: x.platform, label: SOCIAL_LABELS[x.platform], href: x.url })),
+    reviewUrl: webLink(settings?.review_url, mecatronixConfig.location.googleReviewLink),
+    googleProfileUrl: webLink(settings?.google_profile_url, mecatronixConfig.location.googleMapsLink),
   };
 }
 

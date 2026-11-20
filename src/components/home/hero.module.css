@@ -95,3 +95,506 @@
   70% { transform: translateY(10px); opacity: 0; }
   100% { transform: translateY(0); opacity: 0; }
 }
+
+/* ---------- Live studio status pill ----------
+ * Dark pill on a hairline gradient border, lit by the circuit artwork and two
+ * glows: green behind the live dot, brand red at the far end. When the studio
+ * is closed it turns to a starry night. On hover a comet runs the border (same
+ * conic trick as .frame), the circuit drifts, a sheen sweeps across and a call
+ * to action slides open at the end. */
+.status {
+  --live: #34d399;
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  overflow: hidden;
+  padding: 1px;
+  border-radius: 1.1rem;
+  background: linear-gradient(120deg, rgb(52 211 153 / 0.75), rgb(255 255 255 / 0.14) 38%, rgb(255 255 255 / 0.14) 62%, rgb(225 6 0 / 0.8));
+  box-shadow: 0 14px 34px -14px rgb(11 13 18 / 0.5), 0 10px 30px -16px rgb(225 6 0 / 0.55);
+  transition: translate 0.6s var(--ease-out-expo), box-shadow 0.6s var(--ease-out-expo);
+}
+
+.status[data-closed] {
+  --live: #a5b4fc;
+  background: linear-gradient(120deg, rgb(165 180 252 / 0.6), rgb(255 255 255 / 0.12) 45%, rgb(225 6 0 / 0.55));
+  box-shadow: 0 14px 34px -14px rgb(17 22 51 / 0.6);
+}
+
+@media (min-width: 640px) {
+  .status { border-radius: 999px; }
+}
+
+.status::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  top: 50%;
+  width: 120%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  background: conic-gradient(from 0deg, transparent 0 60%, rgb(225 6 0 / 0.3) 72%, #ff3b2f 85%, #ffd2cc 90%, transparent 94%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  animation: spin 3.2s linear infinite paused;
+}
+
+.status:hover,
+.status:focus-visible {
+  translate: 0 -2px;
+  box-shadow: 0 20px 44px -16px rgb(11 13 18 / 0.55), 0 16px 40px -14px rgb(225 6 0 / 0.65);
+}
+
+.status:hover::before,
+.status:focus-visible::before {
+  opacity: 1;
+  animation-play-state: running;
+}
+
+.statusBody {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 0.75rem;
+  row-gap: 0.25rem;
+  padding: 0.5rem 1rem 0.5rem 0.55rem;
+  border-radius: inherit;
+  background:
+    radial-gradient(120px 60px at 0% 50%, rgb(52 211 153 / 0.3), transparent 70%),
+    radial-gradient(220px 90px at 100% 0%, rgb(225 6 0 / 0.55), transparent 70%),
+    radial-gradient(160px 70px at 70% 130%, rgb(255 82 71 / 0.22), transparent 70%),
+    linear-gradient(115deg, #0b0d12 0%, #171b24 55%, #2b0a0c 100%);
+}
+
+.status[data-closed] .statusBody {
+  background:
+    radial-gradient(1px 1px at 18% 30%, rgb(255 255 255 / 0.9), transparent),
+    radial-gradient(1px 1px at 42% 75%, rgb(255 255 255 / 0.7), transparent),
+    radial-gradient(1.5px 1.5px at 63% 22%, rgb(255 255 255 / 0.85), transparent),
+    radial-gradient(1px 1px at 81% 68%, rgb(255 255 255 / 0.6), transparent),
+    radial-gradient(1px 1px at 93% 35%, rgb(255 255 255 / 0.8), transparent),
+    radial-gradient(120px 60px at 0% 50%, rgb(165 180 252 / 0.28), transparent 70%),
+    radial-gradient(200px 90px at 100% 0%, rgb(225 6 0 / 0.35), transparent 70%),
+    linear-gradient(115deg, #0a0d1f 0%, #141a36 60%, #241032 100%);
+}
+
+/* Circuit artwork, drifting a little on hover */
+.statusBody::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -40% -10%;
+  background: url("/assets/backgrounds/circuit-dark.svg") center / 560px auto;
+  opacity: 0.55;
+  mask-image: linear-gradient(90deg, transparent, black 30%, black);
+  transition: translate 1.2s var(--ease-out-expo), opacity 0.5s ease;
+}
+
+.status:hover .statusBody::before {
+  translate: -24px 0;
+  opacity: 0.85;
+}
+
+/* Light sweeping across the glass */
+.statusBody::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.22) 50%, transparent 65%);
+  translate: -110% 0;
+  pointer-events: none;
+}
+
+.status:hover .statusBody::after {
+  translate: 110% 0;
+  transition: translate 0.9s var(--ease-out-expo);
+}
+
+/* Live dot with radar rings */
+.beacon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--live) 18%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--live) 35%, transparent);
+}
+
+.beacon > span {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--live);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--live) 22%, transparent), 0 0 12px var(--live);
+}
+
+.beacon::before,
+.beacon::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1.5px solid var(--live);
+  opacity: 0;
+  animation: radar 2.4s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+}
+
+.beacon::after {
+  animation-delay: 1.2s;
+}
+
+.status[data-closed] .beacon > span {
+  box-shadow: none;
+}
+
+.status[data-closed] .beacon::before,
+.status[data-closed] .beacon::after {
+  animation: none;
+}
+
+@keyframes radar {
+  0% { transform: scale(0.45); opacity: 0.8; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* Ticking clock colon */
+.colon {
+  animation: tick 1s steps(1) infinite;
+}
+
+@keyframes tick {
+  50% { opacity: 0.2; }
+}
+
+/* Call to action that slides open on hover */
+.reveal {
+  display: none;
+  grid-template-columns: 0fr;
+  transition: grid-template-columns 0.55s var(--ease-out-expo);
+}
+
+.reveal > span {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+@media (hover: hover) and (min-width: 640px) {
+  .reveal { display: grid; }
+}
+
+.status:hover .reveal,
+.status:focus-visible .reveal {
+  grid-template-columns: 1fr;
+}
+
+.arrow {
+  transition: transform 0.45s var(--ease-out-expo);
+}
+
+.status:hover .arrow {
+  transform: translate(2px, -2px);
+}
+
+/* Contact links under the buttons */
+.contact {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.3rem 0.85rem 0.3rem 0.3rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  transition: border-color 0.35s ease, background-color 0.35s ease, color 0.35s ease, translate 0.5s var(--ease-out-expo), box-shadow 0.5s var(--ease-out-expo);
+}
+
+.contactIcon {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  transition: background-color 0.35s ease, color 0.35s ease, transform 0.5s var(--ease-out-expo);
+}
+
+.contact:hover,
+.contact:focus-visible {
+  border-color: var(--color-line);
+  background: white;
+  color: var(--color-ink);
+  translate: 0 -2px;
+  box-shadow: var(--shadow-soft), 0 10px 24px -14px rgb(225 6 0 / 0.5);
+}
+
+.contact:hover .contactIcon,
+.contact:focus-visible .contactIcon {
+  background: var(--color-accent);
+  color: white;
+  transform: rotate(-12deg) scale(1.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status::before,
+  .beacon::before,
+  .beacon::after,
+  .colon {
+    animation: none;
+  }
+
+  .status,
+  .contact,
+  .status:hover .statusBody::before,
+  .status:hover .statusBody::after {
+    transition: none;
+  }
+
+  .status:hover,
+  .contact:hover {
+    translate: none;
+  }
+}
+
+/* ---------- Hero background: wall of project screenshots ----------
+ * Three columns, each a doubled list sliding by half its height for a
+ * seamless loop, tilted in 3D and washed out by a white veil. */
+.wall {
+  position: absolute;
+  z-index: -1;
+  inset: 0 0 auto;
+  height: min(1150px, 100%);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.wallTilt {
+  position: absolute;
+  top: -12%;
+  left: 38%;
+  display: flex;
+  gap: 1.25rem;
+  width: 980px;
+  transform: perspective(1600px) rotateX(22deg) rotateY(-10deg) rotateZ(-14deg);
+  transform-origin: top left;
+}
+
+@media (max-width: 1023px) {
+  .wallTilt {
+    left: 10%;
+    width: 760px;
+  }
+}
+
+.wallColumn {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 1.25rem;
+  animation: wall-up 60s linear infinite;
+}
+
+.wallReverse {
+  animation-name: wall-down;
+}
+
+@keyframes wall-up {
+  from { transform: translateY(0); }
+  to { transform: translateY(calc(-50% - 0.625rem)); }
+}
+
+@keyframes wall-down {
+  from { transform: translateY(calc(-50% - 0.625rem)); }
+  to { transform: translateY(0); }
+}
+
+.wallTile {
+  overflow: hidden;
+  border: 1px solid rgb(11 13 18 / 0.08);
+  border-radius: 14px;
+  background: white;
+  box-shadow: 0 24px 50px -24px rgb(11 13 18 / 0.35), 0 0 0 4px rgb(255 255 255 / 0.6);
+}
+
+.wallBar {
+  display: flex;
+  gap: 4px;
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--color-line);
+  background: var(--color-paper);
+}
+
+.wallBar i {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-line-strong);
+}
+
+.wallBar i:first-child {
+  background: var(--color-accent);
+}
+
+.wallShot {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 10;
+  background: var(--color-paper);
+}
+
+.wallPhoto {
+  aspect-ratio: 4 / 3;
+}
+
+/* White on the copy side, thinning toward the wall; faded top and bottom */
+.wallVeil {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to bottom, white 0, rgb(255 255 255 / 0) 18%, rgb(255 255 255 / 0) 62%, white 100%),
+    linear-gradient(90deg, white 0%, white 34%, rgb(255 255 255 / 0.82) 52%, rgb(255 255 255 / 0.42) 78%, rgb(255 255 255 / 0.3) 100%),
+    radial-gradient(40% 50% at 85% 30%, rgb(225 6 0 / 0.08), transparent 70%);
+}
+
+@media (max-width: 1023px) {
+  .wallVeil {
+    background:
+      linear-gradient(to bottom, white 0, rgb(255 255 255 / 0.6) 20%, rgb(255 255 255 / 0.6) 60%, white 100%),
+      rgb(255 255 255 / 0.72);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wallColumn {
+    animation: none;
+  }
+}
+
+/* ---------- Hero "what every engagement gets" bar ----------
+ * One frosted bar with a cell per promise. Each check draws itself into a red
+ * circle in turn on load, a red light sweeps the top edge, and a hovered cell
+ * lights up red with its check filled in. */
+.promise {
+  position: relative;
+  display: grid;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  border-radius: 1.25rem;
+  background: rgb(255 255 255 / 0.75);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(12px);
+}
+
+@media (min-width: 640px) {
+  .promise { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1024px) {
+  .promise { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+.promise::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  width: 28%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+  animation: promiseScan 6s ease-in-out infinite;
+}
+
+.promiseItem {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem 1.1rem;
+  border-top: 1px solid var(--color-line);
+  transition: background-color 0.35s ease;
+}
+
+.promiseItem:first-child { border-top: 0; }
+
+@media (min-width: 640px) {
+  .promiseItem:nth-child(2) { border-top: 0; }
+  .promiseItem:nth-child(even) { border-left: 1px solid var(--color-line); }
+}
+
+@media (min-width: 1024px) {
+  .promiseItem { border-top: 0; }
+  .promiseItem + .promiseItem { border-left: 1px solid var(--color-line); }
+}
+
+.promiseCheck {
+  width: 1.85rem;
+  height: 1.85rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+  overflow: visible;
+}
+
+.promiseCheck circle {
+  fill: var(--color-accent-soft);
+  stroke: var(--color-accent);
+  stroke-width: 2;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  rotate: -90deg;
+  transform-origin: center;
+  transition: fill 0.35s ease;
+  animation: promiseDraw 0.8s cubic-bezier(0.65, 0, 0.35, 1) both;
+  animation-delay: calc(0.8s + var(--i) * 0.25s);
+}
+
+.promiseCheck path {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke 0.35s ease;
+  animation: promiseDraw 0.45s cubic-bezier(0.65, 0, 0.35, 1) both;
+  animation-delay: calc(1.4s + var(--i) * 0.25s);
+}
+
+.promiseTitle {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--color-ink);
+  transition: color 0.3s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .promiseItem:hover { background: var(--color-accent-soft); }
+  .promiseItem:hover .promiseCheck circle { fill: var(--color-accent); }
+  .promiseItem:hover .promiseCheck path { stroke: #fff; }
+  .promiseItem:hover .promiseTitle { color: var(--color-accent-ink); }
+}
+
+@keyframes promiseDraw {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes promiseScan {
+  0% { translate: -100% 0; }
+  100% { translate: 360% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .promise::before { animation: none; opacity: 0; }
+  .promiseCheck circle,
+  .promiseCheck path {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}

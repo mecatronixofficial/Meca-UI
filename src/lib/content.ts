@@ -1,7 +1,10 @@
 import "server-only";
 import { articles as staticArticles, type Article, type Block } from "../data/insights";
-import { projects as staticProjects, type IndustryKey, type Project, type ProjectCoverStyle } from "../data/projects";
+import { projects as staticProjects, type Project } from "../data/projects";
 import { backendBaseUrl } from "./backend";
+import type { ProjectVideo } from "../data/projects";
+import { mergeProjectContent, slugify, type ApiProject, type ApiWork } from "./project-content";
+export { slugify } from "./project-content";
 
 /**
  * Website content managed in the admin panel (mec-api), merged with the
@@ -26,6 +29,10 @@ export const CONTENT_TAGS = {
   thirukkural: "content:thirukkural",
   // Founders and team (About page)
   team: "content:team",
+  // "Technology" list (home page, hero, About page; src/lib/tech-stack.server.ts)
+  tech: "content:tech",
+  // MECA's board (every page; src/lib/meca-board.server.ts)
+  meca: "content:meca",
 } as const;
 
 export type ContentTag = keyof typeof CONTENT_TAGS;
@@ -51,17 +58,7 @@ export async function fetchContent<T>(path: string, tag: ContentTag): Promise<T 
 
 /* ---------- Shared helpers ---------- */
 
-export const slugify = (value: string) =>
-  value
-    .toLowerCase()
-    .normalize("NFKD")
-    .replace(/[̀-ͯ]/g, "")
-    .replace(/&/g, " and ")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 80) || "item";
-
-const externalHref = (url: string) => (/^https?:\/\//i.test(url) ? url : `https://${url}`);
+const titleCase = (value: string) => value.replace(/\b\w/g, (character) => character.toUpperCase());
 
 /** YYYY-MM-DD in India for an ISO timestamp. */
 const indiaDate = (iso: string) => new Date(iso).toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
@@ -136,99 +133,37 @@ export async function getArticle(slug: string) {
 
 /* ---------- Projects + works -> Work case studies ---------- */
 
-interface ApiProject {
-  id: string;
-  project_name: string;
-  project_image: string;
-  short_description: string;
-  project_url: string;
-  work_id?: string | null;
-  is_active: boolean;
-  client?: { id: string; client_name: string; companies?: { name: string; industry: string }[] } | null;
-}
-
-interface ApiWork {
-  id: string;
-  title: string;
-  info: { heading: string; details: string; img: string }[];
-  is_active: boolean;
-}
-
-const INDUSTRY_RULES: [RegExp, IndustryKey][] = [
-  [/textile|garment|apparel|fabric|yarn|weav|knit|hosiery/i, "textiles"],
-  [/e-?commerce|online store/i, "ecommerce"],
-  [/school|education|college|academy|preschool|institut|training/i, "education"],
-  [/logistic|transport|shipping|courier|freight/i, "logistics"],
-  [/retail|shop|store|supermarket|boutique/i, "retail"],
-  [/manufactur|machine|industrial|engineering|factory|mill|automation/i, "manufacturing"],
-  [/consult|legal|account|clinic|agency|professional|finance/i, "professional-services"],
-  [/startup|saas/i, "startups"],
-];
-
-const industryKeyFor = (industry: string): IndustryKey => INDUSTRY_RULES.find(([pattern]) => pattern.test(industry))?.[1] ?? "other";
-
-const titleCase = (value: string) => value.replace(/\b\w/g, (c) => c.toUpperCase());
-
-/** Designed covers for projects without their own palette, picked by slug so each stays stable. */
-const COVERS: ProjectCoverStyle[] = [
-  { kind: "site", from: "#e4ecf2", to: "#b9cddd", ink: "#1d3446" },
-  { kind: "store", from: "#efe6d8", to: "#d9c6a8", ink: "#3b2f22" },
-  { kind: "catalogue", from: "#e6e9ef", to: "#b6c0d1", ink: "#1b2332" },
-  { kind: "site", from: "#e8e6f4", to: "#c5c0e6", ink: "#262046" },
-  { kind: "school", from: "#fbe9de", to: "#f3c9b0", ink: "#4a2617" },
-];
-const coverFor = (slug: string) => COVERS[[...slug].reduce((sum, c) => sum + c.charCodeAt(0), 0) % COVERS.length];
-
-const remoteImage = (src: string, alt: string) => ({ src, alt, width: 1600, height: 1000 });
-
-function toProject(p: ApiProject, work: ApiWork | undefined): Project {
-  const slug = slugify(p.project_name);
-  const industry = p.client?.companies?.find((c) => c.industry?.trim())?.industry.trim();
-  const sections = work?.is_active ? work.info.filter((s) => s.heading?.trim() || s.details?.trim()) : [];
-  return {
-    slug,
-    client: p.project_name.trim(),
-    industry: industry ? titleCase(industry) : "Client project",
-    industryKey: industry ? industryKeyFor(industry) : "other",
-    services: [],
-    summary: p.short_description.trim(),
-    overview: p.short_description.trim(),
-    scope: sections.map((s) => s.heading.trim()).filter(Boolean),
-    sections,
-    url: p.project_url ? externalHref(p.project_url) : undefined,
-    images: [
-      ...(p.project_image ? [remoteImage(p.project_image, `${p.project_name} screenshot`)] : []),
-      ...sections.filter((s) => s.img).map((s) => remoteImage(s.img, s.heading || p.project_name)),
-    ],
-    cover: coverFor(slug),
-  };
-}
-
-/**
- * Admin projects merged with the hand-written ones, newest admin projects first.
- * An admin project with the same name as a hand-written one enriches it
- * (screenshots, live link, case-study sections) and can hide it (inactive).
- */
-export async function getProjects(): Promise<Project[]> {
-  const [apiProjects, works] = await Promise.all([
+async function getBaseProjects(): Promise<Project[]> {
+  const [projects, works] = await Promise.all([
     fetchContent<ApiProject[]>("project/all", "projects"),
     fetchContent<ApiWork[]>("work/get", "projects"),
   ]);
-  if (!apiProjects) return staticProjects;
+  return mergeProjectContent(staticProjects, projects, works);
+}
 
-  const worksById = new Map((works ?? []).map((w) => [w.id, w]));
-  const fromAdmin = new Map(apiProjects.map((p) => [slugify(p.project_name), { active: p.is_active, project: toProject(p, p.work_id ? worksById.get(p.work_id) : undefined) }]));
+export interface ProjectMedia {
+  slug: string;
+  images: { src: string; alt: string }[];
+  videos: ProjectVideo[];
+}
 
-  const curated = staticProjects.flatMap((s) => {
-    const match = fromAdmin.get(s.slug);
-    if (!match) return [s];
-    fromAdmin.delete(s.slug);
-    if (!match.active) return [];
-    const a = match.project;
-    return [{ ...s, url: s.url ?? a.url, images: s.images?.length ? s.images : a.images, sections: a.sections?.length ? a.sections : s.sections }];
+/** Media can be managed for both curated projects and projects created in mec-api. */
+export async function getProjectMedia(): Promise<ProjectMedia[]> {
+  return (await fetchContent<ProjectMedia[]>("project/media", "projects")) ?? [];
+}
+
+export async function getProjects(): Promise<Project[]> {
+  const [projects, media] = await Promise.all([getBaseProjects(), getProjectMedia()]);
+  const bySlug = new Map(media.map((entry) => [entry.slug, entry]));
+  return projects.map((project) => {
+    const entry = bySlug.get(project.slug);
+    if (!entry) return project;
+    return {
+      ...project,
+      images: entry.images.map((image) => ({ ...image, width: 1600, height: 1000 })),
+      videos: entry.videos,
+    };
   });
-  const added = [...fromAdmin.values()].filter((m) => m.active).map((m) => m.project);
-  return [...added, ...curated];
 }
 
 export async function getProject(slug: string) {

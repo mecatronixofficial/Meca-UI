@@ -31,7 +31,7 @@ export function KuralCard({ kural }: { kural: KuralOfTheDay }) {
 
   return (
     <div className="flex h-full flex-col">
-      <div role="tablist" aria-label="Kural views" className="grid grid-cols-4 gap-1 rounded-2xl bg-paper p-1 sm:gap-1.5 sm:p-1.5">
+      <div role="tablist" aria-label="Kural views" className="grid grid-cols-4 gap-1 rounded-xl bg-paper p-1">
         {TABS.map((t) => (
           <button
             key={t.id}
@@ -41,8 +41,8 @@ export function KuralCard({ kural }: { kural: KuralOfTheDay }) {
             aria-controls="kural-panel"
             onClick={() => setTab(t.id)}
             className={cn(
-              "min-w-0 rounded-xl px-1 py-2 text-[13px] font-semibold transition-colors sm:px-3 sm:text-[14px]",
-              tab === t.id ? "bg-white text-ink shadow-soft" : "text-muted-ink hover:text-ink",
+              "min-w-0 rounded-lg px-1 py-1.5 text-[12.5px] font-semibold transition-[color,background-color,box-shadow,translate] duration-300 sm:px-2.5 sm:text-[13px]",
+              tab === t.id ? "bg-white text-accent-ink shadow-soft" : "text-muted-ink hover:-translate-y-px hover:bg-white/60 hover:text-ink",
             )}
           >
             <span style={tamilFont}>{t.label}</span>
@@ -51,15 +51,16 @@ export function KuralCard({ kural }: { kural: KuralOfTheDay }) {
         ))}
       </div>
 
-      <div id="kural-panel" role="tabpanel" key={tab + urai} className="flex min-h-[210px] flex-1 flex-col justify-center py-8 motion-safe:animate-fade">
+      <div id="kural-panel" role="tabpanel" key={tab + urai} className="flex min-h-[124px] flex-1 flex-col justify-center py-4 motion-safe:animate-fade">
         {tab === "tamil" && (
           <div>
-            <p lang="ta" style={tamilFont} className="text-[1.45rem] font-semibold leading-[1.75] text-ink sm:text-[1.8rem] lg:text-[2rem]">
-              {kural.lines[0]}
-              <br />
-              <span className="text-accent-ink">{kural.lines[1]}</span>
+            <p lang="ta" style={tamilFont} className="text-[clamp(1.15rem,0.95rem+1vw,1.6rem)] font-semibold leading-[1.7] text-ink">
+              <span className="block motion-safe:animate-rise">{kural.lines[0]}</span>
+              <span className="block text-accent-ink motion-safe:animate-rise" style={{ animationDelay: "120ms" }}>
+                {kural.lines[1]}
+              </span>
             </p>
-            <p className="mt-5 text-[14.5px] italic leading-relaxed text-muted-ink">
+            <p className="mt-2.5 text-[13px] italic leading-relaxed text-muted-ink">
               {kural.transliteration[0]}
               <br />
               {kural.transliteration[1]}
@@ -68,14 +69,14 @@ export function KuralCard({ kural }: { kural: KuralOfTheDay }) {
         )}
 
         {tab === "english" && (
-          <blockquote className="font-display text-[1.35rem] font-medium leading-snug tracking-tight text-ink sm:text-[1.6rem]">
+          <blockquote className="font-display text-[clamp(1.1rem,0.95rem+0.8vw,1.4rem)] font-medium leading-snug tracking-tight text-ink">
             <span aria-hidden className="mr-1 text-accent">&ldquo;</span>
             {kural.translation}
             <span aria-hidden className="ml-1 text-accent">&rdquo;</span>
           </blockquote>
         )}
 
-        {tab === "meaning" && <p className="text-[17px] leading-relaxed text-surface sm:text-[18.5px]">{kural.explanation}</p>}
+        {tab === "meaning" && <p className="text-[15px] leading-relaxed text-surface sm:text-[16px]">{kural.explanation}</p>}
 
         {tab === "urai" && (
           <div>
@@ -96,7 +97,7 @@ export function KuralCard({ kural }: { kural: KuralOfTheDay }) {
                 </button>
               ))}
             </div>
-            <p lang="ta" style={tamilFont} className="mt-5 text-[17px] leading-[1.9] text-surface sm:text-[18.5px]">
+            <p lang="ta" style={tamilFont} className="mt-3 text-[15px] leading-[1.85] text-surface sm:text-[16px]">
               {kural.urai[urai]}
             </p>
           </div>

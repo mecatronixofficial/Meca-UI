@@ -4,11 +4,12 @@ const securityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   { key: "X-Frame-Options", value: "SAMEORIGIN" },
-  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), browsing-topics=()" },
+  // Geolocation for this site only: the contact page's "Use my location" (asked on tap, used in the browser)
+  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(self), browsing-topics=()" },
   { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains" },
 ];
 
-/** Where the separate admin app (Mecatronix-AdminUi) lives, e.g. https://admin.mecatronix.one. Optional. */
+/** Where the separate mec-admin app lives, e.g. https://admin.mecatronix.one. Optional. */
 const adminPanelUrl = process.env.ADMIN_PANEL_URL?.trim().replace(/\/+$/, "") || null;
 
 const nextConfig: NextConfig = {

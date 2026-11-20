@@ -9,7 +9,7 @@ export default function robots(): MetadataRoute.Robots {
         allow: "/",
         // API routes and personal website previews aren't public pages. (Keep /og crawlable:
         // social bots that obey robots.txt need it to show the share image.)
-        disallow: ["/api/", "/preview/"],
+        disallow: ["/api/", "/preview/", "/admin"],
       },
     ],
     sitemap: `${SITE_URL}/sitemap.xml`,

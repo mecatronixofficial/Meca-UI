@@ -17,7 +17,7 @@ export function Founders({ members }: { members: TeamMember[] }) {
   const solo = members.length === 1;
 
   return (
-    <section aria-labelledby="founders-title" className={styles.section}>
+    <section id="team" aria-labelledby="founders-title" className={styles.section}>
       <Container>
         <Reveal className={styles.sectionHeader}>
           <div>
@@ -25,10 +25,10 @@ export function Founders({ members }: { members: TeamMember[] }) {
               <span /> THE PEOPLE BEHIND MECATRONIX
             </p>
             <h2 id="founders-title" className={styles.heading}>
-              Meet our <span>{solo ? "founder." : "founders."}</span>
+              Team &amp; <span>founders.</span>
             </h2>
           </div>
-          <p>Every project is led by the people who started Mecatronix — you work with them directly, from the first call to launch and beyond.</p>
+          <p>Meet the people behind Mecatronix, working with you from the first conversation to launch and ongoing support.</p>
         </Reveal>
 
         <ul className={cn("grid gap-6", !solo && "lg:grid-cols-2")}>

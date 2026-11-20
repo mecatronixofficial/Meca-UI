@@ -24,7 +24,9 @@ export type RobotPose =
   | "fly"
   | "charge"
   /** Hovered while holding the preview laptop: lifts it up to show the visitor. */
-  | "present";
+  | "present"
+  /** Both arms up, holding MECA's board overhead (shakes it while RobotState.signShake). */
+  | "sign";
 
 export type RobotMood = "normal" | "happy" | "focus" | "sleep" | "wow";
 

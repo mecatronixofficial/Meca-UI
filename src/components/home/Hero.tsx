@@ -1,35 +1,34 @@
 import Link from "next/link";
-import { ArrowRight, BadgeCheck, Check, GitBranch, Layers, Wrench } from "lucide-react";
+import { ArrowRight, Check, GitBranch } from "lucide-react";
 import { Container } from "../ui/Container";
 import { Button } from "../ui/Button";
 import { PauseOffscreen } from "../animations/PauseOffscreen";
 import { AssemblyScene } from "../visuals/AssemblyScene";
 import { serviceIcons } from "../ui/icons";
 import { services } from "../../data/services";
-import { industries } from "../../data/industries";
-import { processSteps } from "../../data/process";
-import { capabilities, techStack } from "../../data/company";
+import { capabilities } from "../../data/company";
+import { getProjects } from "../../lib/content";
+import { getTechStack } from "../../lib/tech-stack.server";
+import { TechLogo } from "../ui/TechLogo";
 import { HeroContactLine, HeroStatus } from "./HeroStatus";
+import { HeroWall } from "./HeroWall";
+import { HeroProcess } from "./HeroProcess";
 import styles from "./hero.module.css";
 
 const delay = (ms: number) => ({ animationDelay: `${ms}ms` }) as React.CSSProperties;
 
-const technologies = techStack.flatMap((group) => group.items);
-
 /**
  * Home hero: a studio overview. Headline, live status and ways to get in touch on the left;
  * what we build, how we work and what we build with on the right; then the robot-cell animation.
+ * Behind it all, a drifting wall of project screenshots and laptop photos.
  */
-export function Hero() {
-  const facts: [value: string, label: string, icon: typeof Layers][] = [
-    [String(services.length), "Core services", Layers],
-    [String(industries.length), "Industries served", BadgeCheck],
-    [String(technologies.length), "Technologies", Wrench],
-  ];
-
+export async function Hero() {
+  const [projects, techStack] = await Promise.all([getProjects(), getTechStack()]);
+  const technologies = techStack.flatMap((group) => group.items);
   return (
     <section aria-labelledby="hero-title" className="relative isolate overflow-hidden bg-white pt-[72px] text-ink">
-      <Container className="pt-12 sm:pt-16 lg:pt-20">
+      <HeroWall projects={projects} />
+      <Container className="pt-6 sm:pt-8 lg:pt-10">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-10 xl:gap-14">
           {/* ---------- Left: headline and next steps ---------- */}
           <div className="lg:col-span-7">
@@ -60,21 +59,6 @@ export function Hero() {
             </div>
 
             <HeroContactLine className="mt-7 motion-safe:animate-fade" />
-
-            <dl className="mt-10 grid max-w-xl grid-cols-3 gap-4 border-t border-line pt-7 motion-safe:animate-fade" style={delay(380)}>
-              {facts.map(([value, label, Icon]) => (
-                <div key={label} className="flex items-start gap-3">
-                  <span className="hidden size-10 shrink-0 place-items-center rounded-xl bg-accent-soft text-accent sm:grid">
-                    <Icon aria-hidden className="size-5" strokeWidth={1.8} />
-                  </span>
-                  <div>
-                    <dt className="sr-only">{label}</dt>
-                    <dd className="font-display text-[1.9rem] font-semibold leading-none tracking-tight text-ink">{value}</dd>
-                    <dd className="mt-1.5 text-[13px] leading-snug text-muted-ink">{label}</dd>
-                  </div>
-                </div>
-              ))}
-            </dl>
           </div>
 
           {/* ---------- Right: the studio at a glance ---------- */}
@@ -107,19 +91,7 @@ export function Hero() {
             {/* How we work */}
             <section aria-labelledby="hero-how" className="rounded-panel border border-white/80 bg-white/75 p-5 shadow-lift backdrop-blur-md sm:p-6">
               <CardHeading id="hero-how" index="02" title="How we work" href="/process" link="Our process" />
-              <ol className="mt-5 grid grid-cols-3 gap-x-3 gap-y-5 sm:grid-cols-6 lg:grid-cols-3">
-                {processSteps.map((step) => (
-                  <li key={step.n}>
-                    <span className="flex items-center gap-2">
-                      <span className="grid size-7 shrink-0 place-items-center rounded-full border border-accent/30 bg-accent-soft font-mono text-[11px] font-semibold text-accent-ink">
-                        {step.n}
-                      </span>
-                      <span aria-hidden className="h-px flex-1 bg-gradient-to-r from-accent/30 to-transparent" />
-                    </span>
-                    <p className="mt-2 text-[12.5px] font-medium leading-snug text-surface">{step.title}</p>
-                  </li>
-                ))}
-              </ol>
+              <HeroProcess />
             </section>
 
             {/* Built with */}
@@ -127,7 +99,8 @@ export function Hero() {
               <CardHeading id="hero-stack" index="03" title="Built with" />
               <ul className="mt-4 flex flex-wrap gap-1.5">
                 {technologies.map((t) => (
-                  <li key={t} className="rounded-full border border-line bg-white px-2.5 py-1 font-mono text-[11.5px] text-muted-ink">
+                  <li key={t} className="inline-flex items-center gap-1.5 rounded-full border border-line bg-white py-1 pl-2 pr-2.5 font-mono text-[11.5px] text-muted-ink">
+                    <TechLogo name={t} size={12} />
                     {t}
                   </li>
                 ))}
@@ -137,15 +110,17 @@ export function Hero() {
         </div>
 
         {/* What every engagement gets */}
-        <ul className="mt-14 grid gap-5 border-y border-line py-6 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4 motion-safe:animate-fade" style={delay(500)} aria-label="Why Mecatronix">
-          {capabilities.map((c) => (
-            <li key={c.title} className="flex items-start gap-3">
-              <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-ink text-white">
-                <Check aria-hidden className="size-3.5" strokeWidth={2.6} />
-              </span>
-              <span>
-                <span className="block text-[14px] font-semibold text-ink">{c.title}</span>
-                <span className="mt-0.5 block text-[13px] leading-snug text-muted-ink">{c.text}</span>
+        <ul className={`${styles.promise} mt-10 lg:mt-12 motion-safe:animate-fade`} style={delay(500)} aria-label="Why Mecatronix">
+          {capabilities.map((c, i) => (
+            <li key={c.title} className={styles.promiseItem} style={{ "--i": i } as React.CSSProperties}>
+              {/* Check that draws itself in, one after another */}
+              <svg aria-hidden viewBox="0 0 32 32" className={styles.promiseCheck}>
+                <circle cx="16" cy="16" r="14" pathLength={1} />
+                <path d="M10 16.5 L14.2 20.5 L22 12" pathLength={1} />
+              </svg>
+              <span className="min-w-0">
+                <span className={styles.promiseTitle}>{c.title}</span>
+                <span className="mt-0.5 block text-[12.5px] leading-snug text-muted-ink">{c.text}</span>
               </span>
             </li>
           ))}
@@ -153,7 +128,7 @@ export function Hero() {
       </Container>
 
       {/* Robot cell: code → robotic arm → production → pipeline */}
-      <div className="relative mt-14 pb-16 sm:mt-16 sm:pb-20 lg:mt-14 lg:pb-28">
+      <div className="relative mt-10 pb-10 sm:mt-12 sm:pb-12 lg:mt-12 lg:pb-16">
         <Container wide>
           <div className="relative mx-auto max-w-[1240px] motion-safe:animate-rise" style={delay(320)}>
             <span aria-hidden className={styles.chip} style={{ left: "-1.5rem", top: "22%" }}>

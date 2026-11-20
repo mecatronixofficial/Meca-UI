@@ -1,0 +1,411 @@
+/* Home "Reviews on Google": a rating summary beside an endless strip of review
+ * cards (pauses on hover). Cards lift with a red glow; stars fill in gold. */
+
+.head {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .head {
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 2.5rem;
+  }
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--color-muted-ink);
+}
+
+.live {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-left: 0.25rem;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  background: #e9f9ef;
+  font-size: 10px;
+  font-weight: 600;
+  color: #15803d;
+}
+
+.live i {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #22c55e;
+  animation: blink 1.4s ease-in-out infinite;
+}
+
+.title {
+  margin-top: 0.7rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.55rem, 1.1rem + 1.9vw, 2.5rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  color: var(--color-ink);
+}
+
+.headText {
+  max-width: 24rem;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-muted-ink);
+}
+
+/* Phone: summary, reviews, poster. Tablet: summary + poster, reviews below.
+ * Desktop: summary | reviews | poster. */
+.layout {
+  display: grid;
+  grid-template-areas: "summary" "reviews" "poster";
+  gap: 1rem;
+}
+
+.summary { grid-area: summary; }
+.viewport,
+.empty { grid-area: reviews; }
+.poster { grid-area: poster; }
+
+@media (min-width: 768px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr) 15rem;
+    grid-template-areas: "summary poster" "reviews reviews";
+    align-items: stretch;
+    gap: 1.25rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .layout {
+    grid-template-columns: 18rem minmax(0, 1fr) 16rem;
+    grid-template-areas: "summary reviews poster";
+  }
+}
+
+/* ---------- Summary ---------- */
+.summary {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1.4rem;
+  border: 1px solid var(--color-line);
+  border-radius: 1.4rem;
+  background:
+    radial-gradient(90% 70% at 100% 0%, var(--color-accent-soft), transparent 70%),
+    #fff;
+  box-shadow: var(--shadow-lift);
+}
+
+.summaryG {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.9rem;
+  background: #fff;
+  box-shadow: var(--shadow-soft), inset 0 0 0 1px var(--color-line);
+  animation: float 5s ease-in-out infinite;
+}
+
+.score {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  margin-top: 1rem;
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--color-ink);
+}
+
+.score span {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-muted);
+}
+
+.invite {
+  margin-top: 1rem;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+}
+
+.count {
+  margin-top: 0.5rem;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-muted-ink);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 1.25rem;
+}
+
+.primary,
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.5rem;
+  padding: 0 1rem;
+  border-radius: 999px;
+  font-size: 13.5px;
+  font-weight: 600;
+  transition: translate 0.4s var(--ease-out-expo), box-shadow 0.4s, background-color 0.3s, border-color 0.3s, color 0.3s;
+}
+
+.primary {
+  background: var(--color-accent-strong);
+  color: #fff;
+  box-shadow: var(--shadow-glow);
+}
+
+.primary:hover {
+  translate: 0 -2px;
+  background: var(--color-accent-ink);
+  box-shadow: var(--shadow-glow-lg);
+}
+
+.secondary {
+  border: 1px solid var(--color-line-strong);
+  background: #fff;
+  color: var(--color-ink);
+}
+
+.secondary:hover {
+  translate: 0 -2px;
+  border-color: var(--color-accent);
+  color: var(--color-accent-ink);
+}
+
+/* ---------- Stars (gold, partially filled for fractions) ---------- */
+.stars {
+  display: inline-flex;
+  gap: 2px;
+  margin-top: 0.4rem;
+}
+
+.star {
+  position: relative;
+  display: inline-grid;
+}
+
+.star > svg {
+  grid-area: 1 / 1;
+  color: var(--color-line-strong);
+}
+
+.star > svg:last-child {
+  color: #f5a524;
+  fill: #f5a524;
+  clip-path: inset(0 calc(100% - var(--fill)) 0 0);
+}
+
+/* ---------- Review strip ---------- */
+.viewport {
+  display: flex;
+  min-width: 0;
+  overflow: hidden;
+  padding: 0.5rem 0 1rem;
+  margin: -0.5rem 0 -1rem;
+  mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+}
+
+.strip {
+  display: flex;
+  flex-shrink: 0;
+  gap: 1rem;
+  padding-right: 1rem;
+  animation: marquee var(--strip-duration, 50s) linear infinite;
+}
+
+.viewport:hover .strip,
+.viewport:focus-within .strip {
+  animation-play-state: paused;
+}
+
+.card {
+  display: flex;
+  width: 19rem;
+  flex-shrink: 0;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 1.1rem;
+  border: 1px solid var(--color-line);
+  border-radius: 1.2rem;
+  background: #fff;
+  box-shadow: var(--shadow-soft);
+  transition: translate 0.5s var(--ease-out-expo), box-shadow 0.5s var(--ease-out-expo), border-color 0.3s;
+}
+
+.card:hover {
+  translate: 0 -5px;
+  border-color: rgb(225 6 0 / 0.3);
+  box-shadow: var(--shadow-lift), 0 24px 48px -28px rgb(225 6 0 / 0.5);
+}
+
+.avatar {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--color-accent-soft);
+  object-fit: cover;
+  font-weight: 700;
+  color: var(--color-accent-ink);
+}
+
+.author {
+  display: block;
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-ink);
+}
+
+a.author:hover { color: var(--color-accent-ink); }
+
+.text {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--color-surface);
+}
+
+/* ---------- No reviews yet ---------- */
+.empty {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  padding: 1.5rem;
+  border: 1.5px dashed var(--color-line-strong);
+  border-radius: 1.4rem;
+  background: var(--color-paper);
+}
+
+.emptyTitle {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.ghostStars {
+  display: flex;
+  gap: 0.35rem;
+  margin-top: 1rem;
+  color: #f5a524;
+}
+
+.ghostStars svg {
+  fill: #f5a524;
+  opacity: 0.25;
+  animation: starPop 3s ease-in-out infinite;
+}
+
+.ghostStars svg:nth-child(2) { animation-delay: 0.2s; }
+.ghostStars svg:nth-child(3) { animation-delay: 0.4s; }
+.ghostStars svg:nth-child(4) { animation-delay: 0.6s; }
+.ghostStars svg:nth-child(5) { animation-delay: 0.8s; }
+
+/* ---------- QR poster ---------- */
+.poster {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  justify-self: center;
+  width: 100%;
+  max-width: 20rem;
+}
+
+.posterLink {
+  display: block;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  border-radius: 1.2rem;
+  background: #fff;
+  box-shadow: var(--shadow-lift);
+  transition: translate 0.5s var(--ease-out-expo), box-shadow 0.5s var(--ease-out-expo), border-color 0.3s;
+}
+
+.posterLink:hover,
+.posterLink:focus-visible {
+  translate: 0 -5px;
+  border-color: rgb(225 6 0 / 0.3);
+  box-shadow: var(--shadow-lift), 0 24px 48px -28px rgb(225 6 0 / 0.5);
+}
+
+.posterImg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.posterNote {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--color-muted-ink);
+}
+
+@keyframes marquee { to { transform: translateX(-100%); } }
+@keyframes blink { 50% { opacity: 0.35; } }
+@keyframes float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -5px; }
+}
+@keyframes starPop {
+  0%, 60%, 100% { opacity: 0.25; transform: scale(1); }
+  20% { opacity: 1; transform: scale(1.18); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live i,
+  .summaryG,
+  .strip,
+  .ghostStars svg {
+    animation: none;
+  }
+
+  .viewport { overflow-x: auto; mask-image: none; }
+  .strip:last-child { display: none; }
+  .card:hover,
+  .posterLink:hover,
+  .posterLink:focus-visible { translate: none; }
+}

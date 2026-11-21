@@ -27,6 +27,14 @@ const nextConfig: NextConfig = {
   // existing rankings and backlinks onto the new URLs.
   async redirects() {
     return [
+      // Consolidate the apex host onto the same www origin used by canonicals.
+      // Next.js preserves the request path, query parameters and HTTP method.
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "mecatronix.one" }],
+        destination: "https://www.mecatronix.one/:path*",
+        permanent: true,
+      },
       { source: "/ourworld", destination: "/about", permanent: true },
       { source: "/portfolio", destination: "/work", permanent: true },
       { source: "/openline", destination: "/contact", permanent: true },

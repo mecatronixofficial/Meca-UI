@@ -5,6 +5,7 @@ import { footerNav } from "../../data/navigation";
 import { site } from "../../lib/site";
 import { whatsappLink } from "../../lib/site-contact";
 import { getSiteContact } from "../../lib/site-contact.server";
+import { AnalyticsPreferences } from "../seo/LeadAnalytics";
 import { cn } from "../../lib/cn";
 import { Container } from "../ui/Container";
 import { Logo } from "../ui/Logo";
@@ -261,6 +262,7 @@ export default async function Footer() {
           <span aria-hidden className="hidden md:block" />
           <div className="flex shrink-0 items-center justify-center gap-6 whitespace-nowrap md:justify-end">
             <Link href="/privacy" className="transition-colors hover:text-accent-ink">Privacy Policy</Link>
+            <AnalyticsPreferences />
             <a href="#top" className="group inline-flex items-center gap-2 transition-colors hover:text-accent-ink">
               Back to top
               <span className="flex size-8 items-center justify-center rounded-full border border-line-strong transition-[background-color,border-color,color] duration-300 group-hover:border-accent group-hover:bg-accent group-hover:text-white">

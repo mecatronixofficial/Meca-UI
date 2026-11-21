@@ -51,8 +51,11 @@ const sectionsFor = (contact: SiteContact): { title: string; body: React.ReactNo
     title: "Cookies and analytics",
     body: (
       <p>
-        This website does not use advertising cookies. Basic, technically necessary storage may be used by your browser to
-        make the site work. If we add analytics in future, this policy will be updated to describe it.
+        This website does not use advertising cookies. When optional Google Analytics is configured, it loads only after
+        you choose to allow analytics. It measures page visits, call, email and WhatsApp link clicks, and successfully
+        delivered project enquiries. Enquiry text, names, email addresses and phone numbers are not included in our analytics events.
+        Google may process browser and device information and use analytics cookies. Your analytics choice is stored in your browser.
+        You can change it using Analytics preferences in the footer. Declining analytics does not affect enquiries or contact options.
       </p>
     ),
   },

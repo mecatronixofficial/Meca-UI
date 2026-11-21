@@ -11,6 +11,7 @@ import MecaAssistant from "../components/assistant/MecaAssistant";
 import PreviewPrompt from "../components/preview/PreviewPrompt";
 import ReviewModal from "../components/reviews/ReviewModal";
 import JsonLd from "../components/seo/JsonLd";
+import LeadAnalytics from "../components/seo/LeadAnalytics";
 import { SiteContactProvider } from "../components/layout/SiteContactProvider";
 import { getSiteContact } from "../lib/site-contact.server";
 import { getMecaBoard } from "../lib/meca-board.server";
@@ -66,6 +67,12 @@ export const metadata: Metadata = {
   authors: [{ name: COMPANY_NAME, url: SITE_URL }],
   creator: COMPANY_NAME,
   publisher: COMPANY_NAME,
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION?.trim() || undefined,
+    ...(process.env.BING_SITE_VERIFICATION?.trim()
+      ? { other: { "msvalidate.01": process.env.BING_SITE_VERIFICATION.trim() } }
+      : {}),
+  },
   // Stop iOS from auto-linking numbers/emails in the design; real links are explicit
   formatDetection: { telephone: false, email: false, address: false },
   icons: {
@@ -132,6 +139,7 @@ export default async function RootLayout({
           <MecaAssistant board={mecaBoard} />
           <PreviewPrompt />
           <ReviewModal />
+          <LeadAnalytics />
         </PublicOnly>
         </SiteContactProvider>
       </body>

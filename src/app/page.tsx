@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
-import { pageMetadata } from "../lib/seo";
+import { faqJsonLd, pageMetadata } from "../lib/seo";
+import { localFaqs } from "../data/local-seo";
+import JsonLd from "../components/seo/JsonLd";
+import { Faq } from "../components/sections/Faq";
+import { LocalExpertise } from "../components/home/LocalExpertise";
 import { Hero } from "../components/home/Hero";
 import { Intro } from "../components/home/Intro";
 import { ClientLogos } from "../components/home/ClientLogos";
@@ -19,7 +23,7 @@ export const metadata: Metadata = pageMetadata({
   title: "Mecatronix | Software Development Company in Coimbatore",
   absolute: true,
   description:
-    "Mecatronix is a software development company in Coimbatore building business websites, custom software, mobile apps, e-commerce stores, ERP systems and automation for growing companies.",
+    "Software development company in Coimbatore for websites, mobile apps, ecommerce and custom ERP. Serving Tamil Nadu businesses. Request a project quote from Mecatronix.",
   path: "/",
   keywords: [
     "software development company in Coimbatore",
@@ -39,17 +43,20 @@ export const metadata: Metadata = pageMetadata({
 export default function Page() {
   return (
     <>
+      <JsonLd data={faqJsonLd(localFaqs)} />
       <Hero />
       <KuralOfTheDay />
       <ClientLogos />
       <Intro />
       <ServicesSection />
+      <LocalExpertise />
       <PreviewSection />
       <WhyMecatronix />
       <GoogleReviews />
       <TechSection />
       <Testimonials />
       <InsightsSection />
+      <Faq faqs={localFaqs} title="Your software project, explained." />
       <ContactCTA tone="red" />
     </>
   );

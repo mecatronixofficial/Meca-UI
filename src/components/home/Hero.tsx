@@ -39,19 +39,19 @@ export async function Hero() {
               className="mt-7 font-display text-[2.8rem] font-semibold leading-[1] tracking-[-0.045em] text-ink motion-safe:animate-lift sm:text-[4rem] lg:text-[4.4rem] xl:text-[5rem]"
               style={delay(60)}
             >
-              Engineering software.
+              Software development
               <br />
-              <span className="text-shimmer">Empowering businesses.</span>
+              <span className="text-shimmer">in Coimbatore.</span>
             </h1>
 
             <p className="text-lead mt-7 max-w-xl text-muted-ink motion-safe:animate-lift" style={delay(160)}>
-              We design and develop modern websites, powerful applications and intelligent business systems that help
-              companies innovate, streamline operations and grow with confidence.
+              Mecatronix builds business websites, custom software, mobile apps and ERP systems for companies in
+              Coimbatore and across Tamil Nadu. Turn customer enquiries and everyday operations into a connected digital experience.
             </p>
 
             <div className="mt-9 flex flex-col gap-3 sm:flex-row motion-safe:animate-rise" style={delay(240)}>
               <Button href="/contact" size="lg" arrow>
-                Start a Project
+                Request a Project Quote
               </Button>
               <Button href="/services" size="lg" variant="outline-light">
                 Explore Services

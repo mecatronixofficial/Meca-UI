@@ -1,6 +1,7 @@
 import type { Metadata, MetadataRoute } from "next";
 import type { SiteContact } from "./site-contact";
 import { brandLogo } from "./brand";
+import { serviceList } from "../data/service-list";
 
 export const SITE_URL = "https://www.mecatronix.one";
 export const SITE_NAME = "Mecatronix";
@@ -22,6 +23,7 @@ export const ROUTES: {
 }[] = [
   { path: "/", label: "Home", priority: 1, changeFrequency: "weekly" },
   { path: "/services", label: "Services", priority: 0.9, changeFrequency: "monthly" },
+  { path: "/software-development-tamil-nadu", label: "Software Development in Tamil Nadu", priority: 0.85, changeFrequency: "monthly" },
   { path: "/work", label: "Our Work", priority: 0.8, changeFrequency: "monthly" },
   { path: "/industries", label: "Industries", priority: 0.7, changeFrequency: "monthly" },
   { path: "/about", label: "About", priority: 0.7, changeFrequency: "monthly" },
@@ -149,6 +151,13 @@ export function organizationJsonLd(site: SiteContact) {
         description: DEFAULT_DESCRIPTION,
         email: contact.companyEmail,
         telephone: contact.primaryPhone,
+        contactPoint: {
+          "@type": "ContactPoint",
+          contactType: "sales",
+          telephone: contact.primaryPhone,
+          email: contact.companyEmail,
+          areaServed: "IN",
+        },
         sameAs: sameAs(),
       },
       {
@@ -170,7 +179,28 @@ export function organizationJsonLd(site: SiteContact) {
         },
         hasMap: location.googleMapsLink,
         openingHours: openingHours(hours),
-        areaServed: ["Coimbatore", "Tamil Nadu", "India"],
+        areaServed: [
+          { "@type": "City", name: "Coimbatore" },
+          { "@type": "State", name: "Tamil Nadu" },
+          { "@type": "Country", name: "India" },
+        ],
+        ...(Number.isFinite(site.address.lat) && Number.isFinite(site.address.lng) ? {
+          geo: { "@type": "GeoCoordinates", latitude: site.address.lat, longitude: site.address.lng },
+        } : {}),
+        hasOfferCatalog: {
+          "@type": "OfferCatalog",
+          name: "Software development services",
+          itemListElement: serviceList.map((service) => ({
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service",
+              name: service.title,
+              description: service.summary,
+              url: `${SITE_URL}/services/${service.slug}`,
+              provider: { "@id": `${SITE_URL}/#localbusiness` },
+            },
+          })),
+        },
       },
       {
         "@type": "WebSite",

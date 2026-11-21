@@ -96,7 +96,7 @@ const details: Omit<Service, Exclude<keyof ServiceBasics, "slug">>[] = [
     slug: "custom-software",
     visual: "software",
     seo: {
-      title: "Custom Software Development Company in Tamil Nadu",
+      title: "Custom Software Development in Coimbatore",
       description:
         "Custom software development in Coimbatore and Tamil Nadu: internal tools, workflow systems, portals and integrations designed around how your business operates.",
       keywords: [
@@ -234,7 +234,7 @@ const details: Omit<Service, Exclude<keyof ServiceBasics, "slug">>[] = [
     slug: "ecommerce-development",
     visual: "store",
     seo: {
-      title: "E-commerce Website Development Company in Coimbatore",
+      title: "Ecommerce Website Development in Coimbatore",
       description:
         "E-commerce website development for retailers, textile brands and manufacturers: product catalogues, secure checkout, payment gateways and order management.",
       keywords: [
@@ -303,7 +303,7 @@ const details: Omit<Service, Exclude<keyof ServiceBasics, "slug">>[] = [
     slug: "erp-development",
     visual: "erp",
     seo: {
-      title: "ERP Software Development for Manufacturers & SMEs",
+      title: "ERP Software Development in Coimbatore",
       description:
         "Custom ERP software development in Coimbatore for manufacturing, textile and trading businesses — inventory, production, billing, sales and reporting in one system.",
       keywords: [
@@ -373,7 +373,7 @@ const details: Omit<Service, Exclude<keyof ServiceBasics, "slug">>[] = [
     slug: "ai-automation",
     visual: "automation",
     seo: {
-      title: "Business Automation & AI Integration Services",
+      title: "AI Integration & Business Automation in Coimbatore",
       description:
         "Practical business automation and AI integration from Mecatronix in Coimbatore — document processing, smart assistants, workflow automation and reporting.",
       keywords: [

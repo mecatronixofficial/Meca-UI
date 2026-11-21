@@ -4,7 +4,10 @@ import { notFound } from "next/navigation";
 import { ArrowUpRight, Check } from "lucide-react";
 import { getService, services } from "../../../data/services";
 import { industries } from "../../../data/industries";
+import { localServices, regionalPath } from "../../../data/local-seo";
 import { getProjects } from "../../../lib/content";
+import { getSiteContact } from "../../../lib/site-contact.server";
+import { whatsappLink } from "../../../lib/site-contact";
 import { faqJsonLd, pageMetadata, serviceJsonLd } from "../../../lib/seo";
 import { cn } from "../../../lib/cn";
 import JsonLd from "../../../components/seo/JsonLd";
@@ -47,6 +50,8 @@ export default async function ServicePage({ params }: Props) {
   if (!service) notFound();
 
   const path = `/services/${service.slug}`;
+  const local = localServices[service.slug];
+  const contact = await getSiteContact();
   const Icon = serviceIcons[service.slug];
   const related = (await getProjects()).filter((p) => p.services.includes(service.slug)).slice(0, 2);
   const relatedIndustries = industries.filter((ind) => service.industries.includes(ind.slug));
@@ -61,12 +66,12 @@ export default async function ServicePage({ params }: Props) {
       <PageHero
         crumbs={[{ path: "/services", label: "Services" }, { path, label: service.title }]}
         eyebrow={service.hero.eyebrow}
-        title={service.hero.headline}
+        title={local.heading}
         intro={service.hero.intro}
         aside={sideVisual ? <ServiceVisual kind={service.visual} /> : undefined}
       >
         <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-          <Button href="/contact" size="lg" arrow>Discuss your project</Button>
+          <Button href={`/contact?service=${service.slug}`} size="lg" arrow>Request a project quote</Button>
           <Button href="#deliverables" size="lg" variant="outline-light">What you get</Button>
         </div>
         {!sideVisual && (
@@ -75,6 +80,30 @@ export default async function ServicePage({ params }: Props) {
           </div>
         )}
       </PageHero>
+
+      <Section labelledBy="local-service-title" tone="paper">
+        <Container>
+          <div className="grid gap-10 lg:grid-cols-2">
+            <div>
+              <h2 id="local-service-title" className="text-h3 text-surface">{service.hero.headline}</h2>
+              <p className="mt-5 text-base leading-relaxed text-muted-ink">{local.description}</p>
+              <ul className="mt-5 list-disc space-y-3 pl-5 text-base text-muted-ink marker:text-accent">
+                {local.examples.map((example) => <li key={example}>{example}</li>)}
+              </ul>
+              <p className="mt-5 text-base text-muted-ink">Explore our <Link href={regionalPath} className="text-accent-ink underline underline-offset-4">software development services across Tamil Nadu</Link>.</p>
+            </div>
+            <div className="rounded-panel border border-line bg-white p-7">
+              <h2 className="text-h3 text-surface">What should you include in your brief?</h2>
+              <p className="mt-5 text-base leading-relaxed text-muted-ink">{local.quoteChecklist}</p>
+              <p className="mt-4 text-base leading-relaxed text-muted-ink">Project cost and timing depend on the agreed scope. Share your requirements so we can discuss the first release, integrations and support.</p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Button href={`/contact?service=${service.slug}`}>Discuss your requirements</Button>
+                <Button href={whatsappLink(contact, `Hi Mecatronix, I would like to discuss ${service.title.toLowerCase()} for my business.`)} external variant="outline-light">WhatsApp our team</Button>
+              </div>
+            </div>
+          </div>
+        </Container>
+      </Section>
 
       {/* Overview */}
       <Section labelledBy="overview-title">

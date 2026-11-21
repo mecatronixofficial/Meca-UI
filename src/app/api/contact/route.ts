@@ -111,7 +111,7 @@ export async function POST(request: NextRequest) {
   ]);
 
   if (email === "sent" || backend === "sent" || backend === "duplicate") {
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, delivered: backend !== "duplicate" || email === "sent" });
   }
 
   const configured = email !== "skipped" || backendBaseUrl() !== null;

@@ -1,6 +1,7 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { trackLeadEvent } from "../../lib/analytics";
 import Link from "next/link";
 import { AlertCircle, ArrowRight, CheckCircle2, ChevronDown, Loader2, Mail } from "lucide-react";
 import {
@@ -29,6 +30,15 @@ export function ContactForm({ email, whatsapp }: { email: string; whatsapp: stri
   const startedAt = useRef(Date.now());
   const honeypot = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
+
+  // Keep service selection when arriving from a service-specific quote link.
+  // Reading the URL after hydration leaves the contact page statically renderable.
+  useEffect(() => {
+    const service = new URLSearchParams(window.location.search).get("service");
+    if (service && serviceOptions.some((option) => option.value === service)) {
+      setValues((current) => ({ ...current, service: current.service || service }));
+    }
+  }, []);
 
   const set = (field: ContactField) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setValues((v) => ({ ...v, [field]: e.target.value }));
@@ -62,8 +72,9 @@ export function ContactForm({ email, whatsapp }: { email: string; whatsapp: stri
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload()),
       });
-      const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string; fields?: typeof errors };
+      const data = (await res.json().catch(() => ({}))) as { ok?: boolean; delivered?: boolean; error?: string; fields?: typeof errors };
       if (res.ok && data.ok) {
+        if (data.delivered) trackLeadEvent("generate_lead", { method: "contact_form", service: values.service });
         setStatus("success");
         return;
       }
@@ -95,6 +106,7 @@ export function ContactForm({ email, whatsapp }: { email: string; whatsapp: stri
           Someone from our team will review your requirements and get back to you at <strong className="font-medium text-surface">{values.email}</strong>.
           If it&apos;s urgent, you can also reach us on WhatsApp.
         </p>
+        <a href={`https://wa.me/${whatsapp}?text=${encodeURIComponent("Hi Mecatronix, I have submitted a project enquiry and would like to discuss the next step.")}`} target="_blank" rel="noopener noreferrer" className="mt-6 font-medium text-accent-ink underline underline-offset-4">Continue on WhatsApp</a>
         <button
           type="button"
           onClick={() => {

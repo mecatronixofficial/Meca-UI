@@ -16,6 +16,7 @@ export const footerNav = {
     { href: "/about", label: "About" },
     { href: "/process", label: "Our Process" },
     { href: "/industries", label: "Industries" },
+    { href: "/software-development-tamil-nadu", label: "Serving Tamil Nadu" },
     { href: "/blogs", label: "Blogs" },
     { href: "/careers", label: "Careers" },
     { href: "/contact", label: "Contact" },

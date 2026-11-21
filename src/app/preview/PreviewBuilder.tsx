@@ -283,7 +283,7 @@ export default function PreviewBuilder() {
               </p>
             </div>
             <ScaledFrame url={`www.${domainFor(form.company_name)}`} maxHeight={720}>
-              <SiteTemplate template={template} brand={brand} />
+              <SiteTemplate embedded template={template} brand={brand} />
             </ScaledFrame>
           </div>
         </div>

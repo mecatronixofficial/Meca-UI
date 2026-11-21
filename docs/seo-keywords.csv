@@ -1,0 +1,29 @@
+priority,cluster,keyword,target_path,intent,evidence
+P1,company,software development company in Coimbatore,/,commercial,SERP-informed seed; volume and current position unmeasured
+P1,website,website development company in Coimbatore,/services/web-development,commercial,SERP-informed seed; volume and current position unmeasured
+P1,website,web design company in Coimbatore,/services/web-development,commercial,SERP-informed seed; volume and current position unmeasured
+P1,website,business website development Coimbatore,/services/web-development,commercial,SERP-informed seed; volume and current position unmeasured
+P1,custom software,custom software development company in Coimbatore,/services/custom-software,commercial,SERP-informed seed; volume and current position unmeasured
+P1,ERP,ERP software development in Coimbatore,/services/erp-development,commercial,SERP-informed seed; volume and current position unmeasured
+P1,ERP,manufacturing ERP software Coimbatore,/services/erp-development,commercial,Service-aligned long-tail hypothesis; validate in Search Console
+P1,ecommerce,ecommerce website development company in Coimbatore,/services/ecommerce-development,commercial,SERP-informed seed; volume and current position unmeasured
+P1,mobile,mobile app development company in Coimbatore,/services/mobile-app-development,commercial,SERP-informed seed; volume and current position unmeasured
+P2,region,software development company in Tamil Nadu,/software-development-tamil-nadu,commercial,SERP-informed seed; volume and current position unmeasured
+P2,region,custom software development Tamil Nadu,/software-development-tamil-nadu,commercial,SERP-informed seed; volume and current position unmeasured
+P2,website,website redesign company Coimbatore,/services/web-development,commercial,Service-aligned long-tail hypothesis; validate in Search Console
+P2,website,web application development Coimbatore,/services/web-development,commercial,Service-aligned long-tail hypothesis; validate in Search Console
+P2,mobile,Android app development Coimbatore,/services/mobile-app-development,commercial,Service-aligned long-tail hypothesis; validate in Search Console
+P2,mobile,iOS app development Coimbatore,/services/mobile-app-development,commercial,Service-aligned long-tail hypothesis; validate in Search Console
+P2,ecommerce,online store development Coimbatore,/services/ecommerce-development,commercial,Service-aligned long-tail hypothesis; validate in Search Console
+P2,ecommerce,textile ecommerce website development Tamil Nadu,/services/ecommerce-development,commercial,Service-aligned long-tail hypothesis; validate in Search Console
+P2,ERP,inventory management software development Coimbatore,/services/erp-development,commercial,Service-aligned long-tail hypothesis; validate in Search Console
+P2,ERP,textile ERP software development Tamil Nadu,/services/erp-development,commercial,Service-aligned long-tail hypothesis; validate in Search Console
+P2,custom software,business workflow software Coimbatore,/services/custom-software,commercial,Service-aligned long-tail hypothesis; validate in Search Console
+P2,automation,business automation company Coimbatore,/services/ai-automation,commercial,Service-aligned long-tail hypothesis; validate in Search Console
+P2,automation,AI integration services Coimbatore,/services/ai-automation,commercial,Service-aligned long-tail hypothesis; validate in Search Console
+P2,manufacturing,manufacturing software development Coimbatore,/industries/manufacturing,commercial,Service-aligned long-tail hypothesis; validate in Search Console
+P2,textiles,textile software development Tamil Nadu,/industries/textiles,commercial,Service-aligned long-tail hypothesis; validate in Search Console
+P3,buyer education,website development cost in Coimbatore,/services/web-development,commercial research,Observed pricing intent; publish actual approved pricing before targeting numeric promises
+P3,buyer education,custom ERP versus ready made software,/blogs/custom-erp-software-business-operations,commercial research,Supporting topic hypothesis; validate in Search Console
+P3,brand,Mecatronix Coimbatore,/about,navigational,Observed company search
+P3,brand,Mecatronix contact,/contact,navigational,Brand-intent hypothesis

@@ -85,7 +85,7 @@ export function PreviewSwitcher({ intro }: { intro: React.ReactNode }) {
         <div ref={frame}>
           <ScaledFrame url={domain(sample.company)} maxHeight={520}>
             <div key={template.slug} className="motion-safe:animate-fade">
-              <SiteTemplate template={template} brand={{ company: sample.company, color: template.color, city: "Coimbatore", tagline: sample.tagline }} />
+              <SiteTemplate embedded template={template} brand={{ company: sample.company, color: template.color, city: "Coimbatore", tagline: sample.tagline }} />
             </div>
           </ScaledFrame>
         </div>

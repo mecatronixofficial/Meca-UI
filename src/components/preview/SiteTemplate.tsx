@@ -102,7 +102,7 @@ function visibleHeight(el: HTMLElement) {
   return window.innerHeight - top;
 }
 
-export function SiteTemplate({ template: t, brand, className }: { template: SiteTemplateDef; brand: PreviewBrand; className?: string }) {
+export function SiteTemplate({ template: t, brand, className, embedded = false }: { template: SiteTemplateDef; brand: PreviewBrand; className?: string; embedded?: boolean }) {
   const company = brand.company.trim() || "Your Company";
   const fill = (text: string) => text.replaceAll("{company}", company);
   const services = brand.services?.map((s) => s.trim()).filter(Boolean).length ? brand.services!.map((s) => s.trim()).filter(Boolean) : t.services;
@@ -288,7 +288,7 @@ export function SiteTemplate({ template: t, brand, className }: { template: Site
           )}
         </header>
 
-        <Hero t={t} brand={brand} company={company} fill={fill} />
+        <Hero t={t} brand={brand} company={company} fill={fill} embedded={embedded} />
 
         {/* Features */}
         <section id={sectionId("features")} className="mx-auto max-w-6xl scroll-mt-20 px-5 py-16 @3xl:px-8 @5xl:py-24">
@@ -615,7 +615,8 @@ function Buttons({ t, light }: { t: SiteTemplateDef; light?: boolean }) {
 
 /* ---------- Heroes (one per layout family) ---------- */
 
-function Hero({ t, brand, company, fill }: { t: SiteTemplateDef; brand: PreviewBrand; company: string; fill: (s: string) => string }) {
+function Hero({ t, brand, company, fill, embedded }: { t: SiteTemplateDef; brand: PreviewBrand; company: string; fill: (s: string) => string; embedded: boolean }) {
+  const Heading = embedded ? "h2" : "h1";
   const { add, sells, open, sectionId } = useSite();
   const Icon = t.icon;
   const title = fill(t.hero.title);
@@ -631,7 +632,7 @@ function Hero({ t, brand, company, fill }: { t: SiteTemplateDef; brand: PreviewB
             <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-[12.5px] text-white/80">
               <span className="size-1.5 animate-pulse rounded-full bg-[var(--brand)]" /> {t.hero.eyebrow}
             </span>
-            <h1 className="mx-auto mt-6 max-w-3xl font-display text-[2.3rem] font-bold leading-[1.05] tracking-tight @3xl:text-[3.2rem] @5xl:text-[4rem]">{title}</h1>
+            <Heading className="mx-auto mt-6 max-w-3xl font-display text-[2.3rem] font-bold leading-[1.05] tracking-tight @3xl:text-[3.2rem] @5xl:text-[4rem]">{title}</Heading>
             <p className="mx-auto mt-5 max-w-2xl text-[16px] leading-relaxed text-white/70 @5xl:text-[18px]">{text}</p>
             <div className="flex justify-center">
               <Buttons t={t} light />
@@ -654,7 +655,7 @@ function Hero({ t, brand, company, fill }: { t: SiteTemplateDef; brand: PreviewB
         <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 py-14 @3xl:px-8 @5xl:grid-cols-2 @5xl:py-24">
           <Reveal>
             <p className="text-[13px] font-semibold uppercase tracking-[0.14em] text-[var(--brand)]">{t.hero.eyebrow}</p>
-            <h1 className="mt-5 font-display text-[2.3rem] font-bold leading-[1.05] tracking-tight @3xl:text-[3.1rem] @5xl:text-[3.6rem]">{title}</h1>
+            <Heading className="mt-5 font-display text-[2.3rem] font-bold leading-[1.05] tracking-tight @3xl:text-[3.1rem] @5xl:text-[3.6rem]">{title}</Heading>
             <p className="mt-5 max-w-lg text-[16px] leading-relaxed text-[#5b6170]">{text}</p>
             <Buttons t={t} />
           </Reveal>
@@ -701,7 +702,7 @@ function Hero({ t, brand, company, fill }: { t: SiteTemplateDef; brand: PreviewB
             <span className="inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 text-[12.5px] font-medium text-[var(--brand)] shadow-sm">
               <Icon className="size-3.5" /> {t.hero.eyebrow}
             </span>
-            <h1 className="mt-6 font-display text-[2.3rem] font-bold leading-[1.05] tracking-tight @3xl:text-[3.1rem] @5xl:text-[3.7rem]">{title}</h1>
+            <Heading className="mt-6 font-display text-[2.3rem] font-bold leading-[1.05] tracking-tight @3xl:text-[3.1rem] @5xl:text-[3.7rem]">{title}</Heading>
             <p className="mt-5 max-w-lg text-[16px] leading-relaxed text-[#5b6170]">{text}</p>
             <Buttons t={t} />
             <div className="mt-10 flex flex-wrap gap-6">
@@ -736,7 +737,7 @@ function Hero({ t, brand, company, fill }: { t: SiteTemplateDef; brand: PreviewB
       <div className="relative mx-auto max-w-6xl px-5 py-16 @3xl:px-8 @5xl:py-28">
         <Reveal>
           <p className="inline-flex items-center gap-2 border-l-4 border-[var(--brand)] pl-3 text-[13px] font-semibold uppercase tracking-[0.18em] text-white/80">{t.hero.eyebrow}</p>
-          <h1 className="mt-6 max-w-4xl font-display text-[2.4rem] font-bold uppercase leading-[1] tracking-tight @3xl:text-[3.4rem] @5xl:text-[4.4rem]">{title}</h1>
+          <Heading className="mt-6 max-w-4xl font-display text-[2.4rem] font-bold uppercase leading-[1] tracking-tight @3xl:text-[3.4rem] @5xl:text-[4.4rem]">{title}</Heading>
           <p className="mt-6 max-w-xl text-[16px] leading-relaxed text-white/70 @5xl:text-[18px]">{text}</p>
           <Buttons t={t} light />
         </Reveal>

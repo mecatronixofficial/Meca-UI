@@ -2,7 +2,7 @@ import { serviceList as services } from "./service-list";
 
 export const mainNav = [
   { href: "/", label: "Home" },
-  { href: "/services", label: "Services", children: services.map((s) => ({ href: `/services/${s.slug}`, label: s.navLabel, summary: s.summary })) },
+  { href: "/services", label: "Services", children: services.map((s) => ({ href: `/services/${s.slug}`, slug: s.slug, label: s.navLabel, summary: s.summary })) },
   { href: "/work", label: "Our Work" },
   { href: "/industries", label: "Industries" },
   { href: "/about", label: "About" },
